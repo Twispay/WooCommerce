@@ -1,0 +1,23 @@
+#staging_site_id {
+    display: none;
+}
+
+#staging_private_key {
+    display: none;
+}
+
+#live_site_id {
+    display: none;
+}
+
+#live_private_key {
+    display: none;
+}
+
+.tablenav {
+    display: none;
+}
+
+.subsubsub {
+    margin-bottom: 12px;
+}

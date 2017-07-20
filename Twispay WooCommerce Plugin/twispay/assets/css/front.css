@@ -1,0 +1,29 @@
+.payment_box.payment_method_twispay {
+    padding: 0;
+}
+
+#twispay_checkout_order_button {
+    float: right;
+}
+
+.wc_payment_method.payment_method_twispay > label {
+    font-weight: bold;
+}
+
+.wc_payment_method.payment_method_twispay > label:first-of-type img {
+    max-height: 75px;
+    max-width: 600px;
+    margin-top: -16px;
+}
+
+.wc_payment_method.payment_method_twispay > label:first-of-type {
+    margin: 23px 0;
+}
+
+@media(max-width: 989px) {
+    .wc_payment_method.payment_method_twispay > label:first-of-type img {
+        max-height: 75px;
+        max-width: 600px;
+        margin-top: -16px;
+    }
+}
