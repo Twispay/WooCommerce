@@ -12,8 +12,8 @@
 
 .wc_payment_method.payment_method_twispay > label:first-of-type img {
     max-height: 75px;
-    max-width: 600px;
-    margin-top: -16px;
+    max-width: 100%;
+/*  margin-top: -16px;*/
 }
 
 .wc_payment_method.payment_method_twispay > label:first-of-type {
@@ -21,9 +21,5 @@
 }
 
 @media(max-width: 989px) {
-    .wc_payment_method.payment_method_twispay > label:first-of-type img {
-        max-height: 75px;
-        max-width: 600px;
-        margin-top: -16px;
-    }
+
 }

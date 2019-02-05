@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Import the table class
 require_once TWISPAY_PLUGIN_DIR . 'includes/admin/transaction/transaction-table.php';
 
-function tw_transaction_administrator() {
+function twispay_tw_transaction_administrator() {
     // Load languages
     $lang = explode( '-', get_bloginfo( 'language' ) );
     $lang = $lang[0];
@@ -98,7 +98,7 @@ function tw_transaction_administrator() {
                         }
                         
                         // Create the Payment Methods object and build the Table
-                        $transaction_table = new TransactionTable( $tw_lang );
+                        $transaction_table = new Twispay_TransactionTable( $tw_lang );
                         $transaction_table->views();
                     ?>
                         

@@ -16,17 +16,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Security class check
-if ( ! class_exists( 'TW_Views' ) ) :
+if ( ! class_exists( 'Twispay_TW_Views' ) ) :
 
 /**
  * Twispay Views Class
  *
- * @class   TW_Views
+ * @class   Twispay_TW_Views
  * @version 0.0.1
  */
-class TW_Views {
+class Twispay_TW_Views {
     /**
-     * TW_Views Constructor
+     * Twispay_TW_Views Constructor
      *
      * @public
      * @return void
@@ -41,7 +41,7 @@ class TW_Views {
      * @public
      * @return string Individual view
      */	
-    public function tw_render_view( $slug ) {
+    public function twispay_tw_render_view( $slug ) {
 	include TWISPAY_PLUGIN_DIR . 'views/' . $slug . '.php';
     }
 }

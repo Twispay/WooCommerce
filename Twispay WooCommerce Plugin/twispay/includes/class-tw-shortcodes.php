@@ -16,23 +16,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Security class check
-if ( ! class_exists( 'TW_Shortcodes' ) ) :
+if ( ! class_exists( 'Twispay_TW_Shortcodes' ) ) :
 
 /**
  * Twispay Shorcodes Class
  *
- * @class   TW_Shortcodes
+ * @class   Twispay_TW_Shortcodes
  * @version 0.0.1
  */
-class TW_Shortcodes {
+class Twispay_TW_Shortcodes {
     /**
-     * TW_Shortcodes Constructor
+     * Twispay_TW_Shortcodes Constructor
      *
      * @public
      * @return void
      */
     public function __construct() {
-        add_shortcode( 'tw_payment_confirmation', array( $this, 'tw_payment_confirmation_handler' ) );
+        add_shortcode( 'tw_payment_confirmation', array( $this, 'twispay_tw_payment_confirmation_handler' ) );
     }
     
     /**
@@ -41,16 +41,16 @@ class TW_Shortcodes {
      * @public
      * @return string Payment Confirmation Form
      */	
-    public function tw_payment_confirmation_handler( $atts ) {
-	return TW()->payment_confirmation->tw_payment_confirmation_form();
+    public function twispay_tw_payment_confirmation_handler( $atts ) {
+	return TW()->payment_confirmation->twispay_tw_payment_confirmation_form();
     }
 }
 
 endif; // End if class_exists
 
 /**
- * The main instance of TW_Shortcodes
+ * The main instance of Twispay_TW_Shortcodes
  *
- * @return TW_Shortcodes
+ * @return Twispay_TW_Shortcodes
  */
-new TW_Shortcodes;
+new Twispay_TW_Shortcodes;

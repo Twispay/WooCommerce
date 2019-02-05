@@ -6,7 +6,7 @@
  *
  * @package  Twispay/Language
  * @category Admin/Front
- * @version  0.0.1
+ * @version  1.0.1
  */
 
 // Configuration panel from Administrator

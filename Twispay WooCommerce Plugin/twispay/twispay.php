@@ -1,24 +1,24 @@
 <?php
 /**
- * Plugin Name: Twispay
- * Plugin URI: https://@TODO.com/
+ * Plugin Name: Twispay Credit Card Payments
+ * Plugin URI: https://wordpress.org/plugins/twispay/
  * Description: Plugin for Twispay payment gateway.
- * Version: 0.0.1
- * Author: @TODO
- * Author URI: https://@TODO.com
- * License: @TODO
+ * Version: 1.0.1
+ * Author: twispay
+ * Author URI: https://www.twispay.com
+ * License: GPLv2
  *
  * Text Domain: twispay
  *
  * @package  Twispay
  * @category Core
- * @author   @TODO
- * @version  0.0.1
+ * @author   twispay
+ * @version  1.0.1
  */
 
 // Exit if the file is accessed directly
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
 }
 
 // Security class check
@@ -28,7 +28,7 @@ if ( ! class_exists( 'Twispay' ) ) :
  * Main Twispay Class.
  *
  * @class   Twispay
- * @version 0.0.1
+ * @version 1.0.1
  */
 final class Twispay {
     /**
@@ -38,7 +38,7 @@ final class Twispay {
      * @var    Twispay Instance of class Twispay
      */
     private static $__instance;
-    
+
     /**
      * Main Twispay Instance
      *
@@ -50,13 +50,13 @@ final class Twispay {
     public static function instance() {
 	if ( ! isset( self::$__instance ) && ! ( self::$__instance instanceof Twispay ) ) {
 	    self::$__instance = new self();
-	    
-	    self::$__instance->set_objects();
+
+	    self::$__instance->twispay_tw_set_objects();
 	}
-	
+
 	return self::$__instance;
     }
-    
+
     /**
      * Twispay Constructor
      *
@@ -64,17 +64,17 @@ final class Twispay {
      * @return void
      */
     public function __construct() {
-	$this->set_constants();
-	if ( get_option( 'tw_installed' ) ) {
-	    $this->includes();
+	$this->twispay_tw_set_constants();
+	if ( get_option( 'twispay_tw_installed' ) ) {
+	    $this->twispay_tw_includes();
 	}
-	
+
 	if ( is_admin() ) {
 	    require_once TWISPAY_PLUGIN_DIR . 'includes/install.php';
 	    require_once TWISPAY_PLUGIN_DIR . 'includes/admin/ma-class-menu.php';
 	}
     }
-    
+
     /**
      * Twispay Constants
      *
@@ -83,13 +83,13 @@ final class Twispay {
      * @private
      * @return void
      */
-    private function set_constants() {
+    private function twispay_tw_set_constants() {
 	// Set plugin folder
 	if ( ! defined( 'TWISPAY_PLUGIN_DIR' ) ) {
 	   define( 'TWISPAY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 	}
     }
-    
+
     /**
      * Twispay Objects
      *
@@ -98,13 +98,13 @@ final class Twispay {
      * @private
      * @return void
      */
-    private function set_objects() {
-	if ( get_option( 'tw_installed' ) ) {
-	    self::$__instance->payment_confirmation = new TW_Payment_Confirmation;
-	    self::$__instance->views = new TW_Views;
+    private function twispay_tw_set_objects() {
+	if ( get_option( 'twispay_tw_installed' ) ) {
+	    self::$__instance->payment_confirmation = new Twispay_TW_Payment_Confirmation;
+	    self::$__instance->views = new Twispay_TW_Views;
 	}
     }
-    
+
     /**
      * Twispay Includes
      *
@@ -113,7 +113,7 @@ final class Twispay {
      * @public
      * @return void
      */
-    public function includes() {
+    public function twispay_tw_includes() {
 	// Includes all admin required classes
 	if ( is_admin() ) {
 	    require_once TWISPAY_PLUGIN_DIR . 'includes/admin/configuration/configuration.php';
@@ -123,7 +123,7 @@ final class Twispay {
 	    require_once TWISPAY_PLUGIN_DIR . 'includes/admin/transaction-log/transaction-log.php';
 	    require_once TWISPAY_PLUGIN_DIR . 'includes/admin/admin-requests.php';
 	}
-	
+
 	// Includes all non-admin classes
 	require_once TWISPAY_PLUGIN_DIR . 'includes/scripts.php';
 	require_once TWISPAY_PLUGIN_DIR . 'includes/a-functions.php';

@@ -1,13 +1,13 @@
 <?php
-function twispay_check_install() {
-	if( ! get_option( 'tw_installed' ) ) {
-		tw_install();
+function twispay_wp_check_install() {
+	if( ! get_option( 'twispay_tw_installed' ) ) {
+		twispay_tw_install();
 	}
 }
-add_action( 'admin_init', 'twispay_check_install' );
+add_action( 'admin_init', 'twispay_wp_check_install' );
 
-function tw_install() {
-	update_option( 'tw_installed', '1' );
+function twispay_tw_install() {
+	update_option( 'twispay_tw_installed', '1' );
 	
 	// Create new pages from Twispay Confirmation with shortcodes included
 	wp_insert_post(
@@ -24,7 +24,7 @@ function tw_install() {
 	// Create All tables
 	global $wpdb;
 	
-	$wpdb->get_results( "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "tw_configuration` (
+	$wpdb->get_results( "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "twispay_tw_configuration` (
 		`id_tw_configuration` int(10) NOT NULL AUTO_INCREMENT,
 		`live_mode` int(10) NOT NULL,
 		`staging_id` varchar(255) NOT NULL,
@@ -37,7 +37,7 @@ function tw_install() {
 		PRIMARY KEY (`id_tw_configuration`)
 	) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1" );
 	
-	$wpdb->get_results( "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "tw_transactions` (
+	$wpdb->get_results( "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "twispay_tw_transactions` (
 		`id_tw_transactions` int(10) NOT NULL AUTO_INCREMENT,
 		`status` varchar(50) NOT NULL,
 		`checkout_url` varchar(255) NOT NULL,
@@ -50,7 +50,7 @@ function tw_install() {
 		PRIMARY KEY (`id_tw_transactions`)
 	) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1" );
 	
-	$wpdb->get_results( "INSERT INTO `" . $wpdb->prefix . "tw_configuration` (`live_mode`) VALUES (0);" );
+	$wpdb->get_results( "INSERT INTO `" . $wpdb->prefix . "twispay_tw_configuration` (`live_mode`) VALUES (0);" );
 }
-register_activation_hook( TWISPAY_PLUGIN_DIR, 'tw_install' );
+register_activation_hook( TWISPAY_PLUGIN_DIR, 'twispay_tw_install' );
 ?>

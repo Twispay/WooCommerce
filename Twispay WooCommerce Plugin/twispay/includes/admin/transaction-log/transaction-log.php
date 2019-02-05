@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; 
 }
 
-function tw_transaction_log_administrator() {
+function twispay_tw_transaction_log_administrator() {
     // Load languages
     $lang = explode( '-', get_bloginfo( 'language' ) );
     $lang = $lang[0];

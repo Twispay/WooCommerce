@@ -17,7 +17,7 @@
  * @public
  * @return void
  */
-function tw_main_action() {
+function twispay_tw_main_action() {
     // Check if there is a form process in rolling
     if ( isset( $_REQUEST['tw_general_action'] ) ) {
         $request = $_REQUEST['tw_general_action'];
@@ -36,4 +36,4 @@ function tw_main_action() {
         do_action( 'tw_' . $request, $_REQUEST );
     }
 }
-add_action( 'init', 'tw_main_action' );
+add_action( 'init', 'twispay_tw_main_action' );

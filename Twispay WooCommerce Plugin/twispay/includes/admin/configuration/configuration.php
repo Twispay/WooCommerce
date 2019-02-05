@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; 
 }
 
-function twispay_configuration() {
+function twispay_tw_configuration() {
     // Load languages
     $lang = explode( '-', get_bloginfo( 'language' ) );
     $lang = $lang[0];
@@ -58,35 +58,35 @@ function twispay_configuration() {
                         <tr class="form-field form-required">
                             <th scope="row"><label for="live_mode"><?= $tw_lang['live_mode_label']; ?></label></th>
                             <td>
-                                <?= tw_get_live_mode( $tw_lang ); ?>
+                                <?= twispay_tw_get_live_mode( $tw_lang ); ?>
                                 <p class="description"><?= $tw_lang['live_mode_desc']; ?></p>
                             </td>
                         </tr>
                         <tr class="form-field" id="staging_site_id">
                             <th scope="row"><label for="staging_site_id"><?= $tw_lang['staging_id_label']; ?></span></label></th>
                             <td>
-                                <input name="staging_site_id" type="text" value="<?= tw_get_staging_site_id(); ?>" style="max-width: 400px;" />
+                                <input name="staging_site_id" type="text" value="<?= twispay_tw_get_staging_site_id(); ?>" style="max-width: 400px;" />
                                 <p class="description"><?= $tw_lang['staging_id_desc']; ?> <a target="_blank" href="https://merchant-stage.twispay.com/login"><?= $tw_lang['r_custom_thankyou_desc_s']; ?></a>.</p>
                             </td>
                         </tr>
                         <tr class="form-field" id="staging_private_key">
                             <th scope="row"><label for="staging_private_key"><?= $tw_lang['staging_key_label']; ?></span></label></th>
                             <td>
-                                <input name="staging_private_key" type="text" value="<?= tw_get_staging_private_key(); ?>" style="max-width: 400px;" />
+                                <input name="staging_private_key" type="text" value="<?= twispay_tw_get_staging_private_key(); ?>" style="max-width: 400px;" />
                                 <p class="description"><?= $tw_lang['staging_key_desc']; ?> <a target="_blank" href="https://merchant-stage.twispay.com/login"><?= $tw_lang['r_custom_thankyou_desc_s']; ?></a>.</p>
                             </td>
                         </tr>
                         <tr class="form-field" id="live_site_id">
                             <th scope="row"><label for="live_site_id"><?= $tw_lang['live_id_label']; ?></span></label></th>
                             <td>
-                                <input name="live_site_id" type="text" value="<?= tw_get_live_site_id(); ?>" style="max-width: 400px;" />
+                                <input name="live_site_id" type="text" value="<?= twispay_tw_get_live_site_id(); ?>" style="max-width: 400px;" />
                                 <p class="description"><?= $tw_lang['live_id_desc']; ?> <a target="_blank" href="https://merchant.twispay.com/login"><?= $tw_lang['r_custom_thankyou_desc_s']; ?></a>.</p>
                             </td>
                         </tr>
                         <tr class="form-field" id="live_private_key">
                             <th scope="row"><label for="live_private_key"><?= $tw_lang['live_key_label']; ?></span></label></th>
                             <td>
-                                <input name="live_private_key" type="text" value="<?= tw_get_live_private_key(); ?>" style="max-width: 400px;" />
+                                <input name="live_private_key" type="text" value="<?= twispay_tw_get_live_private_key(); ?>" style="max-width: 400px;" />
                                 <p class="description"><?= $tw_lang['live_key_desc']; ?> <a target="_blank" href="https://merchant.twispay.com/login"><?= $tw_lang['r_custom_thankyou_desc_s']; ?></a>.</p>
                             </td>
                         </tr>
@@ -100,21 +100,21 @@ function twispay_configuration() {
                         <tr class="form-field" id="r_custom_thankyou">
                             <th scope="row"><label for="r_custom_thankyou"><?= $tw_lang['r_custom_thankyou_label']; ?></span></label></th>
                             <td>
-                                <?= tw_get_wp_pages( $tw_lang ); ?>
+                                <?= twispay_tw_get_wp_pages( $tw_lang ); ?>
                                 <p class="description"><?= $tw_lang['r_custom_thankyou_desc_f']; ?> <a href="<?= get_admin_url() . 'post-new.php?post_type=page'; ?>"><?= $tw_lang['r_custom_thankyou_desc_s']; ?></a>.</p>
                             </td>
                         </tr>
                         <tr class="form-field" id="suppress_email">
                             <th scope="row"><label for="suppress_email"><?= $tw_lang['suppress_email_label']; ?></span></label></th>
                             <td>
-                                <?= tw_get_suppress_email( $tw_lang ); ?>
+                                <?= twispay_tw_get_suppress_email( $tw_lang ); ?>
                                 <p class="description"><?= $tw_lang['suppress_email_desc']; ?></p>
                             </td>
                         </tr>
                         <tr class="form-field" id="contact_email_o">
                             <th scope="row"><label for="contact_email_o"><?= $tw_lang['contact_email_o']; ?></span></label></th>
                             <td>
-                                <input name="contact_email_o" type="text" value="<?= ( tw_get_contact_email_o() == '0' ? '' : tw_get_contact_email_o() ); ?>" style="max-width: 400px;" />
+                                <input name="contact_email_o" type="text" value="<?= ( twispay_tw_get_contact_email_o() == '0' ? '' : twispay_tw_get_contact_email_o() ); ?>" style="max-width: 400px;" />
                                 <p class="description"><?= $tw_lang['contact_email_o_desc']; ?></p>
                             </td>
                         </tr>

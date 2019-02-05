@@ -19,7 +19,7 @@ require_once TWISPAY_PLUGIN_DIR . 'includes/class-ma-list-table.php';
  * @class       TransactionTable
  * @version	0.0.1
  */
-class TransactionTable extends MA_List_Table {
+class Twispay_TransactionTable extends Twispay_Tw_List_Table {
     
     protected $tw_lang;
     
@@ -98,7 +98,7 @@ class TransactionTable extends MA_List_Table {
      * @param Object $wpdb         Wordpress refference to database.
      */
     private function get_all_count( $wpdb ) {
-        $table_name = $wpdb->prefix . 'tw_transactions  ';
+        $table_name = $wpdb->prefix . 'twispay_tw_transactions  ';
         
         $wpdb->get_results( "SELECT id_tw_transactions FROM $table_name" );
         
@@ -242,7 +242,7 @@ class TransactionTable extends MA_List_Table {
         $order_by = ( isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '' );
         $order_how = ( isset( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc' );
         
-        $transaction = $wpdb->prefix . "tw_transactions";
+        $transaction = $wpdb->prefix . "twispay_tw_transactions";
         
         $per_page = 10;
         $query =
