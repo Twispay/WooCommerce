@@ -68,13 +68,9 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         /* Get all information for the Twispay Payment form. */
         $data = $order->get_data();
 
-        error_log( print_r( $data, true ) );
-
         /* Get configuration from database. */
         global $wpdb;
         $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
-
-        error_log( print_r( $data, true ) );
 
         /* Get the Site ID and the Private Key. */
         $siteID = '';
@@ -92,7 +88,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         }
 
         /* Extract the customer details. */
-        $customer = [ 'identifier' => (0 == $data['customer_id']) ? ('_0_' . rand()) : ('_' . $data['customer_id'])
+        $customer = [ 'identifier' => (0 == $data['customer_id']) ? ('_0_' . $_GET['order_id'] . $order->get_date_created()) : ('_' . $data['customer_id'])
                     , 'firstName' => ($data['billing']['first_name']) ? ($data['billing']['first_name']) : ($data['shipping']['first_name'])
                     , 'lastName' => ($data['billing']['last_name']) ? ($data['billing']['last_name']) : ($data['shipping']['last_name'])
                     , 'country' => ($data['billing']['country']) ? ($data['billing']['country']) : ($data['shipping']['country'])
@@ -102,7 +98,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
                     , 'zipCode' => ($data['billing']['postcode']) ? ($data['billing']['postcode']) : ($data['shipping']['postcode'])
                     /* , 'phone' => $data['billing']['phone'] */
                     , 'email' => $data['billing']['email']
-                    , 'tags' => []
+                    /* , 'tags' => [] */
                     ];
 
         /* Extract the items details. */
@@ -126,7 +122,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
                                   , 'amount' => $data['total']
                                   , 'currency' => $data['currency']
                                   , 'items' => $items
-                                  , 'tags' => []
+                                  /* , 'tags' => [] */
                                   /* , 'intervalType' => '' */
                                   /* , 'intervalValue' => 1 */
                                   /* , 'trialAmount' => 1 */
@@ -143,7 +139,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
                                   /*                      , 'travelAgencyName' => ''] */
                                   ]
                     , 'cardTransactionMode' => 'authAndCapture'
-                    , 'cardId' => 0
+                    /* , 'cardId' => 0 */
                     , 'invoiceEmail' => ''
                     , 'backUrl' => get_home_url() . '/twispay-confirmation?order_id=' . $_GET['order_id'] . '&secure_key=' . $data['cart_hash']
                     /* , 'customData' => [] */
