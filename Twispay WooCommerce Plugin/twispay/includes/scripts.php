@@ -18,7 +18,7 @@
  * @public
  * @return bool True if is an admin page, false otherwise
  */
-function check_if_is_admin() {
+function twispay_tw_check_if_is_admin() {
     // Check if is admin page
     if ( ! is_admin() ) {
         return false;
@@ -47,17 +47,17 @@ function check_if_is_admin() {
  * @public
  * @return void
  */
-function tw_add_admin_js() {
+function twispay_tw_add_admin_js() {
     // Check if current page is an Twispay Admin Page
-    if ( ! check_if_is_admin() ) {
+    if ( ! twispay_tw_check_if_is_admin() ) {
         return;
     }
     
     // Load all admin js files for Administrator Pages
     wp_enqueue_script( 'ma-admin', plugins_url( '../assets/js/admin.js', __FILE__ ) );
-    wp_enqueue_script( 'ma-admin-jquery', plugins_url( '../assets/js/jquery-ui.min.js', __FILE__ ) );
+    //wp_enqueue_script( 'ma-admin-jquery', plugins_url( '../assets/js/jquery-ui.min.js', __FILE__ ) );
 }
-add_action( 'admin_enqueue_scripts', 'tw_add_admin_js' );
+add_action( 'admin_enqueue_scripts', 'twispay_tw_add_admin_js' );
 
 /**
  * Twispay Add Admin Css
@@ -67,16 +67,16 @@ add_action( 'admin_enqueue_scripts', 'tw_add_admin_js' );
  * @public
  * @return void
  */
-function tw_add_admin_css() {
+function twispay_tw_add_admin_css() {
     // Check if current page is an Twispay Admin Page
-    if ( ! check_if_is_admin() ) {
+    if ( ! twispay_tw_check_if_is_admin() ) {
         return;
     }
     
     // Load all admin css files for Administrator Pages
     wp_enqueue_style( 'ma-admin', plugins_url( '../assets/css/admin.css', __FILE__ ) );
 }
-add_action( 'admin_enqueue_scripts', 'tw_add_admin_css' );
+add_action( 'admin_enqueue_scripts', 'twispay_tw_add_admin_css' );
 
 /**
  * Twispay Add Front Css
@@ -86,11 +86,11 @@ add_action( 'admin_enqueue_scripts', 'tw_add_admin_css' );
  * @public
  * @return void
  */
-function tw_add_front_css() {
+function twispay_tw_add_front_css() {
     // Load all front css files
     wp_enqueue_style( 'ma-front', plugins_url( '../assets/css/front.css', __FILE__ ) );
 }
-add_action( 'wp_enqueue_scripts', 'tw_add_front_css' );
+add_action( 'wp_enqueue_scripts', 'twispay_tw_add_front_css' );
 
 /**
  * Twispay init the Payment Gateway
@@ -329,15 +329,15 @@ add_filter( 'woocommerce_payment_gateways', 'add_twispay_gateway_class' );
  * @public
  * @return void
  */
-function start_buffer_output() {
+function twispay_tw_start_buffer_output() {
     ob_start();
 }
-add_action('init', 'start_buffer_output');
+add_action('init', 'twispay_tw_start_buffer_output');
 
 /**
  * Custom text on the receipt page.
  */
-function isa_order_received_text( $text, $order ) {
+function twispay_tw_isa_order_received_text( $text, $order ) {
     // Load languages
     $lang = explode( '-', get_bloginfo( 'language' ) );
     $lang = $lang[0];
@@ -349,12 +349,12 @@ function isa_order_received_text( $text, $order ) {
     
     return $tw_lang['order_confirmation_title'];
 }
-add_filter('woocommerce_thankyou_order_received_text', 'isa_order_received_text', 10, 2 );
+add_filter('woocommerce_thankyou_order_received_text', 'twispay_tw_isa_order_received_text', 10, 2 );
 
 /**
  * Suppress email functionality
  */
-function unhook_woo_order_emails( $email_class ) {
+function twispay_tw_unhook_woo_order_emails( $email_class ) {
     // New order emails
     remove_action( 'woocommerce_order_status_pending_to_processing_notification', array( $email_class->emails['WC_Email_New_Order'], 'trigger' ) );
     remove_action( 'woocommerce_order_status_pending_to_completed_notification', array( $email_class->emails['WC_Email_New_Order'], 'trigger' ) );
@@ -372,10 +372,10 @@ function unhook_woo_order_emails( $email_class ) {
 }
 // Get configuration from database
 global $wpdb;
-$suppress_email = $wpdb->get_row( "SELECT suppress_email FROM " . $wpdb->prefix . "tw_configuration" );
+$suppress_email = $wpdb->get_row( "SELECT suppress_email FROM " . $wpdb->prefix . "twispay_tw_configuration" );
 
 if ( $suppress_email ) {
     if ( $suppress_email->suppress_email == 1 ) {
-        add_action( 'woocommerce_email', 'unhook_woo_order_emails' );
+        add_action( 'woocommerce_email', 'twispay_tw_unhook_woo_order_emails' );
     }
 }

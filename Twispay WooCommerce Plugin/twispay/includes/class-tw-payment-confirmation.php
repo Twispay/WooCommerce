@@ -16,17 +16,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Security class check
-if ( ! class_exists( 'TW_Payment_Confirmation' ) ) :
+if ( ! class_exists( 'Twispay_TW_Payment_Confirmation' ) ) :
 
 /**
  * Twispay Payment Confirmation Class
  *
- * @class   TW_Payment_Confirmation
+ * @class   Twispay_TW_Payment_Confirmation
  * @version 0.0.1
  */
-class TW_Payment_Confirmation  {
+class Twispay_TW_Payment_Confirmation  {
     /**
-     * TW_Payment_Confirmation Constructor
+     * Twispay_TW_Payment_Confirmation Constructor
      *
      * @public
      * @return void
@@ -41,8 +41,8 @@ class TW_Payment_Confirmation  {
      * @public
      * @return string Payment Confirmation Form
      */	
-    public function tw_payment_confirmation_form() {
-	return TW()->views->tw_render_view( 'payment-confirmation' );
+    public function twispay_tw_payment_confirmation_form() {
+	return TW()->views->twispay_tw_render_view( 'payment-confirmation' );
     }
 }
 

@@ -6,11 +6,13 @@
  *
  * @package  Twispay/Admin
  * @category Admin
- * @author   @TODO
- * @version  0.0.1
+ * @author   twispay
+ * @version  1.0.1
  */
- 
+
 ?>
+
+
 <style>
     .loader {
         margin: 15% auto 0;
@@ -21,236 +23,151 @@
         height: 110px;
         animation: spin 1.1s linear infinite;
     }
-    
+
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
 </style>
-<div class="loader"></div>
-<script>window.history.replaceState( 'twispay', 'Twispay', '../twispay.php' );</script>
-<?php
 
+<div class="loader"></div>
+
+<script>window.history.replaceState( 'twispay', 'Twispay', '../twispay.php' );</script>
+
+
+<?php
 $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
 require_once( $parse_uri[0] . 'wp-load.php' );
 
-// Load languages
+/* Require the "Twispay_TW_Helper_Notify" class. */
+require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Helper_Notify.php' );
+
+
+/* Load languages. */
 $lang = explode( '-', get_bloginfo( 'language' ) );
 $lang = $lang[0];
 if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
     require( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' );
 } else {
-    require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
+   require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
 }
- 
-// Exit if no order is placed
+
+
+/* Exit if no order is placed */
 if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
     global $woocommerce;
     $order = '';
-    
+
     try {
         $order = new WC_Order( $_GET['order_id'] );
     }
-    catch( Exception $e ) {
-        
-    }
-    
+    catch( Exception $e ) {}
+
+
     if ( $order ) {
-        // Get all information for the Twispay Payment Form
-        $inputs = array();
+        /* Get all information for the Twispay Payment form. */
         $data = $order->get_data();
-        
-        // Get configuration from database
+
+        /* Get configuration from database. */
         global $wpdb;
-        $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "tw_configuration" );
-        
-        // Action
-        $action = 'https://secure-stage.twispay.com';
-        if ( $configuration ) {
-            if ( $configuration->live_mode == 1 ) {
-                $action = 'https://secure.twispay.com';
-            }
-        }
-        
-        // Site ID and Private Key
+        $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
+
+        /* Get the Site ID and the Private Key. */
         $siteID = '';
-        $privateKEY = '';
+        $secretKey = '';
         if ( $configuration ) {
-            if ( $configuration->live_mode == 1 ) {
+            if ( 1 == $configuration->live_mode ) {
                 $siteID = $configuration->live_id;
-                $privateKEY = $configuration->live_key;
-            }
-            else if ( $configuration->live_mode == 0 ) {
+                $secretKey = $configuration->live_key;
+            } else if ( 0 == $configuration->live_mode ) {
                 $siteID = $configuration->staging_id;
-                $privateKEY = $configuration->staging_key;
+                $secretKey = $configuration->staging_key;
+            } else {
+                /* TODO: Error? */
             }
         }
-        
-        // Address
-        $inputs['address'] = '';
-        $inputs['address'] = $data['billing']['address_1'];
-        if ( ! $inputs['address'] ) {
-            $inputs['address'] = $data['shipping']['address_1'];
+
+        /* Extract the customer details. */
+        $customer = [ 'identifier' => (0 == $data['customer_id']) ? ('_' . $_GET['order_id'] . '_' . date('YmdHis')) : ('_' . $data['customer_id'])
+                    , 'firstName' => ($data['billing']['first_name']) ? ($data['billing']['first_name']) : ($data['shipping']['first_name'])
+                    , 'lastName' => ($data['billing']['last_name']) ? ($data['billing']['last_name']) : ($data['shipping']['last_name'])
+                    , 'country' => ($data['billing']['country']) ? ($data['billing']['country']) : ($data['shipping']['country'])
+                    /* , 'state' => ($data['billing']['state']) ? ($data['billing']['country']) : ($data['shipping']['country']) */
+                    , 'city' => ($data['billing']['city']) ? ($data['billing']['city']) : ($data['shipping']['city'])
+                    , 'address' => ($data['billing']['address_1']) ? ($data['billing']['address_1']/* . ' ' . $data['billing']['address_2']*/) : ($data['shipping']['address_1']/* . ' ' . $data['shipping']['address_2']*/)
+                    , 'zipCode' => ($data['billing']['postcode']) ? ($data['billing']['postcode']) : ($data['shipping']['postcode'])
+                    , 'phone' => $data['billing']['phone']
+                    , 'email' => $data['billing']['email']
+                    /* , 'tags' => [] */
+                    ];
+
+        /* Extract the items details. */
+        $items = array();
+        foreach ( $order->get_items() as $item ) {
+            $items[] = [ 'item' => $item['name']
+                       , 'units' =>  $item['quantity']
+                       , 'unitPrice' => number_format( number_format( ( float )$item['subtotal'], 2) / number_format( ( float )$item['quantity'], 2 ), 2 )
+                       /* , 'type' => '' */
+                       /* , 'code' => '' */
+                       /* , 'vatPercent' => '' */
+                       /* , 'itemDescription' => '' */
+                       ];
         }
-        
-        // Amount
-        $inputs['amount'] = '';
-        $inputs['amount'] = $data['total'];
-        
-        // Back URL
-        $inputs['backUrl'] = get_home_url() . '/twispay-confirmation?order_id=' . $_GET['order_id'] . '&secure_key=' . $data['cart_hash'];
-        
-        // CardID
-        $inputs['cardId'] = '0';
-        
-        // CardTransactionMode
-        $inputs['cardTransactionMode'] = 'authAndCapture';
-        
-        // City
-        $inputs['city'] = '';
-        $inputs['city'] = $data['billing']['city'];
-        if ( ! $inputs['city'] ) {
-            $inputs['city'] = $data['shipping']['city'];
-        }
-        
-        // Country
-        $inputs['country'] = '';
-        $inputs['country'] = $data['billing']['country'];
-        if ( ! $inputs['country'] ) {
-            $inputs['country'] = $data['shipping']['country'];
-        }
-        
-        // Currency
-        $inputs['currency'] = '';
-        $inputs['currency'] = $data['currency'];
-        
-        // CustomerTags
-        $inputs['customerTags[0]'] = '';
-        
-        // Description
-        $inputs['description'] = '';
-        
-        // Email
-        $inputs['email'] = '';
-        $inputs['email'] = $data['billing']['email'];
-        
-        // Firstname
-        $inputs['firstName'] = '';
-        $inputs['firstName'] = $data['billing']['first_name'];
-        if ( ! $inputs['firstName'] ) {
-            $inputs['firstName'] = $data['shipping']['first_name'];
-        }
-        
-        // Identifier
-        $inputs['identifier'] = '';
-        $inputs['identifier'] = '_' . $data['customer_id'];
-        
-        // InvoiceEmail
-        $inputs['invoiceEmail'] = '';
-        
-        // Item names
-        $items = $order->get_items();
-        $i = 0;
-        foreach ( $items as $item ) {
-            $inputs['item[' . $i . ']'] = $item['name'];
-            $inputs['units[' . $i . ']'] = $item['quantity'];
-            $inputs['subTotal[' . $i . ']'] = number_format( ( float )$item['subtotal'], 2 );
-            $inputs['unitPrice[' . $i . ']'] = number_format( number_format( ( float )$item['subtotal'], 2) / number_format( ( float )$item['quantity'], 2 ), 2 );
-            
-            $i += 1;
-        }
-        
-        // Lastname
-        $inputs['lastName'] = '';
-        $inputs['lastName'] = $data['billing']['last_name'];
-        if ( ! $inputs['lastName'] ) {
-            $inputs['lastName'] = $data['shipping']['last_name'];
-        }
-        
-        // Order ID
-        $inputs['orderId'] = '';
-        if ( isset( $_GET['tw_reload'] ) && $_GET['tw_reload'] ) {
-            $inputs['orderId'] = $data['id'] . '_' . time();
-        }
-        else {
-            $inputs['orderId'] = $data['id'];
-        }
-        
-        // Order tags
-        $inputs['orderTags[0]'] = '';
-        
-        // Order type
-        $inputs['orderType'] = 'purchase';
-        
-        // Site ID
-        $inputs['siteId'] = $siteID;
-        
-        // Postcode
-        $inputs['zipCode'] = $data['billing']['postcode'];
-        if ( ! $inputs['zipCode'] ) {
-            $inputs['zipCode'] = $data['shipping']['postcode'];
-        }
-        
-        // Checksum
-        ksort($inputs);
-        $query = http_build_query($inputs);
-        $encoded = hash_hmac('sha512', $query, $privateKEY, true);
-        $checksum = '';
-        $checksum = base64_encode($encoded);
-        
+
+        /* Calculate the backUrl through which the server will pvide the status of the order. */
+        $backUrl = get_permalink( get_page_by_path( 'twispay-confirmation' ) );
+        $backUrl .= (FALSE == strpos($backUrl, '?')) ? ('?order_id=' . $_GET['order_id'] . '&secure_key=' . $data['cart_hash']) : ('&order_id=' . $_GET['order_id'] . '&secure_key=' . $data['cart_hash']);
+
+        /* Build the data object to be posted to Twispay. */
+        $orderData = [ 'siteId' => $siteID
+                     , 'customer' => $customer
+                     , 'order' => [ 'orderId' => (isset( $_GET['tw_reload'] ) && $_GET['tw_reload']) ? ($data['id'] . '_' . date('YmdHis')) : ($data['id'])
+                                  , 'type' => 'purchase'
+                                  , 'amount' => $data['total']
+                                  , 'currency' => $data['currency']
+                                  , 'items' => $items
+                                  /* , 'tags' => [] */
+                                  /* , 'intervalType' => '' */
+                                  /* , 'intervalValue' => 1 */
+                                  /* , 'trialAmount' => 1 */
+                                  /* , 'firstBillDate' => '' */
+                                  /* , 'level3Type' => '', */
+                                  /* , 'level3Airline' => [ 'ticketNumber' => '' */
+                                  /*                      , 'passengerName' => '' */
+                                  /*                      , 'flightNumber' => '' */
+                                  /*                      , 'departureDate' => '' */
+                                  /*                      , 'departureAirportCode' => '' */
+                                  /*                      , 'arrivalAirportCode' => '' */
+                                  /*                      , 'carrierCode' => '' */
+                                  /*                      , 'travelAgencyCode' => '' */
+                                  /*                      , 'travelAgencyName' => ''] */
+                                  ]
+                     , 'cardTransactionMode' => 'authAndCapture'
+                     /* , 'cardId' => 0 */
+                     , 'invoiceEmail' => ''
+                     , 'backUrl' => $backUrl
+                     /* , 'customData' => [] */
+        ];
+
+        /* Build the HTML form to be posted to Twispay. */
+        $base64JsonRequest = Twispay_TW_Helper_Notify::getBase64JsonRequest($orderData);
+        $base64Checksum = Twispay_TW_Helper_Notify::getBase64Checksum($orderData, $secretKey);
+        $hostName = ($configuration && (1 == $configuration->live_mode)) ? ('https://secure.twispay.com' . '?lang=' . $lang) : ('https://secure-stage.twispay.com' . '?lang=' . $lang);
         ?>
-            <form accept-charset="UTF-8" id="twispay_payment_form" action="<?= $action; ?>" method="POST">
-                <input type="hidden" name="address" value="<?= $inputs['address']; ?>">
-                <input type="hidden" name="amount" value="<?= $inputs['amount']; ?>">
-                <input type="hidden" name="backUrl" value="<?= $inputs['backUrl']; ?>">
-                <input type="hidden" name="cardId" value="<?= $inputs['cardId']; ?>">
-                <input type="hidden" name="cardTransactionMode" value="<?= $inputs['cardTransactionMode']; ?>">
-                <input type="hidden" name="city" value="<?= $inputs['city']; ?>">
-                <input type="hidden" name="country" value="<?= $inputs['country']; ?>">
-                <input type="hidden" name="currency" value="<?= $inputs['currency']; ?>">
-                <input type="hidden" name="customerTags[0]" value="<?= $inputs['customerTags[0]']; ?>">
-                <input type="hidden" name="description" value="<?= $inputs['description']; ?>">
-                <input type="hidden" name="email" value="<?= $inputs['email']; ?>">
-                <input type="hidden" name="firstName" value="<?= $inputs['firstName']; ?>">
-                <input type="hidden" name="identifier" value="<?= $inputs['identifier']; ?>">
-                <input type="hidden" name="invoiceEmail" value="<?= $inputs['invoiceEmail']; ?>">
-                <?php
-                    $i = 0;
-                    foreach ( $items as $key => $item ) {
-                        echo '<input type="hidden" name="item[' . $i . ']" value="' . $item['name'] . '">';
-                        
-                        $i += 1;
-                    }
-                ?>
-                <input type="hidden" name="lastName" value="<?= $inputs['lastName']; ?>">
-                <input type="hidden" name="orderId" value="<?= $inputs['orderId']; ?>">
-                <input type="hidden" name="orderTags[0]" value="<?= $inputs['orderTags[0]']; ?>">
-                <input type="hidden" name="orderType" value="<?= $inputs['orderType']; ?>">
-                <input type="hidden" name="siteId" value="<?= $inputs['siteId']; ?>">
-                
-                <?php
-                    $i = 0;
-                    foreach ( $items as $key => $item ) {
-                        echo '<input type="hidden" name="subTotal[' . $i . ']" value="' . number_format( ( float )$item['subtotal'], 2 ) . '">';
-                        echo '<input type="hidden" name="unitPrice[' . $i . ']" value="' . number_format( number_format( ( float )$item['subtotal'], 2) / number_format( ( float )$item['quantity'], 2 ), 2 ) . '">';
-                        echo '<input type="hidden" name="units[' . $i . ']" value="' . $item['quantity'] . '">';
-                        
-                        $i += 1;
-                    }
-                ?>
-                
-                <input type="hidden" name="zipCode" value="<?= $inputs['zipCode']; ?>">
-                <input type="hidden" name="checksum" value="<?= $checksum; ?>">
+
+            <form action="<?= $hostName; ?>" method="POST" accept-charset="UTF-8" id="twispay_payment_form">
+                <input type="hidden" name="jsonRequest" value="<?= $base64JsonRequest; ?>">
+                <input type="hidden" name="checksum" value="<?= $base64Checksum; ?>">
             </form>
+
             <script>document.getElementById( 'twispay_payment_form' ).submit();</script>
+
         <?php
-    }
-    else {
+    } else {
         echo '<style>.loader {display: none;}</style>';
         die( $tw_lang['twispay_processor_error'] );
     }
-}
-else {
+} else {
     echo '<style>.loader {display: none;}</style>';
     die( $tw_lang['twispay_processor_error'] );
 }

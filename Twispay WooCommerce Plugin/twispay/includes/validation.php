@@ -9,7 +9,7 @@
  * @version  0.0.1
  */
 
-function tw_log( $string = false ) {
+function twispay_tw_log( $string = false ) {
     $log_file = dirname( __FILE__ ) . '/../twispay-log.txt';
     
     if ( ! $string ) {
@@ -22,7 +22,7 @@ function tw_log( $string = false ) {
     @file_put_contents( $log_file, $string . PHP_EOL, FILE_APPEND );
 }
 
-function twispayDecrypt( $encrypted, $apiKey ) {
+function twispay_tw_twispayDecrypt( $encrypted, $apiKey ) {
     $encrypted = ( string )$encrypted;
     
     if ( ! strlen( $encrypted ) ) {
@@ -53,11 +53,11 @@ function twispayDecrypt( $encrypted, $apiKey ) {
     return null;
 }
 
-function getResultStatuses() {
+function twispay_tw_getResultStatuses() {
     return array( 'complete-ok' );
 }
 
-function logTransaction( $data ) {
+function twispay_tw_logTransaction( $data ) {
     global $wpdb;
     global $woocommerce;
     
@@ -69,17 +69,17 @@ function logTransaction( $data ) {
     }
     $checkout_url = $woocommerce->cart->get_checkout_url() . 'order-pay/' . $data['id_cart'] . '/?pay_for_order=true&key=' . $order->get_data()['order_key'] . '&tw_reload=true';
     
-    $already = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "tw_transactions WHERE transactionId = '" . $data['transactionId'] . "'" );
+    $already = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE transactionId = '" . $data['transactionId'] . "'" );
     
     if ( $already ) {
-        $wpdb->query( $wpdb->prepare( "UPDATE " . $wpdb->prefix . "tw_transactions SET status = '" . $data['status'] . "' WHERE transactionId = '%d'", $data['transactionId'] ) );
+        $wpdb->query( $wpdb->prepare( "UPDATE " . $wpdb->prefix . "twispay_tw_transactions SET status = '" . $data['status'] . "' WHERE transactionId = '%d'", $data['transactionId'] ) );
     }
     else {
-        $wpdb->get_results( "INSERT INTO `" . $wpdb->prefix . "tw_transactions` (`status`, `id_cart`, `identifier`, `orderId`, `transactionId`, `customerId`, `cardId`, `checkout_url`) VALUES ('" . $data['status'] . "', '" . $data['id_cart'] . "', '" . $data['identifier'] . "', '" . $data['orderId'] . "', '" . $data['transactionId'] . "', '" . $data['customerId'] . "', '" . $data['cardId'] . "', '" . $checkout_url . "');" );
+        $wpdb->get_results( "INSERT INTO `" . $wpdb->prefix . "twispay_tw_transactions` (`status`, `id_cart`, `identifier`, `orderId`, `transactionId`, `customerId`, `cardId`, `checkout_url`) VALUES ('" . $data['status'] . "', '" . $data['id_cart'] . "', '" . $data['identifier'] . "', '" . $data['orderId'] . "', '" . $data['transactionId'] . "', '" . $data['customerId'] . "', '" . $data['cardId'] . "', '" . $checkout_url . "');" );
     }
 }
 
-function checkValidation( $decrypted, $usingOpenssl = true, $tw_order, $tw_lang ) {
+function twispay_tw_checkValidation( $decrypted, $usingOpenssl = true, $tw_order, $tw_lang ) {
     $json = json_decode( $decrypted );
     $tw_errors = array();
     
@@ -88,7 +88,7 @@ function checkValidation( $decrypted, $usingOpenssl = true, $tw_order, $tw_lang 
     }
     
     if ( $usingOpenssl == false ) {
-        tw_log( $tw_lang['log_s_decrypted'] . $decrypted );
+        twispay_tw_log( $tw_lang['log_s_decrypted'] . $decrypted );
     }
     
     if ( empty( $json->status ) && empty( $json->transactionStatus ) ) {
@@ -109,7 +109,7 @@ function checkValidation( $decrypted, $usingOpenssl = true, $tw_order, $tw_lang 
     
     if ( sizeof( $tw_errors ) ) {
         foreach ( $tw_errors as $err ) {
-            tw_log( $tw_lang['log_general_error'] . $err );
+            twispay_tw_log( $tw_lang['log_general_error'] . $err );
         }
         
         return false;
@@ -123,19 +123,19 @@ function checkValidation( $decrypted, $usingOpenssl = true, $tw_order, $tw_lang 
             'customerId'       => ( int )$json->customerId,
             'cardId'           => ( ! empty( $json->cardId ) ) ? ( int )$json->cardId : 0
         );
-        tw_log( $tw_lang['log_general_response_data'] . json_encode( $data ) );
+        twispay_tw_log( $tw_lang['log_general_response_data'] . json_encode( $data ) );
         
-        if ( ! in_array( $data['status'], getResultStatuses() ) ) {
-            tw_log( sprintf( $tw_lang['log_wrong_status'], $data['status'] ) );
+        if ( ! in_array( $data['status'], twispay_tw_getResultStatuses() ) ) {
+            twispay_tw_log( sprintf( $tw_lang['log_wrong_status'], $data['status'] ) );
             
-            logTransaction( $data );
+            twispay_tw_logTransaction( $data );
             
             return '0x1ds';
         }
-        tw_log( $tw_lang['log_status_complete'] );
+        twispay_tw_log( $tw_lang['log_status_complete'] );
         
-        logTransaction( $data );
-        tw_log( sprintf( $tw_lang['log_validating_complete'], $data['id_cart'] ) );
+        twispay_tw_logTransaction( $data );
+        twispay_tw_log( sprintf( $tw_lang['log_validating_complete'], $data['id_cart'] ) );
         
         return true;
     }
@@ -157,7 +157,7 @@ if ( isset( $_POST['opensslResult'] ) && $_POST['opensslResult'] ) {
     // Get configuration from database
     global $wpdb;
     $apiKey = '';
-    $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "tw_configuration" );
+    $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
     
     if ( $configuration ) {
         if ( $configuration->live_mode == 1 ) {
@@ -169,7 +169,7 @@ if ( isset( $_POST['opensslResult'] ) && $_POST['opensslResult'] ) {
     }
     
     if ( $apiKey ) {
-        $decrypted = twispayDecrypt( $_POST['opensslResult'], $apiKey );
+        $decrypted = twispay_tw_twispayDecrypt( $_POST['opensslResult'], $apiKey );
         $json = json_decode( $decrypted );
         
         $order = '';
@@ -183,7 +183,7 @@ if ( isset( $_POST['opensslResult'] ) && $_POST['opensslResult'] ) {
         
         if ( $order ) {
             if ( $decrypted ) {
-                $orderValidation = checkValidation( $decrypted, true, $order->get_data(), $tw_lang );
+                $orderValidation = twispay_tw_checkValidation( $decrypted, true, $order->get_data(), $tw_lang );
                 
                 if ($orderValidation == '0x1ds') {
                     $json = json_decode( $decrypted );
@@ -211,9 +211,9 @@ if ( isset( $_POST['opensslResult'] ) && $_POST['opensslResult'] ) {
                 }
             }
             else {
-                tw_log( $tw_lang['log_decryption_error'] );
-                tw_log( $tw_lang['log_openssl'] . $_GET['opensslResult'] );
-                tw_log( $tw_lang['log_decrypted_string'] . $decrypted );
+                twispay_tw_log( $tw_lang['log_decryption_error'] );
+                twispay_tw_log( $tw_lang['log_openssl'] . $_GET['opensslResult'] );
+                twispay_tw_log( $tw_lang['log_decrypted_string'] . $decrypted );
                 die( 'ERROR' );
             }
         }

@@ -28,7 +28,7 @@
  * @public
  * @return void
  */
-function tw_p_edit_general_configuration( $request ) {
+function tw_twispay_p_edit_general_configuration( $request ) {
     $live_mode = $request['live_mode'];
     $staging_site_id = $request['staging_site_id'];
     $staging_private_key = $request['staging_private_key'];
@@ -46,12 +46,12 @@ function tw_p_edit_general_configuration( $request ) {
     global $wpdb;
     
     // Check if the Configuration row exist into Database
-    $configuration = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "tw_configuration" );
+    $configuration = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
     
     if ( $configuration ) {
-        // Edit the Configuration into Database ( tw_configuration table )
+        // Edit the Configuration into Database ( twispay_tw_configuration table )
         $wpdb->update( 
-            $wpdb->prefix . 'tw_configuration', 
+            $wpdb->prefix . 'twispay_tw_configuration', 
             array( 
                 'live_mode'       => $live_mode,
                 'staging_id'      => $staging_site_id,
@@ -68,14 +68,14 @@ function tw_p_edit_general_configuration( $request ) {
         );
     }
     else {
-        // If by any chance the configuration row does not exist, add default one immediately. ( tw_configuration table )
-        $wpdb->insert( $wpdb->prefix . 'tw_configuration', array(
+        // If by any chance the configuration row does not exist, add default one immediately. ( twispay_tw_configuration table )
+        $wpdb->insert( $wpdb->prefix . 'twispay_tw_configuration', array(
             'live_mode'     => 0
         ) );
         
-        // Edit the Configuration into Database ( tw_configuration table )
+        // Edit the Configuration into Database ( twispay_tw_configuration table )
         $wpdb->update( 
-            $wpdb->prefix . 'tw_configuration', 
+            $wpdb->prefix . 'twispay_tw_configuration', 
             array( 
                 'live_mode'       => $live_mode,
                 'staging_id'      => $staging_site_id,
@@ -95,4 +95,4 @@ function tw_p_edit_general_configuration( $request ) {
     // Redirect to the Configuration Page
     wp_safe_redirect( admin_url( 'admin.php?page=twispay&notice=edit_configuration' ) );
 }
-add_action( 'tw_edit_general_configuration', 'tw_p_edit_general_configuration' );
+add_action( 'tw_edit_general_configuration', 'tw_twispay_p_edit_general_configuration' );

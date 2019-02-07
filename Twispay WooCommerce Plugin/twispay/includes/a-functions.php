@@ -16,12 +16,12 @@
  * @public
  * @return string Html with all Live Mode options
  */
-function tw_get_live_mode( $tw_lang ) {
+function twispay_tw_get_live_mode( $tw_lang ) {
     // Wordpress database refference
     global $wpdb;
     $html = '';
 
-    $live_mode = $wpdb->get_results( "SELECT live_mode FROM " . $wpdb->prefix . "tw_configuration" );
+    $live_mode = $wpdb->get_results( "SELECT live_mode FROM " . $wpdb->prefix . "twispay_tw_configuration" );
     
     if ( $live_mode ) {
         $html .= '<select name="live_mode" id="live_mode">';
@@ -43,7 +43,7 @@ function tw_get_live_mode( $tw_lang ) {
     }
     else {
         // If by any chance the configuration row does not exist, add default one immediately. ( tw_configuration table )
-        $wpdb->insert( $wpdb->prefix . 'tw_configuration', array(
+        $wpdb->insert( $wpdb->prefix . 'twispay_tw_configuration', array(
             'live_mode'     => 0
         ) );
         
@@ -63,12 +63,12 @@ function tw_get_live_mode( $tw_lang ) {
  * @public
  * @return string Html with all Suppress Email options
  */
-function tw_get_suppress_email( $tw_lang ) {
+function twispay_tw_get_suppress_email( $tw_lang ) {
     // Wordpress database refference
     global $wpdb;
     $html = '';
 
-    $suppress_email = $wpdb->get_results( "SELECT suppress_email FROM " . $wpdb->prefix . "tw_configuration" );
+    $suppress_email = $wpdb->get_results( "SELECT suppress_email FROM " . $wpdb->prefix . "twispay_tw_configuration" );
     
     if ( $suppress_email ) {
         $html .= '<select name="suppress_email" id="suppress_email">';
@@ -96,12 +96,12 @@ function tw_get_suppress_email( $tw_lang ) {
  * @public
  * @return string Html with all Wordpress Pages options
  */
-function tw_get_wp_pages( $tw_lang ) {
+function twispay_tw_get_wp_pages( $tw_lang ) {
     // Wordpress database refference
     global $wpdb;
     $html = '';
 
-    $configuration = $wpdb->get_results( "SELECT thankyou_page FROM " . $wpdb->prefix . "tw_configuration" );
+    $configuration = $wpdb->get_results( "SELECT thankyou_page FROM " . $wpdb->prefix . "twispay_tw_configuration" );
     $wp_pages = $wpdb->get_results( "SELECT post_title, guid FROM " . $wpdb->prefix . "posts WHERE post_type = 'page' AND post_status = 'publish' " );
     
     if ( $wp_pages ) {
@@ -135,11 +135,11 @@ function tw_get_wp_pages( $tw_lang ) {
  * @public
  * @return string contact_email
  */
-function tw_get_contact_email_o() {
+function twispay_tw_get_contact_email_o() {
     // Wordpress database refference
     global $wpdb;
     
-    $contact_email = $wpdb->get_results( "SELECT contact_email FROM " . $wpdb->prefix . "tw_configuration" );
+    $contact_email = $wpdb->get_results( "SELECT contact_email FROM " . $wpdb->prefix . "twispay_tw_configuration" );
     
     if ( $contact_email ) {
         return $contact_email[0]->contact_email;
@@ -155,11 +155,11 @@ function tw_get_contact_email_o() {
  * @public
  * @return string staging_id
  */
-function tw_get_staging_site_id() {
+function twispay_tw_get_staging_site_id() {
     // Wordpress database refference
     global $wpdb;
     
-    $staging_id = $wpdb->get_results( "SELECT staging_id FROM " . $wpdb->prefix . "tw_configuration" );
+    $staging_id = $wpdb->get_results( "SELECT staging_id FROM " . $wpdb->prefix . "twispay_tw_configuration" );
     
     if ( $staging_id ) {
         return $staging_id[0]->staging_id;
@@ -175,11 +175,11 @@ function tw_get_staging_site_id() {
  * @public
  * @return string staging_key
  */
-function tw_get_staging_private_key() {
+function twispay_tw_get_staging_private_key() {
     // Wordpress database refference
     global $wpdb;
     
-    $staging_key = $wpdb->get_results( "SELECT staging_key FROM " . $wpdb->prefix . "tw_configuration" );
+    $staging_key = $wpdb->get_results( "SELECT staging_key FROM " . $wpdb->prefix . "twispay_tw_configuration" );
     
     if ( $staging_key ) {
         return $staging_key[0]->staging_key;
@@ -195,11 +195,11 @@ function tw_get_staging_private_key() {
  * @public
  * @return string live_id
  */
-function tw_get_live_site_id() {
+function twispay_tw_get_live_site_id() {
     // Wordpress database refference
     global $wpdb;
     
-    $live_id = $wpdb->get_results( "SELECT live_id FROM " . $wpdb->prefix . "tw_configuration" );
+    $live_id = $wpdb->get_results( "SELECT live_id FROM " . $wpdb->prefix . "twispay_tw_configuration" );
     
     if ( $live_id ) {
         return $live_id[0]->live_id;
@@ -215,11 +215,11 @@ function tw_get_live_site_id() {
  * @public
  * @return string live_key
  */
-function tw_get_live_private_key() {
+function twispay_tw_get_live_private_key() {
     // Wordpress database refference
     global $wpdb;
     
-    $live_key = $wpdb->get_results( "SELECT live_key FROM " . $wpdb->prefix . "tw_configuration" );
+    $live_key = $wpdb->get_results( "SELECT live_key FROM " . $wpdb->prefix . "twispay_tw_configuration" );
     
     if ( $live_key ) {
         return $live_key[0]->live_key;
