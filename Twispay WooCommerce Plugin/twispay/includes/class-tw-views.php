@@ -42,7 +42,7 @@ class Twispay_TW_Views {
      * @return string Individual view
      */	
     public function twispay_tw_render_view( $slug ) {
-	include TWISPAY_PLUGIN_DIR . 'views/' . $slug . '.php';
+	      include TWISPAY_PLUGIN_DIR . 'views/' . $slug . '.php';
     }
 }
 

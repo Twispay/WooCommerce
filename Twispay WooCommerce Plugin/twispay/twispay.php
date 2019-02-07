@@ -99,10 +99,10 @@ final class Twispay {
      * @return void
      */
     private function twispay_tw_set_objects() {
-	if ( get_option( 'twispay_tw_installed' ) ) {
-	    self::$__instance->payment_confirmation = new Twispay_TW_Payment_Confirmation;
-	    self::$__instance->views = new Twispay_TW_Views;
-	}
+      if ( get_option( 'twispay_tw_installed' ) ) {
+          self::$__instance->payment_confirmation = new Twispay_TW_Payment_Confirmation;
+          self::$__instance->views = new Twispay_TW_Views;
+      }
     }
 
     /**

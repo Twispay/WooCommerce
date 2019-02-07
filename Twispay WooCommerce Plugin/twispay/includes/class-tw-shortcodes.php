@@ -42,7 +42,7 @@ class Twispay_TW_Shortcodes {
      * @return string Payment Confirmation Form
      */	
     public function twispay_tw_payment_confirmation_handler( $atts ) {
-	return TW()->payment_confirmation->twispay_tw_payment_confirmation_form();
+	    return TW()->payment_confirmation->twispay_tw_payment_confirmation_form();
     }
 }
 
