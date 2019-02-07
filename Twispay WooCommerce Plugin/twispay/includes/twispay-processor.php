@@ -39,8 +39,8 @@
 $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
 require_once( $parse_uri[0] . 'wp-load.php' );
 
-/* Require the "Encoder" class. */
-require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Encoder.php' );
+/* Require the "Twispay_TW_Helper_Notify" class. */
+require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Helper_Notify.php' );
 
 
 /* Load languages. */
@@ -49,7 +49,7 @@ $lang = $lang[0];
 if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
     require( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' );
 } else {
-    require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
+   require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
 }
 
 
@@ -83,12 +83,12 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
                 $siteID = $configuration->staging_id;
                 $secretKey = $configuration->staging_key;
             } else {
-              /* TODO: Error? */
+                /* TODO: Error? */
             }
         }
 
         /* Extract the customer details. */
-        $customer = [ 'identifier' => (0 == $data['customer_id']) ? ('_0_' . $_GET['order_id'] . $order->get_date_created()) : ('_' . $data['customer_id'])
+        $customer = [ 'identifier' => (0 == $data['customer_id']) ? ('_' . $_GET['order_id'] . $order->get_date_created()) : ('_' . $data['customer_id'])
                     , 'firstName' => ($data['billing']['first_name']) ? ($data['billing']['first_name']) : ($data['shipping']['first_name'])
                     , 'lastName' => ($data['billing']['last_name']) ? ($data['billing']['last_name']) : ($data['shipping']['last_name'])
                     , 'country' => ($data['billing']['country']) ? ($data['billing']['country']) : ($data['shipping']['country'])
@@ -96,7 +96,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
                     , 'city' => ($data['billing']['city']) ? ($data['billing']['city']) : ($data['shipping']['city'])
                     , 'address' => ($data['billing']['address_1']) ? ($data['billing']['address_1']/* . ' ' . $data['billing']['address_2']*/) : ($data['shipping']['address_1']/* . ' ' . $data['shipping']['address_2']*/)
                     , 'zipCode' => ($data['billing']['postcode']) ? ($data['billing']['postcode']) : ($data['shipping']['postcode'])
-                    /* , 'phone' => $data['billing']['phone'] */
+                    , 'phone' => $data['billing']['phone']
                     , 'email' => $data['billing']['email']
                     /* , 'tags' => [] */
                     ];
@@ -104,20 +104,24 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         /* Extract the items details. */
         $items = array();
         foreach ( $order->get_items() as $item ) {
-          $items[] = [ 'item' => $item['name']
-                    , 'units' =>  $item['quantity']
-                    , 'unitPrice' => number_format( number_format( ( float )$item['subtotal'], 2) / number_format( ( float )$item['quantity'], 2 ), 2 )
-                    /* , 'type' => '' */
-                    /* , 'code' => '' */
-                    /* , 'vatPercent' => '' */
-                    /* , 'itemDescription' => '' */
-                    ];
+            $items[] = [ 'item' => $item['name']
+                       , 'units' =>  $item['quantity']
+                       , 'unitPrice' => number_format( number_format( ( float )$item['subtotal'], 2) / number_format( ( float )$item['quantity'], 2 ), 2 )
+                       /* , 'type' => '' */
+                       /* , 'code' => '' */
+                       /* , 'vatPercent' => '' */
+                       /* , 'itemDescription' => '' */
+                       ];
         }
+
+        /* Calculate the backUrl through which the server will pvide the status of the order. */
+        $backUrl = get_permalink( get_page_by_path( 'twispay-confirmation' ) );
+        $backUrl .= (FALSE == strpos($backUrl, '?')) ? ('?order_id=' . $_GET['order_id'] . '&secure_key=' . $data['cart_hash']) : ('&order_id=' . $_GET['order_id'] . '&secure_key=' . $data['cart_hash']);
 
         /* Build the data object to be posted to Twispay. */
         $orderData = [ 'siteId' => $siteID
-                    , 'customer' => $customer
-                    , 'order' => [ 'orderId' => (isset( $_GET['tw_reload'] ) && $_GET['tw_reload']) ? ($data['id'] . '_' . time()) : ($data['id'])
+                     , 'customer' => $customer
+                     , 'order' => [ 'orderId' => (isset( $_GET['tw_reload'] ) && $_GET['tw_reload']) ? ($data['id'] . '_' . time()) : ($data['id'])
                                   , 'type' => 'purchase'
                                   , 'amount' => $data['total']
                                   , 'currency' => $data['currency']
@@ -138,22 +142,22 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
                                   /*                      , 'travelAgencyCode' => '' */
                                   /*                      , 'travelAgencyName' => ''] */
                                   ]
-                    , 'cardTransactionMode' => 'authAndCapture'
-                    /* , 'cardId' => 0 */
-                    , 'invoiceEmail' => ''
-                    , 'backUrl' => get_home_url() . '/twispay-confirmation?order_id=' . $_GET['order_id'] . '&secure_key=' . $data['cart_hash']
-                    /* , 'customData' => [] */
+                     , 'cardTransactionMode' => 'authAndCapture'
+                     /* , 'cardId' => 0 */
+                     , 'invoiceEmail' => ''
+                     , 'backUrl' => $backUrl
+                     /* , 'customData' => [] */
         ];
 
         /* Build the HTML form to be posted to Twispay. */
-        $base64JsonRequest = Encoder::getBase64JsonRequest($orderData);
-        $base64Checksum = Encoder::getBase64Checksum($orderData, $secretKey);
+        $base64JsonRequest = Twispay_TW_Helper_Notify::getBase64JsonRequest($orderData);
+        $base64Checksum = Twispay_TW_Helper_Notify::getBase64Checksum($orderData, $secretKey);
         $hostName = ($configuration && (1 == $configuration->live_mode)) ? ('https://secure.twispay.com' . '?lang=' . $lang) : ('https://secure-stage.twispay.com' . '?lang=' . $lang);
         ?>
 
             <form action="<?= $hostName; ?>" method="POST" accept-charset="UTF-8" id="twispay_payment_form">
-              <input type="hidden" name="jsonRequest" value="<?= $base64JsonRequest; ?>">
-              <input type="hidden" name="checksum" value="<?= $base64Checksum; ?>">
+                <input type="hidden" name="jsonRequest" value="<?= $base64JsonRequest; ?>">
+                <input type="hidden" name="checksum" value="<?= $base64Checksum; ?>">
             </form>
 
             <script>document.getElementById( 'twispay_payment_form' ).submit();</script>
