@@ -55,16 +55,10 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
 
 /* Exit if no order is placed */
 if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
-    global $woocommerce;
-    $order = '';
+    /* Extract the WooCommerce order. */
+    $order = wc_get_order($_GET['order_id']);
 
-    try {
-        $order = new WC_Order( $_GET['order_id'] );
-    }
-    catch( Exception $e ) {}
-
-
-    if ( $order ) {
+    if ( FALSE != $order ) {
         /* Get all information for the Twispay Payment form. */
         $data = $order->get_data();
 
@@ -116,7 +110,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
 
         /* Calculate the backUrl through which the server will pvide the status of the order. */
         $backUrl = get_permalink( get_page_by_path( 'twispay-confirmation' ) );
-        $backUrl .= (FALSE == strpos($backUrl, '?')) ? ('?order_id=' . $_GET['order_id'] . '&secure_key=' . $data['cart_hash']) : ('&order_id=' . $_GET['order_id'] . '&secure_key=' . $data['cart_hash']);
+        $backUrl .= (FALSE == strpos($backUrl, '?')) ? ('?secure_key=' . $data['cart_hash']) : ('&secure_key=' . $data['cart_hash']);
 
         /* Build the data object to be posted to Twispay. */
         $orderData = [ 'siteId' => $siteID
