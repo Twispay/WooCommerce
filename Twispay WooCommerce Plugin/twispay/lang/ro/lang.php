@@ -9,7 +9,7 @@
  * @version  1.0.1
  */
 
-// Configuration panel from Administrator
+/* Configuration panel from Administrator */
 $tw_lang['no_woocommerce_f'] = 'Twispay necesită pluginul WooCommerce pentru a funcționa normal. Activează-l sau instalează-l de';
 $tw_lang['no_woocommerce_s'] = 'aici';
 $tw_lang['configuration_title'] = 'Configurație';
@@ -39,7 +39,8 @@ $tw_lang['get_all_wordpress_pages_default'] = 'Mod implicit';
 $tw_lang['contact_email_o'] = 'E-mail de contact (Opțional)';
 $tw_lang['contact_email_o_desc'] = 'Acest e-mail va fi folosit pe pagina de eroare de plată.';
 
-// Transaction list from Administrator
+
+/* Transaction list from Administrator */
 $tw_lang['transaction_title'] = 'Lista de tranzacții';
 $tw_lang['transaction_list_search_title'] = 'Caută comandă';
 $tw_lang['transaction_list_all_views'] = 'Toate';
@@ -61,18 +62,21 @@ $tw_lang['transaction_success_recurring'] = 'Comandă recurentă procesată cu s
 $tw_lang['transaction_list_recurring_ptitle'] = 'Anulează o comandă recurentă';
 $tw_lang['transaction_list_recurring_subtitle'] = 'Următoarea plată recurentă va fi anulată:';
 
-// Transaction log from Administrator
+
+/* Transaction log from Administrator */
 $tw_lang['transaction_log_title'] = 'Jurnal de tranzacții';
 $tw_lang['transaction_log_no_log'] = 'Nicio intrare înregistrată încă';
 $tw_lang['transaction_log_subtitle'] = 'Jurnal de tranzacții în formă brută';
 
-// Administrator Dashboard left-side menu
+
+/* Administrator Dashboard left-side menu */
 $tw_lang['menu_main_title'] = 'Twispay';
 $tw_lang['menu_configuration_tab'] = 'Configurație';
 $tw_lang['menu_transaction_tab'] = 'Lista tranzacțiilor';
 $tw_lang['menu_transaction_log_tab'] = 'Jurnal de tranzacții';
 
-// Woocommerce settings Twispay tab
+
+/* Woocommerce settings Twispay tab */
 $tw_lang['ws_title'] = 'Twispay';
 $tw_lang['ws_description'] = 'Invită-ți clienții să folosească gateway-ul de plată Twispay.';
 $tw_lang['ws_enable_disable_title'] = 'Activează/Dezactivează';
@@ -88,38 +92,56 @@ $tw_lang['ws_enable_methods_placeholder'] = 'Selectează căile de expediere';
 $tw_lang['ws_vorder_title'] = 'Acceptă comenzile virtuale';
 $tw_lang['ws_vorder_desc'] = 'Acceptă Twispay în cazul comenzilor virtuale';
 
-// Order Recieved Confirmation title
+
+/* Order Recieved Confirmation title */
 $tw_lang['order_confirmation_title'] = 'Mulțumim. Tranzacția ta a fost aprobată.';
 
-// Twispay Processor( Redirect page to Twispay )
+
+/* Twispay Processor( Redirect page to Twispay ) */
 $tw_lang['twispay_processor_error'] = 'Nu ai permisiunea de a accesa acest fișier.';
 
-// Validation LOG insertor
-$tw_lang['log_s_decrypted'] = '[RESPONSE] string decriptat: ';
-$tw_lang['log_empty_external'] = 'externalOrderId gol';
-$tw_lang['log_order_already_validated'] = '[RESPONSE-ERROR] Comandă deja validată, ID-ul comenzii %s';
-$tw_lang['log_empty_status'] = 'Status nul';
-$tw_lang['log_empty_identifier'] = 'Identificator nul';
-$tw_lang['log_empty_transaction'] = 'TransactionID nul';
-$tw_lang['log_general_error'] = '[RESPONSE-ERROR] ';
-$tw_lang['log_general_response_data'] = '[RESPONSE] Data: ';
-$tw_lang['log_wrong_status'] = '[RESPONSE-ERROR] Status greșit (%s)';
-$tw_lang['log_status_complete'] = '[RESPONSE] Status complet-ok';
-$tw_lang['log_validating_complete'] = '[RESPONSE] Validarea comenzii: %s';
-$tw_lang['log_decryption_error'] = '[ERROR] Decriptarea nu a funcționat.';
-$tw_lang['log_openssl'] = 'opensslResult: ';
-$tw_lang['log_decrypted_string'] = 'string decriptat: ';
 
-// Wordpress Administrator Order Notice
+/* Validation LOG insertor */
+$tw_lang['log_ok_decrypted_string'] = '[RESPONSE]: string decriptat: ';
+$tw_lang['log_ok_response_data'] = '[RESPONSE]: Data: ';
+$tw_lang['log_ok_status_complete'] = '[RESPONSE]: Status complet-ok';
+$tw_lang['log_ok_status_refund'] = '[RESPONSE]: Status refund-ok pentru comanda cu ID-ul: ';
+$tw_lang['log_ok_status_failed'] = '[RESPONSE]: Status failed pentru comanda cu ID-ul: ';
+$tw_lang['log_ok_status_hold'] = '[RESPONSE]: Status on-hold pentru comanda cu ID-ul: ';
+$tw_lang['log_ok_status_uncertain'] = '[RESPONSE]: Status uncertain pentru comanda cu ID-ul: ';
+$tw_lang['log_ok_validating_complete'] = '[RESPONSE]: Validare cu succes pentru comanda cu ID-ul: %s';
+
+$tw_lang['log_error_validating_failed'] = '[RESPONSE-ERROR]: Validare esuată pentru comanda cu ID-ul: ';
+$tw_lang['log_error_decryption_error'] = '[RESPONSE-ERROR]: Decriptarea nu a funcționat.';
+$tw_lang['log_error_invalid_order'] = '[RESPONSE-ERROR]: Comanda nu există.';
+$tw_lang['log_error_wrong_status'] = '[RESPONSE-ERROR]: Status greșit: ';
+$tw_lang['log_error_empty_status'] = '[RESPONSE-ERROR]: Status nul';
+$tw_lang['log_error_empty_identifier'] = '[RESPONSE-ERROR]: Identificator nul';
+$tw_lang['log_error_empty_external'] = '[RESPONSE-ERROR]: ExternalOrderId gol';
+$tw_lang['log_error_empty_transaction'] = '[RESPONSE-ERROR]: TransactionID nul';
+$tw_lang['log_error_empty_response'] = ' [RESPONSE-ERROR]: Răspunsul primit este nul.';
+$tw_lang['log_error_invalid_private'] = '[RESPONSE-ERROR]: Cheie privată nevalidă.';
+$tw_lang['log_error_invalid_key'] = '[RESPONSE-ERROR]: Cheie de identificare a comenzii nevalidă.';
+$tw_lang['log_error_openssl'] = '[RESPONSE-ERROR]: opensslResult: ';
+$tw_lang['log_error_decrypted_string'] = '[RESPONSE-ERROR]: string decriptat: ';
+
+
+/* Wordpress Administrator Order Notice */
 $tw_lang['wa_order_status_notice'] = 'Plata Twispay a fost finalizată cu succes';
 $tw_lang['wa_order_refunded_notice'] = 'Managerul site-ului a apăsat cu succes butonul de restituire';
 $tw_lang['wa_order_cancelled_notice'] = 'Managerul site-ului a apăsat cu succes butonul de anulare';
+$tw_lang['wa_order_failed_notice'] = 'Plata Twispay a fost finalizată cu eroare';
+$tw_lang['wa_order_hold_notice'] = 'Plata Twispay este in asteptare';
 
-// Others
+
+/* Others */
 $tw_lang['general_error_title'] = 'S-a petrecut o eroare:';
-$tw_lang['general_error_desc_f'] = 'Plata nu a putut fi procesată. Te rog [try again] sau';
-$tw_lang['general_error_desc_try_again'] = 'încearcă din nou';
-$tw_lang['general_error_desc_s'] = 'contactează administratorul site-ului';
-$tw_lang['general_error_invalid_key'] = 'Plata nu a putut fi procesată. Cheie de siguranță nevalidă.';
-$tw_lang['general_error_invalid_order'] = 'Plata nu a putut fi procesată. Comanda nu există.';
-$tw_lang['general_error_invalid_private'] = 'Plata nu a putut fi procesată. Cheie privată nevalidă.';
+$tw_lang['general_error_desc_f'] = 'Plata nu a putut fi procesată. Te rog';
+$tw_lang['general_error_desc_try_again'] = ' încearcă din nou';
+$tw_lang['general_error_desc_or'] = ' sau';
+$tw_lang['general_error_desc_contact'] = ' contactează';
+$tw_lang['general_error_desc_s'] = ' administratorul site-ului.';
+$tw_lang['general_error_hold_notice'] = ' Plata este in asteptare.';
+$tw_lang['general_error_invalid_key'] = ' Cheie de siguranță nevalidă.';
+$tw_lang['general_error_invalid_order'] = ' Comanda nu există.';
+$tw_lang['general_error_invalid_private'] = ' Cheie privată nevalidă.';
