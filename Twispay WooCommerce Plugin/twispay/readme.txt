@@ -33,3 +33,5 @@ Alternatively, you can check out our [installation guide](https://twis.li/2ueQ6R
 * Integration with Twispay's Secure Hosted Payment Page
 * Listening URL which accepts the server’s Instant Payment Notifications
 * Replaced FORM used for server notification with JSON
+* Added new log, general error and admin messages
+* Reimplemented the server response handling to process all the possible response statuses
