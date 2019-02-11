@@ -27,6 +27,9 @@ Alternatively, you can check out our [installation guide](https://twis.li/2ueQ6R
 
 == Changelog ==
  
+= 1.0.3 =
+* Updated the way parameters are sent to address a bug that was failing transactions when names had special characters
+
 = 0.0.1 =
 * Initial Plugin version
 * Merchant config interface
