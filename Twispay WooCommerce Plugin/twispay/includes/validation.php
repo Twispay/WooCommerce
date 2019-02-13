@@ -9,221 +9,127 @@
  * @version  0.0.1
  */
 
-function twispay_tw_log( $string = false ) {
-    $log_file = dirname( __FILE__ ) . '/../twispay-log.txt';
-    
-    if ( ! $string ) {
-        $string = PHP_EOL . PHP_EOL;
-    }
-    else {
-        $string = "[" . date( 'Y-m-d H:i:s' ) . "] " . $string;
-    }
-    
-    @file_put_contents( $log_file, $string . PHP_EOL, FILE_APPEND );
+$parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
+require_once( $parse_uri[0] . 'wp-load.php' );
+
+/* Load languages */
+$lang = explode( '-', get_bloginfo( 'language' ) )[0];
+if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ){
+    require( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' );
+} else {
+    require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
 }
 
-function twispay_tw_twispayDecrypt( $encrypted, $apiKey ) {
-    $encrypted = ( string )$encrypted;
-    
-    if ( ! strlen( $encrypted ) ) {
-        return null;
-    }
-    
-    if ( strpos( $encrypted, ',' ) !== false ) {
-        $encryptedParts = explode( ',', $encrypted, 2 );
-        $iv = base64_decode( $encryptedParts[0] );
-        if ( false === $iv ) {
-            return false;
-        }
-        
-        $encrypted = base64_decode( $encryptedParts[1] );
-        if ( false === $encrypted ) {
-            return false;
-        }
-        
-        $decrypted = openssl_decrypt( $encrypted, 'aes-256-cbc', $apiKey, OPENSSL_RAW_DATA, $iv );
-        
-        if ( false === $decrypted ) {
-            return false;
-        }
-        
-        return $decrypted;
-    }
-    
-    return null;
+/* Require the "Twispay_TW_Helper_Response" class. */
+require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Helper_Response.php' );
+
+
+/* Check if the POST is corrupted: Doesn't contain the 'opensslResult' and the 'result' fields. */
+if( (FALSE == isset($_POST['opensslResult'])) && (FALSE == isset($_POST['result'])) ) {
+    Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_empty_response']);
+    exit();
 }
 
-function twispay_tw_getResultStatuses() {
-    return array( 'complete-ok' );
-}
 
-function twispay_tw_logTransaction( $data ) {
-    global $wpdb;
-    global $woocommerce;
-    
-    try {
-        $order = new WC_Order( $data['id_cart'] );
-    }
-    catch( Exception $e ) {
-        
-    }
-    $checkout_url = $woocommerce->cart->get_checkout_url() . 'order-pay/' . $data['id_cart'] . '/?pay_for_order=true&key=' . $order->get_data()['order_key'] . '&tw_reload=true';
-    
-    $already = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE transactionId = '" . $data['transactionId'] . "'" );
-    
-    if ( $already ) {
-        $wpdb->query( $wpdb->prepare( "UPDATE " . $wpdb->prefix . "twispay_tw_transactions SET status = '" . $data['status'] . "' WHERE transactionId = '%d'", $data['transactionId'] ) );
-    }
-    else {
-        $wpdb->get_results( "INSERT INTO `" . $wpdb->prefix . "twispay_tw_transactions` (`status`, `id_cart`, `identifier`, `orderId`, `transactionId`, `customerId`, `cardId`, `checkout_url`) VALUES ('" . $data['status'] . "', '" . $data['id_cart'] . "', '" . $data['identifier'] . "', '" . $data['orderId'] . "', '" . $data['transactionId'] . "', '" . $data['customerId'] . "', '" . $data['cardId'] . "', '" . $checkout_url . "');" );
-    }
-}
+/* Get configuration from database. */
+global $wpdb;
+$configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
 
-function twispay_tw_checkValidation( $decrypted, $usingOpenssl = true, $tw_order, $tw_lang ) {
-    $json = json_decode( $decrypted );
-    $tw_errors = array();
-    
-    if ( ! $json ) {
-        return false;
-    }
-    
-    if ( $usingOpenssl == false ) {
-        twispay_tw_log( $tw_lang['log_s_decrypted'] . $decrypted );
-    }
-    
-    if ( empty( $json->status ) && empty( $json->transactionStatus ) ) {
-        $tw_errors[] = $tw_lang['log_empty_status'];
-    }
-     
-    if ( empty( $json->identifier ) ) {
-        $tw_errors[] = $tw_lang['log_empty_identifier'];
-    }
-    
-    if ( empty( $json->externalOrderId ) ) {
-        $tw_errors[] = $tw_lang['log_empty_external'];
-    }
-    
-    if ( empty( $json->transactionId ) ) {
-        $tw_errors[] = $tw_lang['log_empty_transaction'];
-    }
-    
-    if ( sizeof( $tw_errors ) ) {
-        foreach ( $tw_errors as $err ) {
-            twispay_tw_log( $tw_lang['log_general_error'] . $err );
-        }
-        
-        return false;
+
+$secretKey = '';
+if ( $configuration ) {
+    if ( 1 == $configuration->live_mode ) {
+        $secretKey = $configuration->live_key;
+    } else if ( 0 == $configuration->live_mode ) {
+        $secretKey = $configuration->staging_key;
     } else {
-        $data = array(
-            'id_cart'          => explode( '_', $json->externalOrderId )[0],
-            'status'           => ( empty( $json->status ) ) ? $json->transactionStatus : $json->status,
-            'identifier'       => $json->identifier,
-            'orderId'          => ( int )$json->orderId,
-            'transactionId'    => ( int )$json->transactionId,
-            'customerId'       => ( int )$json->customerId,
-            'cardId'           => ( ! empty( $json->cardId ) ) ? ( int )$json->cardId : 0
-        );
-        twispay_tw_log( $tw_lang['log_general_response_data'] . json_encode( $data ) );
-        
-        if ( ! in_array( $data['status'], twispay_tw_getResultStatuses() ) ) {
-            twispay_tw_log( sprintf( $tw_lang['log_wrong_status'], $data['status'] ) );
-            
-            twispay_tw_logTransaction( $data );
-            
-            return '0x1ds';
-        }
-        twispay_tw_log( $tw_lang['log_status_complete'] );
-        
-        twispay_tw_logTransaction( $data );
-        twispay_tw_log( sprintf( $tw_lang['log_validating_complete'], $data['id_cart'] ) );
-        
-        return true;
+        /* TODO: Error? */
     }
 }
 
-if ( isset( $_POST['opensslResult'] ) && $_POST['opensslResult'] ) {
-    $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
-    require_once( $parse_uri[0] . 'wp-load.php' );
-    
-    // Load languages
-    $lang = explode( '-', get_bloginfo( 'language' ) );
-    $lang = $lang[0];
-    if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
-        require( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' );
-    } else {
-        require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
-    }
-    
-    // Get configuration from database
-    global $wpdb;
-    $apiKey = '';
-    $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
-    
-    if ( $configuration ) {
-        if ( $configuration->live_mode == 1 ) {
-            $apiKey = $configuration->live_key;
-        }
-        else if ( $configuration->live_mode == 0 ) {
-            $apiKey = $configuration->staging_key;
-        }
-    }
-    
-    if ( $apiKey ) {
-        $decrypted = twispay_tw_twispayDecrypt( $_POST['opensslResult'], $apiKey );
-        $json = json_decode( $decrypted );
-        
-        $order = '';
-    
-        try {
-            $order = new WC_Order( explode( '_', $json->externalOrderId )[0] );
-        }
-        catch( Exception $e ) {
-            
-        }
-        
-        if ( $order ) {
-            if ( $decrypted ) {
-                $orderValidation = twispay_tw_checkValidation( $decrypted, true, $order->get_data(), $tw_lang );
-                
-                if ($orderValidation == '0x1ds') {
-                    $json = json_decode( $decrypted );
-                    $status = ( empty( $json->status ) ) ? $json->transactionStatus : $json->status;
-                    
-                    if ( $status == 'refund-ok' ) {
-                        // Mark order as refunded
-                        $order->update_status('refunded', __( $tw_lang['wa_order_refunded_notice'], 'woocommerce' ));
-                    }
-                    else if ( $status == 'cancel-ok' ) {
-                        // Mark order as cancelled
-                        $order->update_status('cancelled', __( $tw_lang['wa_order_cancelled_notice'], 'woocommerce' ));
-                    }
-                    
-                    die( 'OK' );
-                }
-                else if( $orderValidation == true ) {
-                    // Mark order as completed
-                    $order->update_status('completed', __( $tw_lang['wa_order_status_notice'], 'woocommerce' ));
-                    
-                    die( 'OK' );
-                }
-                else {
-                    die( 'ERROR' );
-                }
-            }
-            else {
-                twispay_tw_log( $tw_lang['log_decryption_error'] );
-                twispay_tw_log( $tw_lang['log_openssl'] . $_GET['opensslResult'] );
-                twispay_tw_log( $tw_lang['log_decrypted_string'] . $decrypted );
-                die( 'ERROR' );
-            }
-        }
-        else {
-            die( 'NO ORDER RECORDED' );
-        }
-    }
-    else {
-        die( 'NO PRIVATE KEY' );
-    }
+
+/* Check if there is NO secret key. */
+if ( '' == $secretKey ) {
+    Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_invalid_private']);
+    exit();
 }
-die( 'NO DATA SENT' );
-?>
+
+
+/* Extract the server response and decript it. */
+$decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encryptedResponse*/(isset($_POST['opensslResult'])) ? ($_POST['opensslResult']) : ($_POST['result']), $secretKey);
+
+
+/* Check if decryption failed.  */
+if(FALSE === $decrypted){
+  Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_decryption_error']);
+  Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_openssl'] . (isset($_POST['opensslResult'])) ? ($_POST['opensslResult']) : ($_POST['result']));
+  Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_decrypted_string'] . $decrypted );
+  exit();
+}
+
+
+/* Validate the decripted response. */
+$orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decrypted, /*tw_usingOpenssl*/TRUE, $tw_lang);
+
+
+/* Check if server sesponse validation failed.  */
+if(TRUE !== $orderValidation){
+    Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_validating_failed'] );
+    exit();
+}
+
+
+/* Extract the WooCommerce order. */
+$order = wc_get_order($decrypted['externalOrderId']);
+
+
+/* Check if the WooCommerce order extraction failed. */
+if( FALSE == $order ){
+    Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_invalid_order']);
+    exit();
+}
+
+
+/* Extract the transaction status. */
+$status = (empty($decrypted['status'])) ? ($decrypted['transactionStatus']) : ($decrypted['status']);
+
+
+/* Set the status of the WooCommerce order according to the received status. */
+switch ($status) {
+    case Twispay_TW_Helper_Response::$RESULT_STATUSES['COMPLETE_FAIL']:
+        /* Mark order as failed. */
+        $order->update_status('failed', __( $tw_lang['wa_order_failed_notice'], 'woocommerce' ));
+
+        Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_ok_status_failed'] . $decrypted['externalOrderId']);
+    break;
+
+    case Twispay_TW_Helper_Response::$RESULT_STATUSES['CANCEL_OK']:
+    case Twispay_TW_Helper_Response::$RESULT_STATUSES['REFUND_OK']:
+    case Twispay_TW_Helper_Response::$RESULT_STATUSES['VOID_OK']:
+        /* Mark order as refunded. */
+        $order->update_status('refunded', __( $tw_lang['wa_order_refunded_notice'], 'woocommerce' ));
+
+        Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_ok_status_refund'] . $decrypted['externalOrderId']);
+    break;
+
+    case Twispay_TW_Helper_Response::$RESULT_STATUSES['THREE_D_PENDING']:
+        /* Mark order as on-hold. */
+        $order->update_status('on-hold', __( $tw_lang['wa_order_hold_notice'], 'woocommerce' ));
+
+        Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_ok_status_hold'] . $decrypted['externalOrderId']);
+    break;
+
+    case Twispay_TW_Helper_Response::$RESULT_STATUSES['IN_PROGRESS']:
+    case Twispay_TW_Helper_Response::$RESULT_STATUSES['COMPLETE_OK']:
+        /* Mark order as completed. */
+        $order->update_status('processing', __( $tw_lang['wa_order_status_notice'], 'woocommerce' ));
+
+        Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_ok_status_complete'] . $decrypted['externalOrderId']);
+    break;
+
+    default:
+      Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_wrong_status'] . $status);
+    break;
+}
+
+exit();

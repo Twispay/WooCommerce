@@ -26,7 +26,11 @@ Alternatively, you can check out our [installation guide](https://twis.li/2ueQ6R
 3. Fully customizable checkout experience
 
 == Changelog ==
- 
+
+= 1.0.4 =
+* Added new log, general and admin messages
+* Updated the server response handling to process all the possible server response statuses
+
 = 1.0.3 =
 * Updated the way parameters are sent to address a bug that was failing transactions when names had special characters
 

@@ -9,7 +9,7 @@
  * @version  1.0.1
  */
 
-// Configuration panel from Administrator
+/* Configuration panel from Administrator */
 $tw_lang['no_woocommerce_f'] = 'Twispay requires WooCommerce plugin to work normally. Please activate it or install it from';
 $tw_lang['no_woocommerce_s'] = 'here';
 $tw_lang['configuration_title'] = 'Configuration';
@@ -39,7 +39,8 @@ $tw_lang['get_all_wordpress_pages_default'] = 'Default';
 $tw_lang['contact_email_o'] = 'Contact email(Optional)';
 $tw_lang['contact_email_o_desc'] = 'This email will be used on the payment error page.';
 
-// Transaction list from Administrator
+
+/* Transaction list from Administrator */
 $tw_lang['transaction_title'] = 'Transaction list';
 $tw_lang['transaction_list_search_title'] = 'Search Order';
 $tw_lang['transaction_list_all_views'] = 'All';
@@ -61,18 +62,21 @@ $tw_lang['transaction_success_recurring'] = 'Recurring processed successfully.';
 $tw_lang['transaction_list_recurring_ptitle'] = 'Cancel a recurring order';
 $tw_lang['transaction_list_recurring_subtitle'] = 'Following recurring order will be canceled:';
 
-// Transaction log from Administrator
+
+/* Transaction log from Administrator */
 $tw_lang['transaction_log_title'] = 'Transaction log';
 $tw_lang['transaction_log_no_log'] = 'No log recorded yet.';
 $tw_lang['transaction_log_subtitle'] = 'Transaction log in raw form.';
 
-// Administrator Dashboard left-side menu
+
+/* Administrator Dashboard left-side menu */
 $tw_lang['menu_main_title'] = 'Twispay';
 $tw_lang['menu_configuration_tab'] = 'Configuration';
 $tw_lang['menu_transaction_tab'] = 'Transaction list';
 $tw_lang['menu_transaction_log_tab'] = 'Transaction log';
 
-// Woocommerce settings Twispay tab
+
+/* Woocommerce settings Twispay tab */
 $tw_lang['ws_title'] = 'Twispay';
 $tw_lang['ws_description'] = 'Have your customers pay with Twispay payment gateway.';
 $tw_lang['ws_enable_disable_title'] = 'Enable/Disable';
@@ -88,38 +92,56 @@ $tw_lang['ws_enable_methods_placeholder'] = 'Select shipping methods';
 $tw_lang['ws_vorder_title'] = 'Accept for virtual orders';
 $tw_lang['ws_vorder_desc'] = 'Accept Twispay if the order is virtual';
 
-// Order Recieved Confirmation title
+
+/* Order Recieved Confirmation title */
 $tw_lang['order_confirmation_title'] = 'Thank you. Your transaction is approved.';
 
-// Twispay Processor( Redirect page to Twispay )
+
+/* Twispay Processor( Redirect page to Twispay ) */
 $tw_lang['twispay_processor_error'] = 'You are not allowed to access this file.';
 
-// Validation LOG insertor
-$tw_lang['log_s_decrypted'] = '[RESPONSE] decrypted string: ';
-$tw_lang['log_empty_external'] = 'Empty externalOrderId';
-$tw_lang['log_order_already_validated'] = '[RESPONSE-ERROR] Order already validated, order id %s';
-$tw_lang['log_empty_status'] = 'Empty status';
-$tw_lang['log_empty_identifier'] = 'Empty identifier';
-$tw_lang['log_empty_transaction'] = 'Empty transactionId';
-$tw_lang['log_general_error'] = '[RESPONSE-ERROR] ';
-$tw_lang['log_general_response_data'] = '[RESPONSE] Data: ';
-$tw_lang['log_wrong_status'] = '[RESPONSE-ERROR] Wrong status (%s)';
-$tw_lang['log_status_complete'] = '[RESPONSE] Status complete-ok';
-$tw_lang['log_validating_complete'] = '[RESPONSE] Validating order completed: %s';
-$tw_lang['log_decryption_error'] = '[ERROR] Decryption did not worked.';
-$tw_lang['log_openssl'] = 'opensslResult: ';
-$tw_lang['log_decrypted_string'] = 'decrypted string: ';
 
-// Wordpress Administrator Order Notice
+/* Validation LOG insertor */
+$tw_lang['log_ok_string_decrypted'] = '[RESPONSE]: decrypted string: ';
+$tw_lang['log_ok_response_data'] = '[RESPONSE]: Data: ';
+$tw_lang['log_ok_status_complete'] = '[RESPONSE]: Status complete-ok for order ID: ';
+$tw_lang['log_ok_status_refund'] = '[RESPONSE]: Status refund-ok for order ID: ';
+$tw_lang['log_ok_status_failed'] = '[RESPONSE]: Status failed for order ID: ';
+$tw_lang['log_ok_status_hold'] = '[RESPONSE]: Status on-hold for order ID: ';
+$tw_lang['log_ok_status_uncertain'] = '[RESPONSE]: Status uncertain for order ID: ';
+$tw_lang['log_ok_validating_complete'] = '[RESPONSE]: Validating completed for order ID: ';
+
+$tw_lang['log_error_validating_failed'] = '[RESPONSE-ERROR]: Validating failed.';
+$tw_lang['log_error_decryption_error'] = '[RESPONSE-ERROR]: Decryption failed.';
+$tw_lang['log_error_invalid_order'] = '[RESPONSE-ERROR]: Order does not exist.';
+$tw_lang['log_error_wrong_status'] = '[RESPONSE-ERROR]: Wrong status: ';
+$tw_lang['log_error_empty_status'] = '[RESPONSE-ERROR]: Empty status';
+$tw_lang['log_error_empty_identifier'] = '[RESPONSE-ERROR]: Empty identifier';
+$tw_lang['log_error_empty_external'] = '[RESPONSE-ERROR]: Empty externalOrderId';
+$tw_lang['log_error_empty_transaction'] = '[RESPONSE-ERROR]: Empty transactionId';
+$tw_lang['log_error_empty_response'] = ' [RESPONSE-ERROR]: Received empty response.';
+$tw_lang['log_error_invalid_private'] = '[RESPONSE-ERROR]: Private key is not valid.';
+$tw_lang['log_error_invalid_key'] = '[RESPONSE-ERROR]: Invalid order identification key.';
+$tw_lang['log_error_openssl'] = '[RESPONSE-ERROR]: opensslResult: ';
+$tw_lang['log_error_decrypted_string'] = '[RESPONSE-ERROR]: decrypted string: ';
+
+
+/* Wordpress Administrator Order Notice */
 $tw_lang['wa_order_status_notice'] = 'Twispay payment finalised successfully';
 $tw_lang['wa_order_refunded_notice'] = 'Website manager pressed on refund button successfully';
 $tw_lang['wa_order_cancelled_notice'] = 'Website manager pressed on cancel button successfully';
+$tw_lang['wa_order_failed_notice'] = 'Twispay payment failed';
+$tw_lang['wa_order_hold_notice'] = 'Twispay payment is on hold';
 
-// Others
+
+/* Others */
 $tw_lang['general_error_title'] = 'An error occurred:';
-$tw_lang['general_error_desc_f'] = 'The payment could not be processed. Please [try again] or ';
-$tw_lang['general_error_desc_try_again'] = 'try again';
-$tw_lang['general_error_desc_s'] = 'contact the website administrator.';
-$tw_lang['general_error_invalid_key'] = 'The payment could not be processed. Invalid secure key.';
-$tw_lang['general_error_invalid_order'] = 'The payment could not be processed. Order does not exist.';
-$tw_lang['general_error_invalid_private'] = 'The payment could not be processed. Private key is not valid.';
+$tw_lang['general_error_desc_f'] = 'The payment could not be processed. Please';
+$tw_lang['general_error_desc_try_again'] = ' try again';
+$tw_lang['general_error_desc_or'] = ' or';
+$tw_lang['general_error_desc_contact'] = ' contact';
+$tw_lang['general_error_desc_s'] = ' the website administrator.';
+$tw_lang['general_error_hold_notice'] = ' Payment is on hold.';
+$tw_lang['general_error_invalid_key'] = ' Invalid secure key.';
+$tw_lang['general_error_invalid_order'] = ' Order does not exist.';
+$tw_lang['general_error_invalid_private'] = ' Private key is not valid.';
