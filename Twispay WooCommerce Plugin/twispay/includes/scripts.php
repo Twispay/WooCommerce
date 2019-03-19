@@ -117,9 +117,8 @@ function init_twispay_gateway_class() {
              * @return void
              */
             public function __construct() {
-                // Load languages
-                $lang = explode( '-', get_bloginfo( 'language' ) );
-                $lang = $lang[0];
+                /* Load languages */
+                $lang = explode( '-', get_bloginfo( 'language' ) )[0];
                 if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
                     require( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' );
                 } else {
@@ -412,37 +411,41 @@ if ( $suppress_email ) {
 
 
 
-
-if( class_exists('WC_Subscriptions') ){
-    function subscription_terminated( $subscription ){
-        /* Get configuration from database. */
-        global $wpdb;
-        $apiKey = '';
-        $configuration = $wpdb->get_row("SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration");
-
-        error_log('subscription=' . print_r($subscription, true));
-
-        if ( $configuration ) {
-            if ( $configuration->live_mode == 1 ) {
-                $apiKey = $configuration->live_key;
-                $url = 'https://api.twispay.com/order/' . $subscription->get_parent_id();
-            } else if ( $configuration->live_mode == 0 ) {
-                $apiKey = $configuration->staging_key;
-                $url = 'https://api-stage.twispay.com/order/' . $subscription->get_parent_id();
-            }
-        }
-
-        $args = array( 'method' => 'DELETE'
-                     , 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]
-                     , 'body' => ['terminateOrder' => 'yes']);
-        $response = wp_remote_request($url, $args);
-
-        if ( $response['response']['message'] == 'OK' ) {
-            Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_ok_set_status'] . $subscription->get_parent_id());
-        } else {
-            Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_error_set_status'] . $subscription->get_parent_id());
+function subscription_terminated( $subscription ){
+    /* Get configuration from database. */
+    global $wpdb;
+    $apiKey = '';
+    $configuration = $wpdb->get_row("SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration");
+    $serverOrderId = $wpdb->get_var( "SELECT orderId FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE id_cart = '" . $subscription->get_parent_id() . "'" );
+    if ( $configuration ) {
+        if ( $configuration->live_mode == 1 ) {
+            $apiKey = $configuration->live_key;
+            $url = 'https://api.twispay.com/order/' . $serverOrderId;
+        } else if ( $configuration->live_mode == 0 ) {
+            $apiKey = $configuration->staging_key;
+            $url = 'https://api-stage.twispay.com/order/' . $serverOrderId;
         }
     }
-    add_action('woocommerce_subscription_status_cancelled', 'subscription_terminated', 10);
-    add_action('woocommerce_subscription_status_expired', 'subscription_terminated', 10);
+
+    /* Load languages */
+    $lang = explode( '-', get_bloginfo( 'language' ) )[0];
+    if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
+        require( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' );
+    } else {
+        require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
+    }
+
+    $args = array( 'method' => 'DELETE'
+                  , 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]);
+    $response = wp_remote_request($url, $args);
+
+    error_log('respone=' . print_r($response, true));
+
+    if ( $response['response']['message'] == 'OK' ) {
+        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_ok_set_status'] . $subscription->get_parent_id());
+    } else {
+        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_error_set_status'] . $subscription->get_parent_id());
+    }
 }
+add_action('woocommerce_subscription_status_cancelled', 'subscription_terminated');
+add_action('woocommerce_subscription_status_expired', 'subscription_terminated');

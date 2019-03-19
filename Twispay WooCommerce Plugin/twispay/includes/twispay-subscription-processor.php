@@ -35,11 +35,6 @@
 
 
 <?php
-if(!class_exists('WC_Subscriptions')){
-    /* Exit the file as Woocommerce Subscriptions is not installed. */
-    exit;
-}
-
 $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
 require_once( $parse_uri[0] . 'wp-load.php' );
 
