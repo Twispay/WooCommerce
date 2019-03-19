@@ -130,14 +130,13 @@ $tw_lang['log_error_openssl'] = '[RESPONSE-ERROR]: opensslResult: ';
 $tw_lang['log_error_decrypted_string'] = '[RESPONSE-ERROR]: decrypted string: ';
 
 
-
 /* Subscriptions section */
 $tw_lang['subscriptions_sync_label'] = 'Synchronize subscriptions';
 $tw_lang['subscriptions_sync_desc'] = 'Synchronize the local status of all subscriptions with the server status.';
 $tw_lang['subscriptions_sync_button'] = 'Synchronize';
 $tw_lang['subscriptions_log_ok_set_status'] = '[RESPONSE]: Server status set for order ID: ';
-$tw_lang['subscriptions_log_error_set_status'] = '[RESPONSE-ERROR]: failed to set server status for order ID: ';
-$tw_lang['subscriptions_log_error_get_status'] = '[RESPONSE-ERROR]: failed to get server status for order ID: ';
+$tw_lang['subscriptions_log_error_set_status'] = '[RESPONSE-ERROR]: Failed to set server status for order ID: ';
+$tw_lang['subscriptions_log_error_get_status'] = '[RESPONSE-ERROR]: Failed to get server status for order ID: ';
 
 
 /* Wordpress Administrator Order Notice */
