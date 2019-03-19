@@ -27,6 +27,10 @@ Alternatively, you can check out our [installation guide](https://twis.li/2ueQ6R
 
 == Changelog ==
 
+= 1.0.5 =
+* Moved all the subscription status update code to a dedicated object
+* Added support for the Woocommerce Subscriptions
+
 = 1.0.4 =
 * Added new log, general and admin messages
 * Updated the server response handling to process all the possible server response statuses
