@@ -128,7 +128,7 @@ if ( !class_exists( 'Twispay_TW_Helper_Response' ) ) :
 
                     return FALSE;
                 }
-                error_log( "4" . print_r($data, 'true') );
+
                 Twispay_TW_Logger::twispay_tw_logTransaction( $data );
                 Twispay_TW_Logger::twispay_tw_log( $tw_lang['log_ok_validating_complete'] . $data['id_cart'] );
 

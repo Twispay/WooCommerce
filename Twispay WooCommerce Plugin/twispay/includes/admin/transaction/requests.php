@@ -166,14 +166,10 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
 
         $response = json_decode($response);
 
-        // error_log('response=' . print_r($response, true));
-
         if ( 'Success' == $response->message ) {
-            // error_log( 44 . $response->message );
             /* Check if any order was found on the server. */
             if($response->pagination->currentItemCount){
                 /* Synchronize the statuses. */
-                error_log('parent_id=' . $subscription->get_parent_id() . ' status= ' . print_r($response->data[0]->orderStatus, true));
                 Twispay_TW_Status_Updater::updateSubscriptionStatus($subscription->get_parent_id(), $response->data[0]->orderStatus, $tw_lang);
             } else {
                 /* Cancel the local subscription as no order was found on the server. */
@@ -183,7 +179,6 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
             /* Redirect to the Transaction list Page with success. */
             wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=success_recurring' ) );
         } else {
-            // error_log( 55 . $response->message );
             Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_get_status'] . $subscription->get_parent_id() );
             continue;
         }

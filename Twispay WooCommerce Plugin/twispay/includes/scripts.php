@@ -439,8 +439,6 @@ function subscription_terminated( $subscription ){
                   , 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]);
     $response = wp_remote_request($url, $args);
 
-    error_log('respone=' . print_r($response, true));
-
     if ( $response['response']['message'] == 'OK' ) {
         Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_ok_set_status'] . $subscription->get_parent_id());
     } else {

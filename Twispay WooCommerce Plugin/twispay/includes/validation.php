@@ -71,7 +71,7 @@ if(FALSE === $decrypted){
   exit();
 }
 
-error_log( "1" . print_r($decrypted, 'true') );
+
 /* Validate the decripted response. */
 $orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decrypted, /*tw_usingOpenssl*/TRUE, $tw_lang);
 
@@ -98,8 +98,6 @@ if( FALSE == $order ){
 /* Extract the transaction status. */
 $status = (empty($decrypted['status'])) ? ($decrypted['transactionStatus']) : ($decrypted['status']);
 
-error_log( "2" . print_r($orderId, 'true') );
-error_log( "3" . print_r($status, 'true') );
 
 /* Set the status of the WooCommerce order according to the received status. */
 Twispay_TW_Status_Updater::updateStatus_IPN($orderId, $status, $tw_lang);
