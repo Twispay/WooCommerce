@@ -11,8 +11,8 @@
  */
 
 // Exit if the file is accessed directly
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
 }
 
 function twispay_tw_configuration() {
@@ -32,15 +32,14 @@ function twispay_tw_configuration() {
                 <div class="clearfix"></div>
             </div>
         <?php
-    }
-    else {
+    } else {
         ?>
             <div class="wrap">
                 <h2><?= $tw_lang['configuration_title']; ?></h2>
                 <?php
                     if ( isset( $_GET['notice'] ) && $_GET['notice'] ) {
                         $notice = $_GET['notice'];
-                        
+
                         switch ( $notice ) {
                             case 'edit_configuration':
                                 ?>
@@ -48,10 +47,11 @@ function twispay_tw_configuration() {
                                         <p><?= $tw_lang['configuration_edit_notice']; ?></p>
                                     </div>
                                 <?php
-                                break;
+                            break;
                         }
                     }
                 ?>
+
                 <p><?= $tw_lang['configuration_subtitle']; ?></p>
                 <form method="post" id="general_configuration">
                     <table class="form-table">
@@ -118,9 +118,14 @@ function twispay_tw_configuration() {
                                 <p class="description"><?= $tw_lang['contact_email_o_desc']; ?></p>
                             </td>
                         </tr>
+                        <tr class="form-field" id="contact_email_o">
+                            <th scope="row">
+                                <input type="hidden" name="tw_general_action" value="edit_general_configuration" />
+                                <?php submit_button( $tw_lang['configuration_save_button'], 'primary', 'edituser', true, array( 'id' => 'ceditusersub' ) ); ?>
+                            </th>
+                            <td></td>
+                        </tr>
                     </table>
-                <input type="hidden" name="tw_general_action" value="edit_general_configuration" />
-                <?php submit_button( $tw_lang['configuration_save_button'], 'primary', 'edituser', true, array( 'id' => 'ceditusersub' ) ); ?>
                 </form>
             </div>
         <?php

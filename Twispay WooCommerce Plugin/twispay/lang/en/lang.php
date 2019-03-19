@@ -61,6 +61,7 @@ $tw_lang['transaction_success_refund'] = 'Refund processed successfully. Refresh
 $tw_lang['transaction_success_recurring'] = 'Recurring processed successfully.';
 $tw_lang['transaction_list_recurring_ptitle'] = 'Cancel a recurring order';
 $tw_lang['transaction_list_recurring_subtitle'] = 'Following recurring order will be canceled:';
+$tw_lang['transaction_sync_finished'] = 'Subscriptions synchronization finished.';
 
 
 /* Transaction log from Administrator */
@@ -98,7 +99,10 @@ $tw_lang['order_confirmation_title'] = 'Thank you. Your transaction is approved.
 
 
 /* Twispay Processor( Redirect page to Twispay ) */
-$tw_lang['twispay_processor_error'] = 'You are not allowed to access this file.';
+$tw_lang['twispay_processor_error_general'] = 'You are not allowed to access this file.';
+$tw_lang['twispay_processor_error_no_item'] = 'The order has no items.';
+$tw_lang['twispay_processor_error_more_items'] = 'Orders with subscriptions cannot have other products too.';
+$tw_lang['twispay_processor_error_missing_configuration'] = 'Missing configuration for plugin.';
 
 
 /* Validation LOG insertor */
@@ -111,7 +115,7 @@ $tw_lang['log_ok_status_hold'] = '[RESPONSE]: Status on-hold for order ID: ';
 $tw_lang['log_ok_status_uncertain'] = '[RESPONSE]: Status uncertain for order ID: ';
 $tw_lang['log_ok_validating_complete'] = '[RESPONSE]: Validating completed for order ID: ';
 
-$tw_lang['log_error_validating_failed'] = '[RESPONSE-ERROR]: Validating failed.';
+$tw_lang['log_error_validating_failed'] = '[RESPONSE-ERROR]: Validation failed.';
 $tw_lang['log_error_decryption_error'] = '[RESPONSE-ERROR]: Decryption failed.';
 $tw_lang['log_error_invalid_order'] = '[RESPONSE-ERROR]: Order does not exist.';
 $tw_lang['log_error_wrong_status'] = '[RESPONSE-ERROR]: Wrong status: ';
@@ -124,6 +128,16 @@ $tw_lang['log_error_invalid_private'] = '[RESPONSE-ERROR]: Private key is not va
 $tw_lang['log_error_invalid_key'] = '[RESPONSE-ERROR]: Invalid order identification key.';
 $tw_lang['log_error_openssl'] = '[RESPONSE-ERROR]: opensslResult: ';
 $tw_lang['log_error_decrypted_string'] = '[RESPONSE-ERROR]: decrypted string: ';
+
+
+
+/* Subscriptions section */
+$tw_lang['subscriptions_sync_label'] = 'Synchronize subscriptions';
+$tw_lang['subscriptions_sync_desc'] = 'Synchronize the local status of all subscriptions with the server status.';
+$tw_lang['subscriptions_sync_button'] = 'Synchronize';
+$tw_lang['subscriptions_log_ok_set_status'] = '[RESPONSE]: Server status set for order ID: ';
+$tw_lang['subscriptions_log_error_set_status'] = '[RESPONSE-ERROR]: failed to set server status for order ID: ';
+$tw_lang['subscriptions_log_error_get_status'] = '[RESPONSE-ERROR]: failed to get server status for order ID: ';
 
 
 /* Wordpress Administrator Order Notice */

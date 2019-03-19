@@ -33,7 +33,7 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
             }
         }
     ?>
-    
+
     <form method="post" id="recurring_order">
         <input type="hidden" name="tw_general_action" value="recurring_order" />
         <?php submit_button( $tw_lang['transaction_list_confirm_title'], 'primary', 'createuser', true, array( 'id' => 'confirmdeletion' ) ); ?>

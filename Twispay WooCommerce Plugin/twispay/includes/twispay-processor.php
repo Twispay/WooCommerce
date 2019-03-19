@@ -44,8 +44,7 @@ require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_S
 
 
 /* Load languages. */
-$lang = explode( '-', get_bloginfo( 'language' ) );
-$lang = $lang[0];
+$lang = explode( '-', get_bloginfo( 'language' ) )[0];
 if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
     require( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' );
 } else {
@@ -115,7 +114,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         /* Build the data object to be posted to Twispay. */
         $orderData = [ 'siteId' => $siteID
                      , 'customer' => $customer
-                     , 'order' => [ 'orderId' => (isset( $_GET['tw_reload'] ) && $_GET['tw_reload']) ? ($data['id'] . '_' . date('YmdHis')) : ($data['id'])
+                     , 'order' => [ 'orderId' => (isset( $_GET['tw_reload'] ) && $_GET['tw_reload']) ? ($_GET['order_id'] . '_' . date('YmdHis')) : ($_GET['order_id'])
                                   , 'type' => 'purchase'
                                   , 'amount' => $data['total']
                                   , 'currency' => $data['currency']
@@ -159,9 +158,9 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         <?php
     } else {
         echo '<style>.loader {display: none;}</style>';
-        die( $tw_lang['twispay_processor_error'] );
+        die( $tw_lang['twispay_processor_error_general'] );
     }
 } else {
     echo '<style>.loader {display: none;}</style>';
-    die( $tw_lang['twispay_processor_error'] );
+    die( $tw_lang['twispay_processor_error_general'] );
 }

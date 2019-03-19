@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once TWISPAY_PLUGIN_DIR . 'includes/admin/transaction/transaction-table.php';
 
 function twispay_tw_transaction_administrator() {
-    // Load languages
+    /* Load languages */
     $lang = explode( '-', get_bloginfo( 'language' ) );
     $lang = $lang[0];
     if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
@@ -27,7 +27,7 @@ function twispay_tw_transaction_administrator() {
     } else {
         require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
     }
-    
+
     if ( ! class_exists( 'WooCommerce' ) ) {
         ?>
             <div class="error notice" style="margin-top: 20px;">
@@ -40,7 +40,7 @@ function twispay_tw_transaction_administrator() {
         // Check if the view / edit / delete action is detected, otherwise load the campaigns form
         if ( isset( $_GET['action'] ) && $_GET['action'] ) {
             $action = $_GET['action'];
-            
+
             switch ( $action ) {
                 case 'refund_payment':
                     include TWISPAY_PLUGIN_DIR . 'includes/admin/transaction/refund_t.php';
@@ -54,10 +54,27 @@ function twispay_tw_transaction_administrator() {
             ?>
                 <div class="wrap">
                     <h1><?= $tw_lang['transaction_title']; ?></h1>
+
+                    <?php if( class_exists('WC_Subscriptions') ){ ?>
+                        <form method="post" id="synchronize_subscriptions">
+                            <table class="form-table">
+                                <tr class="form-field" id="contact_email_o">
+                                    <th scope="row"><label><?= $tw_lang['subscriptions_sync_label']; ?></span></label></th>
+                                    <td>
+                                        <input type="hidden" name="tw_general_action" value="synchronize_subscriptions" />
+                                        <?php submit_button( $tw_lang['subscriptions_sync_button'], 'primary', 'createuser', true, array( 'id' => 'synchronizesubscriptions' ) ); ?>
+                                        <p class="description"><?= $tw_lang['subscriptions_sync_desc']; ?></p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    <?php } ?>
+
+
                     <?php
                         if ( isset( $_GET['notice'] ) && $_GET['notice'] ) {
                             $notice = $_GET['notice'];
-                            
+
                             switch ( $notice ) {
                                 case 'error_refund':
                                     ?>
@@ -87,6 +104,13 @@ function twispay_tw_transaction_administrator() {
                                         </div>
                                     <?php
                                     break;
+                                case 'sync_finished':
+                                    ?>
+                                        <div class="updated notice">
+                                            <p><?= $tw_lang['transaction_sync_finished']; ?></p>
+                                        </div>
+                                    <?php
+                                    break;
                                 case 'errorp_refund':
                                     ?>
                                         <div class="error notice">
@@ -96,12 +120,12 @@ function twispay_tw_transaction_administrator() {
                                     break;
                             }
                         }
-                        
+
                         // Create the Payment Methods object and build the Table
                         $transaction_table = new Twispay_TransactionTable( $tw_lang );
                         $transaction_table->views();
                     ?>
-                        
+
                     <form method="get">
                         <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
                         <?php $transaction_table->search_box( $tw_lang['transaction_list_search_title'], 'search-query' ); ?>

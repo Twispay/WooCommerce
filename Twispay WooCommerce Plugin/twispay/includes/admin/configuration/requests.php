@@ -72,7 +72,7 @@ function tw_twispay_p_edit_general_configuration( $request ) {
         $wpdb->insert( $wpdb->prefix . 'twispay_tw_configuration', array(
             'live_mode'     => 0
         ) );
-        
+
         // Edit the Configuration into Database ( twispay_tw_configuration table )
         $wpdb->update( 
             $wpdb->prefix . 'twispay_tw_configuration', 
@@ -91,7 +91,7 @@ function tw_twispay_p_edit_general_configuration( $request ) {
             )
         );
     }
-    
+
     // Redirect to the Configuration Page
     wp_safe_redirect( admin_url( 'admin.php?page=twispay&notice=edit_configuration' ) );
 }

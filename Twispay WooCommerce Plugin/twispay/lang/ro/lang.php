@@ -98,7 +98,7 @@ $tw_lang['order_confirmation_title'] = 'Mulțumim. Tranzacția ta a fost aprobat
 
 
 /* Twispay Processor( Redirect page to Twispay ) */
-$tw_lang['twispay_processor_error'] = 'Nu ai permisiunea de a accesa acest fișier.';
+$tw_lang['twispay_processor_error_general'] = 'Nu ai permisiunea de a accesa acest fișier.';
 
 
 /* Validation LOG insertor */
