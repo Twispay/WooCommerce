@@ -242,10 +242,13 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
             $subscription = reset($subscription);
 
             switch ($serverStatus) {
-                case Twispay_TW_Status_Updater::$RESULT_STATUSES['COMPLETE_FAIL']:
-                    /* Mark subscription as 'ON-HOLD'. */
-                    $subscription->update_status('on-hold');
-                    Twispay_TW_Logger::twispay_tw_updateTransactionStatus($orderId, $serverStatus);
+                case Twispay_TW_Status_Updater::$RESULT_STATUSES['COMPLETE_FAIL']: /* The subscription has payment failure. */
+                case Twispay_TW_Status_Updater::$RESULT_STATUSES['THREE_D_PENDING']: /* The subscription has a 3D pending payment. */
+                    if($subscription->can_be_updated_to('on-hold')){
+                        /* Mark subscription as 'ON-HOLD'. */
+                        $subscription->update_status('on-hold');
+                        Twispay_TW_Logger::twispay_tw_updateTransactionStatus($orderId, $serverStatus);
+                    }
                 break;
 
                 case Twispay_TW_Status_Updater::$RESULT_STATUSES['COMPLETE_OK']: /* The subscription has been completed. */
@@ -253,22 +256,20 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                 case Twispay_TW_Status_Updater::$RESULT_STATUSES['REFUND_OK']: /* The subscription has been refunded. */
                 case Twispay_TW_Status_Updater::$RESULT_STATUSES['VOID_OK']: /*  */
                 case Twispay_TW_Status_Updater::$RESULT_STATUSES['CHARGE_BACK']: /* The subscription has been forced back. */
-                    /* Mark subscription as 'CANCELED'. */
-                    $subscription->update_status('canceled');
-                    Twispay_TW_Logger::twispay_tw_updateTransactionStatus($orderId, $serverStatus);
-                break;
-
-                case Twispay_TW_Status_Updater::$RESULT_STATUSES['THREE_D_PENDING']: /* The subscription has a 3D pending payment. */
-                    /* Mark subscription as 'ON-HOLD'. */
-                    $subscription->update_status('on-hold');
-                    Twispay_TW_Logger::twispay_tw_updateTransactionStatus($orderId, $serverStatus);
+                    if($subscription->can_be_updated_to('canceled')){
+                        /* Mark subscription as 'CANCELED'. */
+                        $subscription->update_status('canceled');
+                        Twispay_TW_Logger::twispay_tw_updateTransactionStatus($orderId, $serverStatus);
+                    }
                 break;
 
                 case Twispay_TW_Status_Updater::$RESULT_STATUSES['EXPIRING']: /* The subscription will expire soon. */
                 case Twispay_TW_Status_Updater::$RESULT_STATUSES['IN_PROGRESS']: /* The subscription is in progress. */
-                    /* Mark subscription as 'ACTIVE'. */
-                    $subscription->update_status('active');
-                    Twispay_TW_Logger::twispay_tw_updateTransactionStatus($orderId, $serverStatus);
+                    if($subscription->can_be_updated_to('active')){
+                        /* Mark subscription as 'ACTIVE'. */
+                        $subscription->update_status('active');
+                        Twispay_TW_Logger::twispay_tw_updateTransactionStatus($orderId, $serverStatus);
+                    }
                 break;
 
                 default:
