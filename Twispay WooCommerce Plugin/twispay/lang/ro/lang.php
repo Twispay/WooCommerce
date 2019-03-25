@@ -127,7 +127,6 @@ $tw_lang['log_error_empty_response'] = ' [RESPONSE-ERROR]: Răspunsul primit est
 $tw_lang['log_error_invalid_private'] = '[RESPONSE-ERROR]: Cheie privată nevalidă.';
 $tw_lang['log_error_invalid_key'] = '[RESPONSE-ERROR]: Cheie de identificare a comenzii nevalidă.';
 $tw_lang['log_error_openssl'] = '[RESPONSE-ERROR]: opensslResult: ';
-$tw_lang['log_error_decrypted_string'] = '[RESPONSE-ERROR]: string decriptat: ';
 
 
 /* Subscriptions section */
@@ -137,6 +136,8 @@ $tw_lang['subscriptions_sync_button'] = 'Sincronizeaza';
 $tw_lang['subscriptions_log_ok_set_status'] = '[RESPONSE]: Starea de pe server setata pentru comanda cu ID-ul: ';
 $tw_lang['subscriptions_log_error_set_status'] = '[RESPONSE-ERROR]: Eroare la setarea starii pentru comanda ci ID-ul: ';
 $tw_lang['subscriptions_log_error_get_status'] = '[RESPONSE-ERROR]: Eroare la extragerea starii de pe server pentru comanda cu ID-ul:A';
+$tw_lang['subscriptions_log_error_call_failed'] = '[RESPONSE-ERROR]: Eroare la apelarea server-ului: ';
+$tw_lang['subscriptions_log_error_http_code'] = '[RESPONSE-ERROR]: Cod HTTP neasteptat: ';
 
 
 /* Wordpress Administrator Order Notice */

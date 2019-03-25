@@ -67,13 +67,14 @@ $decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encrypt
 if(FALSE === $decrypted){
   Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_decryption_error']);
   Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_openssl'] . (isset($_POST['opensslResult'])) ? ($_POST['opensslResult']) : ($_POST['result']));
-  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_decrypted_string'] . $decrypted );
   exit();
+} else {
+  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_string_decrypted'] . $decrypted);
 }
 
 
 /* Validate the decripted response. */
-$orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decrypted, /*tw_usingOpenssl*/TRUE, $tw_lang);
+$orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decrypted, $tw_lang);
 
 
 /* Check if server sesponse validation failed.  */

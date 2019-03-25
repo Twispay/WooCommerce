@@ -127,7 +127,6 @@ $tw_lang['log_error_empty_response'] = ' [RESPONSE-ERROR]: Received empty respon
 $tw_lang['log_error_invalid_private'] = '[RESPONSE-ERROR]: Private key is not valid.';
 $tw_lang['log_error_invalid_key'] = '[RESPONSE-ERROR]: Invalid order identification key.';
 $tw_lang['log_error_openssl'] = '[RESPONSE-ERROR]: opensslResult: ';
-$tw_lang['log_error_decrypted_string'] = '[RESPONSE-ERROR]: decrypted string: ';
 
 
 /* Subscriptions section */
@@ -137,6 +136,8 @@ $tw_lang['subscriptions_sync_button'] = 'Synchronize';
 $tw_lang['subscriptions_log_ok_set_status'] = '[RESPONSE]: Server status set for order ID: ';
 $tw_lang['subscriptions_log_error_set_status'] = '[RESPONSE-ERROR]: Failed to set server status for order ID: ';
 $tw_lang['subscriptions_log_error_get_status'] = '[RESPONSE-ERROR]: Failed to get server status for order ID: ';
+$tw_lang['subscriptions_log_error_call_failed'] = '[RESPONSE-ERROR]: Failed to call server: ';
+$tw_lang['subscriptions_log_error_http_code'] = '[RESPONSE-ERROR]: Unexpected HTTP response code: ';
 
 
 /* Wordpress Administrator Order Notice */

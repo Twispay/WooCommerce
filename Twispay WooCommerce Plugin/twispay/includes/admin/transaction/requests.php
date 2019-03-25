@@ -28,7 +28,7 @@ require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_S
  * @public
  * @return void
  */
-function tw_twispay_p_refund_payment_transaction( $request ) {
+function tw_twispay_p_refund_payment_transaction() {
     if ( isset( $_GET['payment_ad'] ) && $_GET['payment_ad'] ) {
         $transaction_id = $_GET['payment_ad'];
 
@@ -55,7 +55,7 @@ function tw_twispay_p_refund_payment_transaction( $request ) {
             wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=success_refund' ) );
         } else {
             /* Redirect to the Transaction list Page with error. */
-            wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=errorp_refund&emessage=' . str_replace( ' ', '%20', $response['body'] ) ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=errorp_refund&emessage=' . rawurlencode($response['body']) ) );
         }
     } else {
         /* Redirect to the Transaction list Page with error. */
@@ -100,7 +100,7 @@ function tw_twispay_p_recurring_order( $request ) {
             wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=success_recurring' ) );
         } else {
             /* Redirect to the Transaction list Page with error. */
-            wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=errorp_refund&emessage=' . str_replace( ' ', '%20', $response['body'] ) ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=errorp_refund&emessage=' . rawurlencode($response['body']) ) );
         }
     } else {
         /* Redirect to the Transaction list Page with error. */
@@ -144,8 +144,12 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
 
     /* Extract all the subscriptions. */
     $subscriptions = wcs_get_subscriptions(['subscriptions_per_page' => -1]);
+    $skip = FALSE;
 
     foreach ($subscriptions as $key => $subscription) {
+        /* Reset skip flag. */
+        $skip = FALSE;
+
         /* Create a new cURL session. */
         $channel = curl_init();
 
@@ -161,25 +165,40 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
         /* Execute the request. This means to perform a "GET"/"PUT" request at the specified URL. */
         $response = curl_exec($channel);
 
+        /* Check if the CURL call failed. */
+        if(FALSE === $response) {
+            Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_call_failed'] . curl_error($channel) );
+            $skip = TRUE;
+        }
+
+        if((FALSE == $skip) && (200 != curl_getinfo($channel, CURLINFO_HTTP_CODE))){
+            Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_http_code'] . curl_getinfo($channel, CURLINFO_HTTP_CODE) );
+            $skip = TRUE;
+        }
+
         /* Close the cURL session. */
         curl_close($channel);
 
-        $response = json_decode($response);
-
-        if ( 'Success' == $response->message ) {
-            /* Check if any order was found on the server. */
-            if($response->pagination->currentItemCount){
-                /* Synchronize the statuses. */
-                Twispay_TW_Status_Updater::updateSubscriptionStatus($subscription->get_parent_id(), $response->data[0]->orderStatus, $tw_lang);
+        if(FALSE == $skip){
+            $response = json_decode($response);
+    
+            if ( 'Success' == $response->message ) {
+                /* Check if any order was found on the server. */
+                if($response->pagination->currentItemCount){
+                    /* Synchronize the statuses. */
+                    Twispay_TW_Status_Updater::updateSubscriptionStatus($subscription->get_parent_id(), $response->data[0]->orderStatus, $tw_lang);
+                } else {
+                    /* Cancel the local subscription as no order was found on the server. */
+                    Twispay_TW_Status_Updater::updateSubscriptionStatus($subscription->get_parent_id(), Twispay_TW_Status_Updater::$RESULT_STATUSES['CANCEL_OK'], $tw_lang);
+                }
+    
+                /* Redirect to the Transaction list Page with success. */
+                wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=success_recurring' ) );
             } else {
-                /* Cancel the local subscription as no order was found on the server. */
-                Twispay_TW_Status_Updater::updateSubscriptionStatus($subscription->get_parent_id(), Twispay_TW_Status_Updater::$RESULT_STATUSES['CANCEL_OK'], $tw_lang);
+                Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_get_status'] . $subscription->get_parent_id() );
+                continue;
             }
-
-            /* Redirect to the Transaction list Page with success. */
-            wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=success_recurring' ) );
         } else {
-            Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_get_status'] . $subscription->get_parent_id() );
             continue;
         }
     }

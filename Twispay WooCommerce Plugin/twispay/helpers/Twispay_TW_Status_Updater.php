@@ -214,7 +214,7 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                 break;
 
                 default:
-                  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_wrong_status'] . $status);
+                  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_wrong_status'] . $serverStatus);
                 break;
             }
         }

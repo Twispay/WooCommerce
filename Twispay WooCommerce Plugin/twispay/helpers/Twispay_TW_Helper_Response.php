@@ -72,21 +72,16 @@ if ( !class_exists( 'Twispay_TW_Helper_Response' ) ) :
          * Function that validates a decripted response.
          *
          * @param tw_response The server decripted and JSON decoded response
-         * @param tw_usingOpenssl Flag marking if the response is encoded or not
          * @param tw_lang The language that the store uses
          *
          * @return bool(FALSE)     - If any error occurs
          *         bool(TRUE)      - If the validation is successful
          */
-        public static function twispay_tw_checkValidation($tw_response, $tw_usingOpenssl = TRUE, $tw_lang) {
+        public static function twispay_tw_checkValidation($tw_response, $tw_lang) {
             $tw_errors = array();
 
             if ( !$tw_response ) {
                 return FALSE;
-            }
-
-            if ( FALSE == $tw_usingOpenssl ) {
-               Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_string_decrypted'] . $tw_response);
             }
 
             if ( empty( $tw_response['status'] ) && empty( $tw_response['transactionStatus'] ) ) {

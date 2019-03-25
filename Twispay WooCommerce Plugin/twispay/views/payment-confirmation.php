@@ -117,11 +117,13 @@ if(FALSE === $decrypted){
   <?php
 
   exit();
+} else {
+  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_string_decrypted'] . $decrypted);
 }
 
 
 /* Validate the decripted response. */
-$orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decrypted, /*tw_usingOpenssl*/TRUE, $tw_lang);
+$orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decrypted, $tw_lang);
 
 
 /* Check if server sesponse validation failed.  */
