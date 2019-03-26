@@ -62,7 +62,7 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                     /* Mark order as failed. */
                     $order->update_status('failed', __( $tw_lang['wa_order_failed_notice'], 'woocommerce' ));
 
-                    if(class_exists('WC_Subscriptions') ){
+                    if(class_exists('WC_Subscriptions') && wcs_order_contains_subscription($order)){
                         WC_Subscriptions_Manager::process_subscription_payment_failure_on_order($order);
                     }
 
@@ -101,20 +101,23 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                 case Twispay_TW_Status_Updater::$RESULT_STATUSES['COMPLETE_OK']:
                     /* Mark order as completed. */
                     $order->update_status('processing', __( $tw_lang['wa_order_status_notice'], 'woocommerce' ));
-                    $subscription = wcs_get_subscriptions_for_order($order);
-                    $subscription = reset($subscription);
 
-                    /* First payment on order, process payment & activate subscription. */
-                    if ( 0 == $subscription->get_completed_payment_count() ) {
-                        $order->payment_complete();
+                    if(class_exists('WC_Subscriptions') && wcs_order_contains_subscription($order)){
+                      $subscription = wcs_get_subscriptions_for_order($order);
+                      $subscription = reset($subscription);
 
-                        if(class_exists('WC_Subscriptions') ){
-                            WC_Subscriptions_Manager::activate_subscriptions_for_order( $order );
-                        }
-                    } else {
-                        if(class_exists('WC_Subscriptions') ){
-                            WC_Subscriptions_Manager::process_subscription_payments_on_order( $order );
-                        }
+                      /* First payment on order, process payment & activate subscription. */
+                      if ( 0 == $subscription->get_completed_payment_count() ) {
+                          $order->payment_complete();
+
+                          if(class_exists('WC_Subscriptions') ){
+                              WC_Subscriptions_Manager::activate_subscriptions_for_order( $order );
+                          }
+                      } else {
+                          if(class_exists('WC_Subscriptions') ){
+                              WC_Subscriptions_Manager::process_subscription_payments_on_order( $order );
+                          }
+                      }
                     }
 
                     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_status_complete'] . $orderId);
@@ -162,7 +165,7 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                     /* Mark order as failed. */
                     $order->update_status('failed', __( $tw_lang['wa_order_failed_notice'], 'woocommerce' ));
 
-                    if(class_exists('WC_Subscriptions') ){
+                    if(class_exists('WC_Subscriptions') && wcs_order_contains_subscription($order)){
                         WC_Subscriptions_Manager::process_subscription_payment_failure_on_order($order);
                     }
 
@@ -176,7 +179,7 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                     /* Mark order as refunded. */
                     $order->update_status('refunded', __( $tw_lang['wa_order_refunded_notice'], 'woocommerce' ));
 
-                    if(class_exists('WC_Subscriptions') ){
+                    if(class_exists('WC_Subscriptions') && wcs_order_contains_subscription($order)){
                         WC_Subscriptions_Manager::cancel_subscriptions_for_order($order);
                     }
 
@@ -194,19 +197,22 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                 case Twispay_TW_Status_Updater::$RESULT_STATUSES['COMPLETE_OK']:
                     /* Mark order as completed. */
                     $order->update_status('processing', __( $tw_lang['wa_order_status_notice'], 'woocommerce' ));
-                    $subscription = wcs_get_subscriptions_for_order($order);
-                    $subscription = reset($subscription);
 
-                    /* First payment on order, process payment & activate subscription. */
-                    if ( 0 == $subscription->get_completed_payment_count() ) {
-                        $order->payment_complete();
-
+                    if(class_exists('WC_Subscriptions') && wcs_order_contains_subscription($order)){
+                      $subscription = wcs_get_subscriptions_for_order($order);
+                      $subscription = reset($subscription);
+  
+                      /* First payment on order, process payment & activate subscription. */
+                      if ( 0 == $subscription->get_completed_payment_count() ) {
+                          $order->payment_complete();
+  
+                          if(class_exists('WC_Subscriptions') ){
+                              WC_Subscriptions_Manager::activate_subscriptions_for_order( $order );
+                          }
+                      } else {
                         if(class_exists('WC_Subscriptions') ){
-                            WC_Subscriptions_Manager::activate_subscriptions_for_order( $order );
+                            WC_Subscriptions_Manager::process_subscription_payments_on_order( $order );
                         }
-                    } else {
-                      if(class_exists('WC_Subscriptions') ){
-                          WC_Subscriptions_Manager::process_subscription_payments_on_order( $order );
                       }
                     }
 
