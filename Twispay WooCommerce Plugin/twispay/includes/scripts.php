@@ -132,6 +132,7 @@ function init_twispay_gateway_class() {
                 $this->method_description = $tw_lang['ws_description'];
                 if( class_exists('WC_Subscriptions') ){
                     $this->supports = [ 'products'
+                                      , 'refunds' 
                                       , 'subscriptions'
                                       , 'subscription_cancellation'
                                       , 'subscription_suspension'
@@ -144,7 +145,7 @@ function init_twispay_gateway_class() {
                                       , 'multiple_subscriptions'
                                       , 'gateway_scheduled_payments'];
                 } else {
-                    $this->supports = [ 'products' ];
+                    $this->supports = [ 'products', 'refunds' ];
                 }
 
                 $this->init_form_fields();
@@ -324,6 +325,45 @@ function init_twispay_gateway_class() {
                             'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id
                         );
                     }
+                }
+            }
+
+
+            /**
+             * Twispay Process Payment function
+             *
+             * @param order_id: The ID of the order witha. the refund.
+             * @param amount: The amount to be refunded.
+             * @param reason: The reason of the refund.
+             * 
+             * @return boolean: True or false based on success
+             */
+            function process_refund($order_id, $amount = NULL, $reason = '') {
+                global $wpdb;
+                $apiKey = '';
+                $transaction_id = $wpdb->get_var( "SELECT transactionId FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE id_cart = '" . $order_id . "'" );
+
+                /* Get configuration from database. */
+                $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
+
+                if ( $configuration ) {
+                    if ( 1 == $configuration->live_mode ) {
+                        $apiKey = $configuration->live_key;
+                        $url = 'https://api.twispay.com/transaction/' . $transaction_id;
+                    } else if ( 0 == $configuration->live_mode ) {
+                        $apiKey = $configuration->staging_key;
+                        $url = 'https://api-stage.twispay.com/transaction/' . $transaction_id;
+                    }
+                }
+
+                $args = array('method' => 'DELETE', 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]);
+                $response = wp_remote_request( $url, $args );
+
+                if ( 'OK' == $response['response']['message'] ) {
+                    Twispay_TW_Logger::twispay_tw_updateTransactionStatus($order_id, Twispay_TW_Status_Updater::$RESULT_STATUSES['REFUND_OK']);
+                    return TRUE;
+                } else {
+                    return FALSE;
                 }
             }
         }

@@ -30,6 +30,7 @@ Alternatively, you can check out our [installation guide](https://twis.li/2ueQ6R
 = 1.0.5 =
 * Moved all the subscription status update code to a dedicated object
 * Added support for the Woocommerce Subscriptions
+* Added support for refunds
 
 = 1.0.4 =
 * Added new log, general and admin messages

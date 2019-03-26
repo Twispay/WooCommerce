@@ -63,8 +63,8 @@ if ( ! class_exists( 'Twispay_TW_Logger' ) ) :
 
             $already = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE id_cart = '" . $id . "'" );
             if ( $already ) {
-              /* Update the DB with the transaction data. */
-              $wpdb->query( $wpdb->prepare( "UPDATE " . $wpdb->prefix . "twispay_tw_transactions SET status = '" . $status . "' WHERE id_cart = '%d'", $id ) );
+                /* Update the DB with the transaction data. */
+                $wpdb->query( $wpdb->prepare( "UPDATE " . $wpdb->prefix . "twispay_tw_transactions SET status = '" . $status . "' WHERE id_cart = '%d'", $id ) );
             }
         }
 
