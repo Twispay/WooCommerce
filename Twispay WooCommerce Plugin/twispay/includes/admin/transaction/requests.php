@@ -181,7 +181,7 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
 
         if(FALSE == $skip){
             $response = json_decode($response);
-    
+
             if ( 'Success' == $response->message ) {
                 /* Check if any order was found on the server. */
                 if($response->pagination->currentItemCount){
@@ -196,10 +196,7 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
                 wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=success_recurring' ) );
             } else {
                 Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_get_status'] . $subscription->get_parent_id() );
-                continue;
             }
-        } else {
-            continue;
         }
     }
     /* Redirect to the Transaction list Page with message. */
