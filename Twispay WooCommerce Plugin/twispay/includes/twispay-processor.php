@@ -89,7 +89,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
                     , 'city' => ($data['billing']['city']) ? ($data['billing']['city']) : ($data['shipping']['city'])
                     , 'address' => ($data['billing']['address_1']) ? ($data['billing']['address_1']/* . ' ' . $data['billing']['address_2']*/) : ($data['shipping']['address_1']/* . ' ' . $data['shipping']['address_2']*/)
                     , 'zipCode' => ($data['billing']['postcode']) ? ($data['billing']['postcode']) : ($data['shipping']['postcode'])
-                    , 'phone' => $data['billing']['phone']
+                    , 'phone' => (('+' == $data['billing']['phone'][0]) ? ('+') : ('')) . preg_replace('/([^0-9]*)+/', '', $data['billing']['phone'])
                     , 'email' => $data['billing']['email']
                     /* , 'tags' => [] */
                     ];
