@@ -18,8 +18,12 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ){
     require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
 }
 
+/* Require the "Twispay_TW_Logger" class. */
+require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Logger.php' );
 /* Require the "Twispay_TW_Helper_Response" class. */
 require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Helper_Response.php' );
+/* Require the "Twispay_TW_Status_Updater" class. */
+require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Status_Updater.php' );
 /* Require the "Twispay_TW_Default_Thankyou" class. */
 require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Default_Thankyou.php' );
 
@@ -49,7 +53,8 @@ if ( $configuration ) {
     } else if ( 0 == $configuration->live_mode ) {
         $secretKey = $configuration->staging_key;
     } else {
-        /* TODO: Error? */
+        echo '<style>.loader {display: none;}</style>';
+        die( $tw_lang['twispay_processor_error_missing_configuration'] );
     }
 }
 
@@ -58,7 +63,7 @@ if ( $configuration ) {
                                           /* OR */
 /* Check if the 'backUrl' is corrupted: Doesn't contain the 'secure_key' field. */
 if( ((FALSE == isset($_POST['opensslResult'])) && (FALSE == isset($_POST['result']))) || (FALSE == isset($_GET['secure_key'])) ) {
-  Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_empty_response']);
+  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_empty_response']);
   ?>
       <div class="error notice" style="margin-top: 20px;">
           <h3><?= $tw_lang['general_error_title']; ?></h3>
@@ -76,7 +81,7 @@ if( ((FALSE == isset($_POST['opensslResult'])) && (FALSE == isset($_POST['result
 
 /* Check if there is NO secret key. */
 if ( '' == $secretKey ) {
-    Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_invalid_private']);
+    Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_private']);
     ?>
         <div class="error notice" style="margin-top: 20px;">
             <h3><?= $tw_lang['general_error_title']; ?></h3>
@@ -99,7 +104,7 @@ $decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encrypt
 
 /* Check if decryption failed.  */
 if(FALSE === $decrypted){
-  Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_decryption_error']);
+  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_decryption_error']);
   ?>
       <div class="error notice" style="margin-top: 20px;">
           <h3><?= $tw_lang['general_error_title']; ?></h3>
@@ -112,16 +117,18 @@ if(FALSE === $decrypted){
   <?php
 
   exit();
+} else {
+  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_string_decrypted'] . $decrypted);
 }
 
 
 /* Validate the decripted response. */
-$orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decrypted, /*tw_usingOpenssl*/TRUE, $tw_lang);
+$orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decrypted, $tw_lang);
 
 
 /* Check if server sesponse validation failed.  */
 if(TRUE !== $orderValidation){
-    Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_validating_failed']);
+    Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_validating_failed']);
     ?>
         <div class="error notice" style="margin-top: 20px;">
             <h3><?= $tw_lang['general_error_title']; ?></h3>
@@ -138,12 +145,13 @@ if(TRUE !== $orderValidation){
 
 
 /* Extract the WooCommerce order. */
-$order = wc_get_order(explode('_', $decrypted['externalOrderId'])[0]);
+$orderId = explode('_', $decrypted['externalOrderId'])[0];
+$order = wc_get_order($orderId);
 
 
 /* Check if the WooCommerce order extraction failed. */
 if( FALSE == $order ){
-    Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_invalid_order']);
+    Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_order']);
     ?>
         <div class="error notice" style="margin-top: 20px;">
             <h3><?= $tw_lang['general_error_title']; ?></h3>
@@ -162,7 +170,7 @@ if( FALSE == $order ){
 
 /* Check if the WooCommerce order cart hash does NOT MATCH the one sent to the server. */
 if ( $_GET['secure_key'] != $order->get_data()['cart_hash'] ){
-    Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_invalid_key']);
+    Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_key']);
     ?>
         <div class="error notice" style="margin-top: 20px;">
             <h3><?= $tw_lang['general_error_title']; ?></h3>
@@ -182,72 +190,6 @@ if ( $_GET['secure_key'] != $order->get_data()['cart_hash'] ){
 /* Extract the transaction status. */
 $status = (empty($decrypted['status'])) ? ($decrypted['transactionStatus']) : ($decrypted['status']);
 /* Reconstruct the checkout URL to use it to allow client to try again in case of error. */
-$checkout_url = wc_get_checkout_url() . 'order-pay/' . explode('_', $decrypted['externalOrderId'])[0] . '/?pay_for_order=true&key=' . $order->get_data()['order_key'] . '&tw_reload=true';
+$checkout_url = wc_get_checkout_url() . 'order-pay/' . $orderId . '/?pay_for_order=true&key=' . $order->get_data()['order_key'] . '&tw_reload=true';
 
-
-/* Set the status of the WooCommerce order according to the received status. */
-switch ($status) {
-    case Twispay_TW_Helper_Response::$RESULT_STATUSES['COMPLETE_FAIL']:
-        /* Mark order as failed. */
-        $order->update_status('failed', __( $tw_lang['wa_order_failed_notice'], 'woocommerce' ));
-
-        Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_ok_status_failed'] . explode('_', $decrypted['externalOrderId'])[0]);
-        ?>
-            <div class="error notice" style="margin-top: 20px;">
-                <h3><?= $tw_lang['general_error_title']; ?></h3>
-                <?php if('0' == $configuration->contact_email){ ?>
-                    <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
-                <?php } else { ?>
-                    <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
-                <?php } ?>
-            </div>
-        <?php
-    break;
-
-    case Twispay_TW_Helper_Response::$RESULT_STATUSES['THREE_D_PENDING']:
-        /* Mark order as on-hold. */
-        $order->update_status('on-hold', __( $tw_lang['wa_order_hold_notice'], 'woocommerce' ));
-
-        Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_ok_status_hold'] . explode('_', $decrypted['externalOrderId'])[0]);
-        ?>
-            <div class="error notice" style="margin-top: 20px;">
-                <h3><?= $tw_lang['general_error_title']; ?></h3>
-                <span><?= $tw_lang['general_error_hold_notice']; ?></span>
-                <?php if('0' == $configuration->contact_email){ ?>
-                    <p><?= $tw_lang['general_error_desc_f'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
-                <?php } else { ?>
-                    <p><?= $tw_lang['general_error_desc_f']; ?><a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
-                <?php } ?>
-            </div>
-        <?php
-    break;
-
-    case Twispay_TW_Helper_Response::$RESULT_STATUSES['IN_PROGRESS']:
-    case Twispay_TW_Helper_Response::$RESULT_STATUSES['COMPLETE_OK']:
-        /* Mark order as completed. */
-        $order->update_status('processing', __( $tw_lang['wa_order_status_notice'], 'woocommerce' ));
-
-        Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_ok_status_complete'] . explode('_', $decrypted['externalOrderId'])[0]);
-
-        /* Redirect to Twispay "Thank you Page" if it is set, if not, redirect to default "Thank you Page" */
-        if ( $configuration->thankyou_page ) {
-            wp_safe_redirect( $configuration->thankyou_page );
-        } else {
-            new Twispay_TW_Default_Thankyou( $order );
-        }
-    break;
-
-    default:
-      Twispay_TW_Helper_Response::twispay_tw_log($tw_lang['log_error_wrong_status'] . $status);
-      ?>
-          <div class="error notice" style="margin-top: 20px;">
-              <h3><?= $tw_lang['general_error_title']; ?></h3>
-              <?php if('0' == $configuration->contact_email){ ?>
-                    <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
-                <?php } else { ?>
-                    <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
-                <?php } ?>
-          </div>
-      <?php
-    break;
-}
+Twispay_TW_Status_Updater::updateStatus_backUrl($orderId, $status, $checkout_url, $tw_lang, $configuration);

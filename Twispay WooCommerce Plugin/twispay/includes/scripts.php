@@ -10,6 +10,9 @@
  * @version  0.0.1
  */
 
+/* Require the "Twispay_TW_Logger" class. */
+require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Logger.php' );
+
 /**
  * Twispay Admin Checker
  *
@@ -39,6 +42,7 @@ function twispay_tw_check_if_is_admin() {
     return in_array( $_GET['page'], $tw_pages );
 }
 
+
 /**
  * Twispay Add Admin Js
  *
@@ -59,6 +63,7 @@ function twispay_tw_add_admin_js() {
 }
 add_action( 'admin_enqueue_scripts', 'twispay_tw_add_admin_js' );
 
+
 /**
  * Twispay Add Admin Css
  *
@@ -78,6 +83,7 @@ function twispay_tw_add_admin_css() {
 }
 add_action( 'admin_enqueue_scripts', 'twispay_tw_add_admin_css' );
 
+
 /**
  * Twispay Add Front Css
  *
@@ -91,6 +97,7 @@ function twispay_tw_add_front_css() {
     wp_enqueue_style( 'ma-front', plugins_url( '../assets/css/front.css', __FILE__ ) );
 }
 add_action( 'wp_enqueue_scripts', 'twispay_tw_add_front_css' );
+
 
 /**
  * Twispay init the Payment Gateway
@@ -110,35 +117,51 @@ function init_twispay_gateway_class() {
              * @return void
              */
             public function __construct() {
-                // Load languages
-                $lang = explode( '-', get_bloginfo( 'language' ) );
-                $lang = $lang[0];
+                /* Load languages */
+                $lang = explode( '-', get_bloginfo( 'language' ) )[0];
                 if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
                     require( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' );
                 } else {
                     require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
                 }
-                
+
                 $this->id = 'twispay';
                 $this->icon =  plugins_url() . '/twispay/logo.png';
                 $this->has_fields = true;
                 $this->method_title = $tw_lang['ws_title'];
                 $this->method_description = $tw_lang['ws_description'];
-                
+                if( class_exists('WC_Subscriptions') ){
+                    $this->supports = [ 'products'
+                                      , 'refunds' 
+                                      , 'subscriptions'
+                                      , 'subscription_cancellation'
+                                      , 'subscription_suspension'
+                                      , 'subscription_reactivation'
+                                      , 'subscription_amount_changes'
+                                      , 'subscription_date_changes'
+                                      , 'subscription_payment_method_change'
+                                      , 'subscription_payment_method_change_customer'
+                                      , 'subscription_payment_method_change_admin'
+                                      , 'multiple_subscriptions'
+                                      , 'gateway_scheduled_payments'];
+                } else {
+                    $this->supports = [ 'products', 'refunds' ];
+                }
+
                 $this->init_form_fields();
                 $this->init_settings();
-                
+
                 $this->title = $this->get_option( 'title' );
                 $this->description = $this->get_option( 'description' );
                 $this->enable_for_methods = $this->get_option( 'enable_for_methods', array() );
                 $this->enable_for_virtual = $this->get_option( 'enable_for_virtual', 'yes' ) === 'yes' ? true : false;
-                
+
                 $shipping_methods = array();
 
-		foreach ( WC()->shipping()->load_shipping_methods() as $method ) {
-		    $shipping_methods[ $method->id ] = $method->get_method_title();
-		}
-                
+                foreach ( WC()->shipping()->load_shipping_methods() as $method ) {
+                    $shipping_methods[ $method->id ] = $method->get_method_title();
+                }
+
                 $this->form_fields = array(
                     'enabled' => array(
                         'title'    => __( $tw_lang['ws_enable_disable_title'], 'woocommerce' ),
@@ -180,10 +203,10 @@ function init_twispay_gateway_class() {
                         'default'  => 'yes',
                     )
                 );
-                
+
                 add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
             }
-            
+
             /**
             * Check if the Twispay Gateway is available for use
             *
@@ -270,7 +293,7 @@ function init_twispay_gateway_class() {
 
                 return parent::is_available();
             }
-            
+
             /**
              * Twispay Process Payment function
              *
@@ -278,34 +301,76 @@ function init_twispay_gateway_class() {
              * @return array with Result and Redirect
              */
             function process_payment( $order_id ) {
-                //global $woocommerce;
+                /* Extract the order; */
                 $order = new WC_Order( $order_id );
-            
-                //// Reduce stock levels
-                //$order->reduce_order_stock();
-                
-                //// Remove cart
-                //$woocommerce->cart->empty_cart();
-                
-                if ( isset( $_GET['tw_reload'] ) && $_GET['tw_reload'] ) {
-                    // Return request redirect
+
+                /* Check if the order contains a subscription. */
+                if(class_exists('WC_Subscriptions') && (TRUE == wcs_order_contains_subscription($order_id))){
+                    /* Redirect to file that processes the subscriptions payments requests. */
                     return array(
                         'result' => 'success',
-                        'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id . '&tw_reload=true'
+                        'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-subscription-processor.php?order_id=' . $order_id
                     );
+                } else {
+                    if ( isset( $_GET['tw_reload'] ) && $_GET['tw_reload'] ) {
+                        // Return request redirect
+                        return array(
+                            'result' => 'success',
+                            'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id . '&tw_reload=true'
+                        );
+                    } else {
+                        // Return request redirect
+                        return array(
+                            'result' => 'success',
+                            'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id
+                        );
+                    }
                 }
-                else {
-                    // Return request redirect
-                    return array(
-                        'result' => 'success',
-                        'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id
-                    );
+            }
+
+
+            /**
+             * Twispay Process Payment function
+             *
+             * @param order_id: The ID of the order witha. the refund.
+             * @param amount: The amount to be refunded.
+             * @param reason: The reason of the refund.
+             * 
+             * @return boolean: True or false based on success
+             */
+            function process_refund($order_id, $amount = NULL, $reason = '') {
+                global $wpdb;
+                $apiKey = '';
+                $transaction_id = $wpdb->get_var( "SELECT transactionId FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE id_cart = '" . $order_id . "'" );
+
+                /* Get configuration from database. */
+                $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
+
+                if ( $configuration ) {
+                    if ( 1 == $configuration->live_mode ) {
+                        $apiKey = $configuration->live_key;
+                        $url = 'https://api.twispay.com/transaction/' . $transaction_id;
+                    } else if ( 0 == $configuration->live_mode ) {
+                        $apiKey = $configuration->staging_key;
+                        $url = 'https://api-stage.twispay.com/transaction/' . $transaction_id;
+                    }
+                }
+
+                $args = array('method' => 'DELETE', 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]);
+                $response = wp_remote_request( $url, $args );
+
+                if ( 'OK' == $response['response']['message'] ) {
+                    Twispay_TW_Logger::twispay_tw_updateTransactionStatus($order_id, Twispay_TW_Status_Updater::$RESULT_STATUSES['REFUND_OK']);
+                    return TRUE;
+                } else {
+                    return FALSE;
                 }
             }
         }
     }
 }
 add_action( 'plugins_loaded', 'init_twispay_gateway_class' );
+
 
 /**
  * Add the Twispay gateway class
@@ -315,11 +380,12 @@ add_action( 'plugins_loaded', 'init_twispay_gateway_class' );
  */
 function add_twispay_gateway_class( $methods ) {
     if ( class_exists( 'WooCommerce' ) ) {
-        $methods[] = 'WC_Gateway_Twispay_Gateway'; 
+        $methods[] = 'WC_Gateway_Twispay_Gateway';
         return $methods;
     }
 }
 add_filter( 'woocommerce_payment_gateways', 'add_twispay_gateway_class' );
+
 
 /**
  * Twispay Prepare buffer functions
@@ -334,6 +400,7 @@ function twispay_tw_start_buffer_output() {
 }
 add_action('init', 'twispay_tw_start_buffer_output');
 
+
 /**
  * Custom text on the receipt page.
  */
@@ -346,10 +413,11 @@ function twispay_tw_isa_order_received_text( $text, $order ) {
     } else {
         require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
     }
-    
+
     return $tw_lang['order_confirmation_title'];
 }
 add_filter('woocommerce_thankyou_order_received_text', 'twispay_tw_isa_order_received_text', 10, 2 );
+
 
 /**
  * Suppress email functionality
@@ -362,14 +430,15 @@ function twispay_tw_unhook_woo_order_emails( $email_class ) {
     remove_action( 'woocommerce_order_status_failed_to_processing_notification', array( $email_class->emails['WC_Email_New_Order'], 'trigger' ) );
     remove_action( 'woocommerce_order_status_failed_to_completed_notification', array( $email_class->emails['WC_Email_New_Order'], 'trigger' ) );
     remove_action( 'woocommerce_order_status_failed_to_on-hold_notification', array( $email_class->emails['WC_Email_New_Order'], 'trigger' ) );
-    
+
     // Processing order emails
     remove_action( 'woocommerce_order_status_pending_to_processing_notification', array( $email_class->emails['WC_Email_Customer_Processing_Order'], 'trigger' ) );
     remove_action( 'woocommerce_order_status_pending_to_on-hold_notification', array( $email_class->emails['WC_Email_Customer_Processing_Order'], 'trigger' ) );
-    
+
     // Completed order emails
     remove_action( 'woocommerce_order_status_completed_notification', array( $email_class->emails['WC_Email_Customer_Completed_Order'], 'trigger' ) );
 }
+
 // Get configuration from database
 global $wpdb;
 $suppress_email = $wpdb->get_row( "SELECT suppress_email FROM " . $wpdb->prefix . "twispay_tw_configuration" );
@@ -379,3 +448,42 @@ if ( $suppress_email ) {
         add_action( 'woocommerce_email', 'twispay_tw_unhook_woo_order_emails' );
     }
 }
+
+
+
+function subscription_terminated( $subscription ){
+    /* Get configuration from database. */
+    global $wpdb;
+    $apiKey = '';
+    $configuration = $wpdb->get_row("SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration");
+    $serverOrderId = $wpdb->get_var( "SELECT orderId FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE id_cart = '" . $subscription->get_parent_id() . "'" );
+    if ( $configuration ) {
+        if ( $configuration->live_mode == 1 ) {
+            $apiKey = $configuration->live_key;
+            $url = 'https://api.twispay.com/order/' . $serverOrderId;
+        } else if ( $configuration->live_mode == 0 ) {
+            $apiKey = $configuration->staging_key;
+            $url = 'https://api-stage.twispay.com/order/' . $serverOrderId;
+        }
+    }
+
+    /* Load languages */
+    $lang = explode( '-', get_bloginfo( 'language' ) )[0];
+    if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
+        require( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' );
+    } else {
+        require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
+    }
+
+    $args = array( 'method' => 'DELETE'
+                  , 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]);
+    $response = wp_remote_request($url, $args);
+
+    if ( $response['response']['message'] == 'OK' ) {
+        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_ok_set_status'] . $subscription->get_parent_id());
+    } else {
+        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_error_set_status'] . $subscription->get_parent_id());
+    }
+}
+add_action('woocommerce_subscription_status_cancelled', 'subscription_terminated');
+add_action('woocommerce_subscription_status_expired', 'subscription_terminated');
