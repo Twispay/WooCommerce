@@ -31,7 +31,7 @@ require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_S
 /* Check if the POST is corrupted: Doesn't contain the 'opensslResult' and the 'result' fields. */
 if( (FALSE == isset($_POST['opensslResult'])) && (FALSE == isset($_POST['result'])) ) {
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_empty_response']);
-    exit();
+    die($tw_lang['log_error_empty_response']);
 }
 
 
@@ -55,7 +55,7 @@ if ( $configuration ) {
 /* Check if there is NO secret key. */
 if ( '' == $secretKey ) {
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_private']);
-    exit();
+    die($tw_lang['log_error_invalid_private']);
 }
 
 
@@ -65,11 +65,11 @@ $decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encrypt
 
 /* Check if decryption failed.  */
 if(FALSE === $decrypted){
-  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_decryption_error']);
-  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_openssl'] . (isset($_POST['opensslResult'])) ? ($_POST['opensslResult']) : ($_POST['result']));
-  exit();
+    Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_decryption_error']);
+    Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_openssl'] . (isset($_POST['opensslResult'])) ? ($_POST['opensslResult']) : ($_POST['result']));
+    die($tw_lang['log_error_decryption_error']);
 } else {
-  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_string_decrypted'] . $decrypted);
+    Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_string_decrypted']);
 }
 
 
@@ -79,8 +79,8 @@ $orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decry
 
 /* Check if server sesponse validation failed.  */
 if(TRUE !== $orderValidation){
-    Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_validating_failed'] );
-    exit();
+    Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_validating_failed']);
+    die($tw_lang['log_error_validating_failed']);
 }
 
 
@@ -92,7 +92,7 @@ $order = wc_get_order($orderId);
 /* Check if the WooCommerce order extraction failed. */
 if( FALSE == $order ){
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_order']);
-    exit();
+    die($tw_lang['log_error_invalid_order']);
 }
 
 
@@ -103,4 +103,5 @@ $status = (empty($decrypted['status'])) ? ($decrypted['transactionStatus']) : ($
 /* Set the status of the WooCommerce order according to the received status. */
 Twispay_TW_Status_Updater::updateStatus_IPN($orderId, $status, $tw_lang);
 
-exit();
+/* Send the 200 OK response back to the Twispay server. */
+die('OK');

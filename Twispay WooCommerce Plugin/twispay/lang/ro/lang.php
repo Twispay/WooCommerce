@@ -106,7 +106,7 @@ $tw_lang['twispay_processor_error_missing_configuration'] = 'Lipsa fisier de con
 
 
 /* Validation LOG insertor */
-$tw_lang['log_ok_decrypted_string'] = '[RESPONSE]: string decriptat: ';
+$tw_lang['log_ok_string_decrypted'] = '[RESPONSE]: Decriptare efectuata cu succes.';
 $tw_lang['log_ok_response_data'] = '[RESPONSE]: Data: ';
 $tw_lang['log_ok_status_complete'] = '[RESPONSE]: Status complet-ok';
 $tw_lang['log_ok_status_refund'] = '[RESPONSE]: Status refund-ok pentru comanda cu ID-ul: ';

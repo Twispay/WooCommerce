@@ -106,7 +106,7 @@ $tw_lang['twispay_processor_error_missing_configuration'] = 'Missing configurati
 
 
 /* Validation LOG insertor */
-$tw_lang['log_ok_string_decrypted'] = '[RESPONSE]: decrypted string: ';
+$tw_lang['log_ok_string_decrypted'] = '[RESPONSE]: Decryption successfully performed.';
 $tw_lang['log_ok_response_data'] = '[RESPONSE]: Data: ';
 $tw_lang['log_ok_status_complete'] = '[RESPONSE]: Status complete-ok for order ID: ';
 $tw_lang['log_ok_status_refund'] = '[RESPONSE]: Status refund-ok for order ID: ';
