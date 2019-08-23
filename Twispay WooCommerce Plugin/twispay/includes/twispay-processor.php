@@ -94,8 +94,6 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
                     /* , 'tags' => [] */
                     ];
 
-        error_log("customer=" . print_r($customer), true);
-
         /* Extract the items details. */
         $items = array();
         foreach ( $order->get_items() as $item ) {
