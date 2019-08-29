@@ -37,7 +37,7 @@ if ( !class_exists('WooCommerce') ){
         </div>
     <?php
 
-    exit();
+    die();
 }
 
 
@@ -63,19 +63,19 @@ if ( $configuration ) {
                                           /* OR */
 /* Check if the 'backUrl' is corrupted: Doesn't contain the 'secure_key' field. */
 if( ((FALSE == isset($_POST['opensslResult'])) && (FALSE == isset($_POST['result']))) || (FALSE == isset($_GET['secure_key'])) ) {
-  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_empty_response']);
-  ?>
-      <div class="error notice" style="margin-top: 20px;">
-          <h3><?= $tw_lang['general_error_title']; ?></h3>
-          <?php if('0' == $configuration->contact_email){ ?>
-              <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
-          <?php } else { ?>
-              <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
-          <?php } ?>
-      </div>
-  <?php
+    Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_empty_response']);
+    ?>
+        <div class="error notice" style="margin-top: 20px;">
+            <h3><?= $tw_lang['general_error_title']; ?></h3>
+            <?php if('0' == $configuration->contact_email){ ?>
+                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
+            <?php } else { ?>
+                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
+            <?php } ?>
+        </div>
+    <?php
 
-  exit();
+    die();
 }
 
 
@@ -94,7 +94,7 @@ if ( '' == $secretKey ) {
         </div>
     <?php
 
-    exit();
+    die();
 }
 
 
@@ -116,9 +116,9 @@ if(FALSE === $decrypted){
       </div>
   <?php
 
-  exit();
+  die();
 } else {
-  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_string_decrypted'] . $decrypted);
+  Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_string_decrypted']);
 }
 
 
@@ -140,7 +140,7 @@ if(TRUE !== $orderValidation){
         </div>
     <?php
 
-    exit();
+    die();
 }
 
 
@@ -164,7 +164,7 @@ if( FALSE == $order ){
         </div>
     <?php
 
-    exit();
+    die();
 }
 
 
@@ -183,7 +183,7 @@ if ( $_GET['secure_key'] != $order->get_data()['cart_hash'] ){
         </div>
     <?php
 
-    exit();
+    die();
 }
 
 

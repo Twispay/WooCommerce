@@ -81,7 +81,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         }
 
         /* Extract the customer details. */
-        $customer = [ 'identifier' => (0 == $data['customer_id']) ? ('_' . $_GET['order_id'] . '_' . date('YmdHis')) : ('_' . $data['customer_id'])
+        $customer = [ 'identifier' => (0 == $data['customer_id']) ? ('_' . $_GET['order_id'] . '_' . date('YmdHis')) : ('_' . $data['customer_id'] . '_' . date('YmdHis'))
                     , 'firstName' => ($data['billing']['first_name']) ? ($data['billing']['first_name']) : ($data['shipping']['first_name'])
                     , 'lastName' => ($data['billing']['last_name']) ? ($data['billing']['last_name']) : ($data['shipping']['last_name'])
                     , 'country' => ($data['billing']['country']) ? ($data['billing']['country']) : ($data['shipping']['country'])
