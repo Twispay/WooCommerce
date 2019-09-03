@@ -27,9 +27,12 @@ Alternatively, you can check out our [installation guide](https://twis.li/2ueQ6R
 
 == Changelog ==
 
-= 1.0.6 =
+= 1.0.7 =
 * Bugfix: Added die('OK') at the end of the file that processes the IPN response.
 * Bugfix: Added the 'timestamp' to the 'identifier' when it is built for an authenticated customer.
+
+= 1.0.6 =
+* Version bump
 
 = 1.0.5 =
 * Moved all the subscription status update code to a dedicated object
