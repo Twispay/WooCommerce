@@ -5,8 +5,8 @@
  *
  * @package  Twispay/Front
  * @category Front
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );

@@ -6,13 +6,13 @@
  *
  * @package  Twispay/Front
  * @category Front
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 // Exit if the file is accessed directly
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
 }
 
 // Security class check
@@ -20,9 +20,6 @@ if ( ! class_exists( 'Twispay_TW_Views' ) ) :
 
 /**
  * Twispay Views Class
- *
- * @class   Twispay_TW_Views
- * @version 0.0.1
  */
 class Twispay_TW_Views {
     /**
@@ -32,15 +29,15 @@ class Twispay_TW_Views {
      * @return void
      */
     public function __construct() {
-	
+
     }
-    
+
     /**
      * Render the Front Twispay View
      *
      * @public
      * @return string Individual view
-     */	
+     */
     public function twispay_tw_render_view( $slug ) {
 	      include TWISPAY_PLUGIN_DIR . 'views/' . $slug . '.php';
     }

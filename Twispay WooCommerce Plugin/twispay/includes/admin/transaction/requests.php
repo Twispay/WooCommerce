@@ -6,8 +6,8 @@
  *
  * @package  Twispay/Admin
  * @category Admin
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 
@@ -191,7 +191,7 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
                     /* Cancel the local subscription as no order was found on the server. */
                     Twispay_TW_Status_Updater::updateSubscriptionStatus($subscription->get_parent_id(), Twispay_TW_Status_Updater::$RESULT_STATUSES['CANCEL_OK'], $tw_lang);
                 }
-    
+
                 /* Redirect to the Transaction list Page with success. */
                 wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=success_recurring' ) );
             } else {

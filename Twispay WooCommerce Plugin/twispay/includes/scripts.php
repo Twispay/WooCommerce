@@ -6,8 +6,8 @@
  *
  * @package  Twispay/Admin
  * @category Admin
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 /* Require the "Twispay_TW_Logger" class. */
@@ -26,18 +26,18 @@ function twispay_tw_check_if_is_admin() {
     if ( ! is_admin() ) {
         return false;
     }
-    
+
     // Check if the page parameters is present
     if ( ! isset( $_GET['page'] ) ) {
         return false;
     }
-    
+
     // Make array with all Twispay Pages
     $tw_pages = array(
         'twispay',
         'tw-transaction'
     );
-    
+
     // Check if current page is one of the Twispay Pages
     return in_array( $_GET['page'], $tw_pages );
 }
@@ -56,7 +56,7 @@ function twispay_tw_add_admin_js() {
     if ( ! twispay_tw_check_if_is_admin() ) {
         return;
     }
-    
+
     // Load all admin js files for Administrator Pages
     wp_enqueue_script( 'ma-admin', plugins_url( '../assets/js/admin.js', __FILE__ ) );
     //wp_enqueue_script( 'ma-admin-jquery', plugins_url( '../assets/js/jquery-ui.min.js', __FILE__ ) );
@@ -77,7 +77,7 @@ function twispay_tw_add_admin_css() {
     if ( ! twispay_tw_check_if_is_admin() ) {
         return;
     }
-    
+
     // Load all admin css files for Administrator Pages
     wp_enqueue_style( 'ma-admin', plugins_url( '../assets/css/admin.css', __FILE__ ) );
 }
@@ -132,7 +132,7 @@ function init_twispay_gateway_class() {
                 $this->method_description = $tw_lang['ws_description'];
                 if( class_exists('WC_Subscriptions') ){
                     $this->supports = [ 'products'
-                                      , 'refunds' 
+                                      , 'refunds'
                                       , 'subscriptions'
                                       , 'subscription_cancellation'
                                       , 'subscription_suspension'
@@ -307,24 +307,10 @@ function init_twispay_gateway_class() {
                 /* Check if the order contains a subscription. */
                 if(class_exists('WC_Subscriptions') && (TRUE == wcs_order_contains_subscription($order_id))){
                     /* Redirect to file that processes the subscriptions payments requests. */
-                    return array(
-                        'result' => 'success',
-                        'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-subscription-processor.php?order_id=' . $order_id
-                    );
+                    return array('result' => 'success', 'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-subscription-processor.php?order_id=' . $order_id);
                 } else {
-                    if ( isset( $_GET['tw_reload'] ) && $_GET['tw_reload'] ) {
-                        // Return request redirect
-                        return array(
-                            'result' => 'success',
-                            'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id . '&tw_reload=true'
-                        );
-                    } else {
-                        // Return request redirect
-                        return array(
-                            'result' => 'success',
-                            'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id
-                        );
-                    }
+                    /* Redirect to file that processes the purchase payments requests. */
+                    return array('result' => 'success', 'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id);
                 }
             }
 
@@ -335,7 +321,7 @@ function init_twispay_gateway_class() {
              * @param order_id: The ID of the order witha. the refund.
              * @param amount: The amount to be refunded.
              * @param reason: The reason of the refund.
-             * 
+             *
              * @return boolean: True or false based on success
              */
             function process_refund($order_id, $amount = NULL, $reason = '') {

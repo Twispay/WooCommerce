@@ -6,13 +6,13 @@
  *
  * @package  Twispay/Admin
  * @category Admin
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 // Exit if the file is accessed directly
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
 }
 
 // Security class check
@@ -20,9 +20,6 @@ if ( ! class_exists( 'Twispay_TW_Shortcodes' ) ) :
 
 /**
  * Twispay Shorcodes Class
- *
- * @class   Twispay_TW_Shortcodes
- * @version 0.0.1
  */
 class Twispay_TW_Shortcodes {
     /**
@@ -34,13 +31,13 @@ class Twispay_TW_Shortcodes {
     public function __construct() {
         add_shortcode( 'tw_payment_confirmation', array( $this, 'twispay_tw_payment_confirmation_handler' ) );
     }
-    
+
     /**
      * Renders the Twispay Payment Confirmation Form
      *
      * @public
      * @return string Payment Confirmation Form
-     */	
+     */
     public function twispay_tw_payment_confirmation_handler( $atts ) {
 	    return TW()->payment_confirmation->twispay_tw_payment_confirmation_form();
     }

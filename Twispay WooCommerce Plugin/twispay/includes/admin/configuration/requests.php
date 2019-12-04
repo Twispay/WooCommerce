@@ -4,10 +4,10 @@
  *
  * Here is processed all configuration actions( edit )
  *
- * @package  Twispay/Admin
+ * @package Twispay_Payment_Gateway
  * @category Admin
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 /**
@@ -37,22 +37,22 @@ function tw_twispay_p_edit_general_configuration( $request ) {
     $thankyou_page = $request['wp_pages'];
     $suppress_email = $request['suppress_email'];
     $contact_email_o = $request['contact_email_o'];
-    
+
     if ( $contact_email_o == '' ) {
         $contact_email_o = 0;
     }
-    
+
     // Wordpress database refference
     global $wpdb;
-    
+
     // Check if the Configuration row exist into Database
     $configuration = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
-    
+
     if ( $configuration ) {
         // Edit the Configuration into Database ( twispay_tw_configuration table )
-        $wpdb->update( 
-            $wpdb->prefix . 'twispay_tw_configuration', 
-            array( 
+        $wpdb->update(
+            $wpdb->prefix . 'twispay_tw_configuration',
+            array(
                 'live_mode'       => $live_mode,
                 'staging_id'      => $staging_site_id,
                 'staging_key'     => $staging_private_key,
@@ -61,7 +61,7 @@ function tw_twispay_p_edit_general_configuration( $request ) {
                 'thankyou_page'   => $thankyou_page,
                 'suppress_email'  => $suppress_email,
                 'contact_email'  => $contact_email_o
-            ), 
+            ),
             array(
                 'id_tw_configuration'  => $configuration[0]->id_tw_configuration
             )
@@ -74,9 +74,9 @@ function tw_twispay_p_edit_general_configuration( $request ) {
         ) );
 
         // Edit the Configuration into Database ( twispay_tw_configuration table )
-        $wpdb->update( 
-            $wpdb->prefix . 'twispay_tw_configuration', 
-            array( 
+        $wpdb->update(
+            $wpdb->prefix . 'twispay_tw_configuration',
+            array(
                 'live_mode'       => $live_mode,
                 'staging_id'      => $staging_site_id,
                 'staging_key'     => $staging_private_key,
@@ -85,7 +85,7 @@ function tw_twispay_p_edit_general_configuration( $request ) {
                 'thankyou_page'   => $thankyou_page,
                 'suppress_email'  => $suppress_email,
                 'contact_email'  => $contact_email_o
-            ), 
+            ),
             array(
                 'id_tw_configuration'  => $wpdb->insert_id
             )

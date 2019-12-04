@@ -6,8 +6,8 @@
  *
  * @package  Twispay/Front
  * @category Front
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 /* Exit if the file is accessed directly. */
@@ -20,10 +20,6 @@ require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_S
 if ( !class_exists( 'Twispay_TW_Helper_Response' ) ) :
     /**
      * Twispay Helper Class
-     *
-     * @class   Twispay_TW_Helper_Response
-     * @version 0.0.1
-     *
      *
      * Class that implements methods to decrypt
      * Twispay server responses.
@@ -63,8 +59,25 @@ if ( !class_exists( 'Twispay_TW_Helper_Response' ) ) :
                 return FALSE;
             }
 
-            /* JSON decode the decrypted data. */
-            return json_decode($decryptedResponse, /*assoc*/TRUE, /*depth*/4);
+            /** JSON decode the decrypted data. */
+            $decodedResponse = json_decode($decryptedResponse, /*assoc*/TRUE, /*depth*/4);
+
+            /** Check if the decryption was successful. */
+              if (NULL === $decodedResponse) {
+                return FALSE;
+            }
+
+            /** Check if externalOrderId uses '_' separator */
+            if (FALSE !== strpos($decodedResponse['externalOrderId'], '_')) {
+                $explodedVal = explode('_', $decodedResponse['externalOrderId'])[0];
+
+                /** Check if externalOrderId contains only digits and is not empty. */
+                if (!empty($explodedVal) && ctype_digit($explodedVal)) {
+                    $decodedResponse['externalOrderId'] = $explodedVal;
+                }
+            }
+
+            return $decodedResponse;
         }
 
 

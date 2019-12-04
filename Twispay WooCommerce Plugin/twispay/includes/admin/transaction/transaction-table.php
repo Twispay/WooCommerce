@@ -6,8 +6,8 @@
  *
  * @package  Twispay/Admin
  * @category Admin
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 // Add the copy of the WP_List_Table class. We made a copy because the class is private.
@@ -15,14 +15,11 @@ require_once TWISPAY_PLUGIN_DIR . 'includes/class-ma-list-table.php';
 
 /**
  * Base custom class for displaying a list of items in an ajaxified HTML table.
- *
- * @class       TransactionTable
- * @version	0.0.1
  */
 class Twispay_TransactionTable extends Twispay_Tw_List_Table {
-    
+
     protected $tw_lang;
-    
+
     /**
      * Constructor.
      *
@@ -51,16 +48,16 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
      */
     function __construct( $tw_lang ) {
         global $status, $page;
-        
+
         $this->tw_lang = $tw_lang;
-    
+
         parent::__construct( array(
-            'singular'  => 'notification',  
-            'plural'    => 'notifications',   
-            'ajax'      => false      
+            'singular'  => 'notification',
+            'plural'    => 'notifications',
+            'ajax'      => false
         ) );
     }
-    
+
     /**
      * Displays the search box.
      *
@@ -80,7 +77,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
         if ( isset( $_REQUEST['status'] ) && $_REQUEST['status'] ) {
             echo '<input type="hidden" name="status" value="' . esc_attr( $_REQUEST['status'] ) . '" />';
         }
-            
+
         ?>
             <p class="search-box">
                 <input type="search" id="<?php echo $input_id; ?>" name="s" value="<?php _admin_search_query(); ?>" />
@@ -88,23 +85,20 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
             </p>
         <?php
     }
- 
+
     /**
      * Custom function that retrive the number of Transactions
-     *
-     * @version 0.0.1
-     * @access  private
      *
      * @param Object $wpdb         Wordpress refference to database.
      */
     private function get_all_count( $wpdb ) {
         $table_name = $wpdb->prefix . 'twispay_tw_transactions  ';
-        
+
         $wpdb->get_results( "SELECT id_tw_transactions FROM $table_name" );
-        
+
         return $wpdb->num_rows;
     }
-    
+
     /**
      * Get an associative array ( id => link ) with the list
      * of views available on this table.
@@ -116,30 +110,27 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
      */
     function get_views() {
         global $wpdb;
-         
+
         $views = array();
         $current = ( ! empty( $_REQUEST['status'] ) ? $_REQUEST['status'] : 'all' );
-        
+
         //All link
         $class = ( $current == 'all' ? ' class="current"' :'' );
         $all_url = remove_query_arg( 'status' );
         $views['all'] = "<a href='{$all_url }' {$class} >" . $this->tw_lang['transaction_list_all_views'] . "<span class='view_count'> ( " . $this->get_all_count( $wpdb ) . " )</span></a>";
-        
+
         return $views;
     }
-   
+
     /**
      * Custom modification on name column
-     *
-     * @version 0.0.1
-     * @access  public
      */
     function column_id_tw_transactions( $item ) {
         $actions = array(
             'refund'                 => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">' . $this->tw_lang['transaction_list_refund_title'] . '</a>', $_REQUEST['page'], 'refund_payment', $item['transactionId'] ),
             'cancel_recurring'       => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">' . $this->tw_lang['transaction_list_recurring_title'] . '</a>', $_REQUEST['page'], 'recurring_payment', $item['orderId'] )
         );
-        
+
         if ( $item['status'] == 'complete-ok' ) {
             return sprintf( '%1$s %2$s', $item['id_tw_transactions'], $this->row_actions( $actions ) );
         }
@@ -147,7 +138,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
             return $item['id_tw_transactions'];
         }
     }
-    
+
     /**
      *
      * @param object $item
@@ -155,7 +146,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
      */
     function column_default( $item, $column_name ) {
         global $woocommerce;
-        
+
         switch ( $column_name ) {
             case 'id_tw_transactions':
             case 'customer_name':
@@ -167,7 +158,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
                 return '#' . $item[$column_name];
         }
     }
-    
+
     /**
      *
      * @param object $item
@@ -175,11 +166,11 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
     function column_cb( $item ) {
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
-            $this->_args['singular'],  
-            $item['id_tw_transactions']                
+            $this->_args['singular'],
+            $item['id_tw_transactions']
         );
     }
-    
+
     /**
      * Get a list of columns. The format is:
      * 'internal-name' => 'Title'
@@ -202,7 +193,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
         );
         return $columns;
     }
-    
+
     /**
      * Get a list of sortable columns. The format is:
      * 'internal-name' => 'orderby'
@@ -225,7 +216,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
         );
         return $sortable_columns;
     }
-    
+
     /**
      * Prepares the list of items for displaying.
      * @uses TW_List_Table::set_pagination_args()
@@ -236,14 +227,14 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
      */
     function prepare_items() {
         global $wpdb;
-        
+
         $s = ( isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : 'all' );
         $ma_status = ( isset( $_REQUEST['status'] ) ? $_REQUEST['status'] : 'all' );
         $order_by = ( isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '' );
         $order_how = ( isset( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc' );
-        
+
         $transaction = $wpdb->prefix . "twispay_tw_transactions";
-        
+
         $per_page = 10;
         $query =
                 "SELECT
@@ -256,11 +247,11 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
                     tr.checkout_url
                 FROM $transaction tr
                 ";
-        
+
         if ( $s != 'all' ) {
             $query .= " WHERE tr.id_cart LIKE '%$s%'";
         }
-        
+
         // Order by functionality. Works on all columns.
         if ( $order_by != '' ) {
             switch ( $order_by ) {
@@ -274,23 +265,23 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
         else {
             $query .= " ORDER BY tr.id_tw_transactions desc";
         }
-    
+
         $columns = $this->get_columns();
         $hidden = array();
         $sortable = $this->get_sortable_columns();
-    
+
         $this->_column_headers = array( $columns, $hidden, $sortable );
         $this->process_bulk_action();
-        $data = $wpdb->get_results( $query, ARRAY_A );       
-    
+        $data = $wpdb->get_results( $query, ARRAY_A );
+
         // Set pagination to page.
-        $current_page = $this->get_pagenum();   
+        $current_page = $this->get_pagenum();
         $total_items = count( $data ) ;
-        $data = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page ); 
+        $data = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
         $this->items = $data;
-    
+
         $this->set_pagination_args( array(
-            'total_items'  => $total_items, 
+            'total_items'  => $total_items,
             'per_page'     => $per_page,
             'total_pages'  => ceil( $total_items / $per_page )
         ) );

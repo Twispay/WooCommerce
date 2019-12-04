@@ -6,8 +6,8 @@
  *
  * @package  Twispay/Admin
  * @category Admin
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 // Load languages
@@ -17,13 +17,13 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
     require( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' );
 } else {
     require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
-} 
+}
 
 ?>
 <div class="wrap">
     <h2><?= $tw_lang['transaction_list_recurring_ptitle']; ?></h2>
     <p><?= $tw_lang['transaction_list_recurring_subtitle']; ?></p>
-    
+
     <!-- Get all payment order ID from the $_GET parameters -->
     <?php
         if ( isset( $_GET['order_ad'] ) && $_GET['order_ad'] ) {

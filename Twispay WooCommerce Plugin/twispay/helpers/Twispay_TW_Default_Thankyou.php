@@ -6,8 +6,8 @@
  *
  * @package  Twispay/Front
  * @category Front
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 /* Exit if the file is accessed directly. */
@@ -17,10 +17,6 @@ if ( !defined('ABSPATH') ) { exit; }
 if ( ! class_exists( 'Twispay_TW_Default_Thankyou' ) ) :
     /**
      * Twispay Helper Class
-     *
-     * @class   Twispay_TW_Default_Thankyou
-     * @version 0.0.1
-     *
      *
      * Class that redirects user to the order page.
      */

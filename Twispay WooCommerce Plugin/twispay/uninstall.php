@@ -6,8 +6,8 @@
  *
  * @package  Twispay/Uninstall
  * @category Core
- * @author   twispay
- * @version  1.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 // Exit if the file is accessed directly

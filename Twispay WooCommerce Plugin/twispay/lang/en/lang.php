@@ -6,7 +6,8 @@
  *
  * @package  Twispay/Language
  * @category Admin/Front
- * @version  1.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 /* Configuration panel from Administrator */
