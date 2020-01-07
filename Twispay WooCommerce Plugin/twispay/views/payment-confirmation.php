@@ -99,7 +99,7 @@ if ( '' == $secretKey ) {
 
 
 /* Extract the server response and decript it. */
-$decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encryptedResponse*/(isset($_POST['opensslResult'])) ? ($_POST['opensslResult']) : ($_POST['result']), $secretKey);
+$decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encryptedResponse*/(isset($_POST['opensslResult'])) ? ($_POST['opensslResult']) : ($_POST['result']), $secretKey, $tw_lang);
 
 
 /* Check if decryption failed.  */

@@ -160,3 +160,17 @@ $tw_lang['general_error_hold_notice'] = ' Plata este in asteptare.';
 $tw_lang['general_error_invalid_key'] = ' Cheie de siguranță nevalidă.';
 $tw_lang['general_error_invalid_order'] = ' Comanda nu există.';
 $tw_lang['general_error_invalid_private'] = ' Cheie privată nevalidă.';
+
+
+/* JSON decoding/encoding errors */
+$tw_lang['JSON_ERROR_DEPTH'] = 'Adancimea maxima a stivei a fost depasita.';
+$tw_lang['JSON_ERROR_STATE_MISMATCH'] = 'JSON invalid sau deformat.';
+$tw_lang['JSON_ERROR_CTRL_CHAR'] = 'Eroare la caracterul de control, posibil sa nu fie codificat corect.';
+$tw_lang['JSON_ERROR_SYNTAX'] = 'Eroare de sintaxa.';
+$tw_lang['JSON_ERROR_UTF8'] = 'Caractere UTF-8 deformate, posibil sa nu fie codificate corect.';
+$tw_lang['JSON_ERROR_RECURSION'] = 'Una sau mai multe referinte recursive in valorile care trebuie codificate.';
+$tw_lang['JSON_ERROR_INF_OR_NAN'] = 'Una sau mai multe valoru NAN sau INF in valorile care trebuie codificate.';
+$tw_lang['JSON_ERROR_UNSUPPORTED_TYPE'] = 'A fost trimisa o valoare de un tip ce nu poate fi codificat.';
+$tw_lang['JSON_ERROR_INVALID_PROPERTY_NAME'] = 'A fost trimis un nume de proprietate ce nu poate fi codificat.';
+$tw_lang['JSON_ERROR_UTF16'] = 'Caractere UTF-16 deformate, posibil sa nu fie codificate corect.';
+$tw_lang['JSON_ERROR_UNKNOWN'] = 'Eroare necunoscuta.';
