@@ -6,8 +6,8 @@
  *
  * @package  Twispay/Admin
  * @category Admin
- * @author   twispay
- * @version  1.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 ?>
 
@@ -82,8 +82,11 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
             }
         }
 
+        /** Save the timestamp of this payment. */
+        $timestamp = date('YmdHis');
+
         /* Extract the customer details. */
-        $customer = [ 'identifier' => (0 == $data['customer_id']) ? ('_' . $_GET['order_id'] . '_' . date('YmdHis')) : ('_' . $data['customer_id'] . '_' . date('YmdHis'))
+        $customer = [ 'identifier' => 'r_wo_' . ((0 == $data['customer_id']) ? ($_GET['order_id']) : ($data['customer_id'])) . '_' . $timestamp
                     , 'firstName' => ($data['billing']['first_name']) ? ($data['billing']['first_name']) : ($data['shipping']['first_name'])
                     , 'lastName' => ($data['billing']['last_name']) ? ($data['billing']['last_name']) : ($data['shipping']['last_name'])
                     , 'country' => ($data['billing']['country']) ? ($data['billing']['country']) : ($data['shipping']['country'])
@@ -136,7 +139,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         /* Build the data object to be posted to Twispay. */
         $orderData = [ 'siteId' => $siteID
                      , 'customer' => $customer
-                     , 'order' => [ 'orderId' => $_GET['order_id']
+                     , 'order' => [ 'orderId' => $_GET['order_id'] . '_' . $timestamp
                                   , 'type' => 'recurring'
                                   , 'amount' => $data['total'] /* Total sum to pay right now. */
                                   , 'currency' => $data['currency']

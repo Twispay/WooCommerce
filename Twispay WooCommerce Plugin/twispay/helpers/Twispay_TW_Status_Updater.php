@@ -2,13 +2,13 @@
 /**
  * Twispay Helpers
  *
- * Updates the statused of orders and subscriptions based 
+ * Updates the statused of orders and subscriptions based
  *  on the status read from the server response.
  *
  * @package  Twispay/Front
  * @category Front
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 /* Exit if the file is accessed directly. */
@@ -19,12 +19,8 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
     /**
      * Twispay Helper Class
      *
-     * @class   Twispay_TW_Status_Updater
-     * @version 0.0.1
-     *
-     *
      * Class that implements methods to update the statuses
-     * of orders and subscriptions based on the status received 
+     * of orders and subscriptions based on the status received
      * from the server.
      */
     class Twispay_TW_Status_Updater{
@@ -201,11 +197,11 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                     if(class_exists('WC_Subscriptions') && wcs_order_contains_subscription($order)){
                       $subscription = wcs_get_subscriptions_for_order($order);
                       $subscription = reset($subscription);
-  
+
                       /* First payment on order, process payment & activate subscription. */
                       if ( 0 == $subscription->get_completed_payment_count() ) {
                           $order->payment_complete();
-  
+
                           if(class_exists('WC_Subscriptions') ){
                               WC_Subscriptions_Manager::activate_subscriptions_for_order( $order );
                           }

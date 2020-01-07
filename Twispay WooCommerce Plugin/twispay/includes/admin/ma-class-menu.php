@@ -6,13 +6,13 @@
  *
  * @package  Twispay/Admin
  * @category Admin
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 // Exit if the file is accessed directly
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
 }
 
 // Security class check
@@ -20,9 +20,6 @@ if ( ! class_exists( 'Twispay_Tw_Admin_Menu' ) ) :
 
 /**
  * Dashboard Menus Twispay_Tw_Admin_Menu Class.
- *
- * @class Twispay_Tw_Admin_Menu
- * @version	0.0.1
  */
 class Twispay_Tw_Admin_Menu {
     /**
@@ -36,7 +33,7 @@ class Twispay_Tw_Admin_Menu {
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'admin_menu' ) );
     }
-    
+
     /**
      * Function that will add the menus items, as well the submenus
      *
@@ -52,10 +49,10 @@ class Twispay_Tw_Admin_Menu {
         } else {
             require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
         }
-        
+
         // Add main adminsitrator page
         add_menu_page( __( 'Twispay', 'twispay' ), __( $tw_lang['menu_main_title'], 'twispay' ), 'administrator', 'twispay', 'twispay_tw_configuration', 'dashicons-editor-paste-text', 1000 );
-        
+
         // Add submenus
         add_submenu_page( 'twispay', __( $tw_lang['menu_configuration_tab'], 'twispay' ), __( $tw_lang['menu_configuration_tab'], 'twispay' ), 'administrator', 'twispay', 'twispay_tw_configuration' );
         add_submenu_page( 'twispay', __( $tw_lang['menu_transaction_tab'], 'twispay' ), __( $tw_lang['menu_transaction_tab'], 'twispay' ), 'administrator', 'tw-transaction', 'twispay_tw_transaction_administrator' );

@@ -6,8 +6,8 @@
  *
  * @package  Twispay/Front
  * @category Front
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 /* Exit if the file is accessed directly. */
@@ -21,10 +21,6 @@ if ( !class_exists( 'Twispay_TW_Helper_Response' ) ) :
     /**
      * Twispay Helper Class
      *
-     * @class   Twispay_TW_Helper_Response
-     * @version 0.0.1
-     *
-     *
      * Class that implements methods to decrypt
      * Twispay server responses.
      */
@@ -34,11 +30,12 @@ if ( !class_exists( 'Twispay_TW_Helper_Response' ) ) :
          *
          * @param string $tw_encryptedMessage - The encripted server message.
          * @param string $tw_secretKey        - The secret key (from Twispay).
+         * @param array $tw_lang              - The language that the store uses
          *
          * @return Array([key => value,]) - If everything is ok array containing the decrypted data.
          *         bool(FALSE)            - If decription fails.
          */
-        public static function twispay_tw_decrypt_message($tw_encryptedMessage, $tw_secretKey){
+        public static function twispay_tw_decrypt_message($tw_encryptedMessage, $tw_secretKey, $tw_lang){
             $encrypted = ( string )$tw_encryptedMessage;
 
             if ( !strlen($encrypted) || (FALSE == strpos($encrypted, ',')) ){
@@ -63,8 +60,72 @@ if ( !class_exists( 'Twispay_TW_Helper_Response' ) ) :
                 return FALSE;
             }
 
-            /* JSON decode the decrypted data. */
-            return json_decode($decryptedResponse, /*assoc*/TRUE, /*depth*/4);
+            /** JSON decode the decrypted data. */
+            $decodedResponse = json_decode($decryptedResponse, /*assoc*/TRUE, /*depth*/4);
+
+            /** Check if the decryption was successful. */
+              if (NULL === $decodedResponse) {
+                /** Log the last error occurred during the last JSON encoding/decoding. */
+                switch (json_last_error()) {
+                    case JSON_ERROR_DEPTH:
+                        Twispay_TW_Logger::twispay_tw_log($tw_lang['JSON_ERROR_DEPTH']);
+                    break;
+
+                    case JSON_ERROR_STATE_MISMATCH:
+                        Twispay_TW_Logger::twispay_tw_log($tw_lang['JSON_ERROR_STATE_MISMATCH']);
+                    break;
+
+                    case JSON_ERROR_CTRL_CHAR:
+                        Twispay_TW_Logger::twispay_tw_log($tw_lang['JSON_ERROR_CTRL_CHAR']);
+                    break;
+
+                    case JSON_ERROR_SYNTAX:
+                        Twispay_TW_Logger::twispay_tw_log($tw_lang['JSON_ERROR_SYNTAX']);
+                    break;
+
+                    case JSON_ERROR_UTF8:
+                        Twispay_TW_Logger::twispay_tw_log($tw_lang['JSON_ERROR_UTF8']);
+                    break;
+
+                    case JSON_ERROR_RECURSION:
+                        Twispay_TW_Logger::twispay_tw_log($tw_lang['JSON_ERROR_RECURSION']);
+                    break;
+
+                    case JSON_ERROR_INF_OR_NAN:
+                        Twispay_TW_Logger::twispay_tw_log($tw_lang['JSON_ERROR_INF_OR_NAN']);
+                    break;
+
+                    case JSON_ERROR_UNSUPPORTED_TYPE:
+                        Twispay_TW_Logger::twispay_tw_log($tw_lang['JSON_ERROR_UNSUPPORTED_TYPE']);
+                    break;
+
+                    case JSON_ERROR_INVALID_PROPERTY_NAME:
+                        Twispay_TW_Logger::twispay_tw_log($tw_lang['JSON_ERROR_INVALID_PROPERTY_NAME']);
+                    break;
+
+                    case JSON_ERROR_UTF16:
+                        Twispay_TW_Logger::twispay_tw_log($tw_lang['JSON_ERROR_UTF16']);
+                    break;
+
+                    default:
+                        Twispay_TW_Logger::twispay_tw_log($tw_lang['JSON_ERROR_UNKNOWN']);
+                    break;
+                }
+
+                return FALSE;
+            }
+
+            /** Check if externalOrderId uses '_' separator */
+            if (FALSE !== strpos($decodedResponse['externalOrderId'], '_')) {
+                $explodedVal = explode('_', $decodedResponse['externalOrderId'])[0];
+
+                /** Check if externalOrderId contains only digits and is not empty. */
+                if (!empty($explodedVal) && ctype_digit($explodedVal)) {
+                    $decodedResponse['externalOrderId'] = $explodedVal;
+                }
+            }
+
+            return $decodedResponse;
         }
 
 

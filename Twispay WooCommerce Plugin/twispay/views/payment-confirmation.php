@@ -6,8 +6,8 @@
  *
  * @package  Twispay/Front
  * @category Front
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 /* Load languages */
@@ -99,7 +99,7 @@ if ( '' == $secretKey ) {
 
 
 /* Extract the server response and decript it. */
-$decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encryptedResponse*/(isset($_POST['opensslResult'])) ? ($_POST['opensslResult']) : ($_POST['result']), $secretKey);
+$decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encryptedResponse*/(isset($_POST['opensslResult'])) ? ($_POST['opensslResult']) : ($_POST['result']), $secretKey, $tw_lang);
 
 
 /* Check if decryption failed.  */
@@ -190,6 +190,6 @@ if ( $_GET['secure_key'] != $order->get_data()['cart_hash'] ){
 /* Extract the transaction status. */
 $status = (empty($decrypted['status'])) ? ($decrypted['transactionStatus']) : ($decrypted['status']);
 /* Reconstruct the checkout URL to use it to allow client to try again in case of error. */
-$checkout_url = wc_get_checkout_url() . 'order-pay/' . $orderId . '/?pay_for_order=true&key=' . $order->get_data()['order_key'] . '&tw_reload=true';
+$checkout_url = wc_get_checkout_url() . 'order-pay/' . $orderId . '/?pay_for_order=true&key=' . $order->get_data()['order_key'];
 
 Twispay_TW_Status_Updater::updateStatus_backUrl($orderId, $status, $checkout_url, $tw_lang, $configuration);

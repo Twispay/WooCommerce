@@ -12,8 +12,8 @@
  *
  * @package  Twispay
  * @category Core
- * @author   twispay
- * @version  1.0.7
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 // Exit if the file is accessed directly
@@ -26,9 +26,6 @@ if ( ! class_exists( 'Twispay' ) ) :
 
 /**
  * Main Twispay Class.
- *
- * @class   Twispay
- * @version 1.0.1
  */
 final class Twispay {
     /**

@@ -6,13 +6,13 @@
  *
  * @package  Twispay/Admin
  * @category Admin
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 // Exit if the file is accessed directly
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
 }
 
 function twispay_tw_transaction_log_administrator() {
@@ -24,7 +24,7 @@ function twispay_tw_transaction_log_administrator() {
     } else {
         require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
     }
-    
+
     if ( ! class_exists( 'WooCommerce' ) ) {
         ?>
             <div class="error notice" style="margin-top: 20px;">

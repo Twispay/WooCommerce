@@ -6,7 +6,8 @@
  *
  * @package  Twispay/Language
  * @category Admin/Front
- * @version  1.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 /* Configuration panel from Administrator */
@@ -159,3 +160,17 @@ $tw_lang['general_error_hold_notice'] = ' Payment is on hold.';
 $tw_lang['general_error_invalid_key'] = ' Invalid secure key.';
 $tw_lang['general_error_invalid_order'] = ' Order does not exist.';
 $tw_lang['general_error_invalid_private'] = ' Private key is not valid.';
+
+
+/* JSON decoding/encoding errors */
+$tw_lang['JSON_ERROR_DEPTH'] = 'The maximum stack depth has been exceeded.';
+$tw_lang['JSON_ERROR_STATE_MISMATCH'] = 'Invalid or malformed JSON.';
+$tw_lang['JSON_ERROR_CTRL_CHAR'] = 'Control character error, possibly incorrectly encoded.';
+$tw_lang['JSON_ERROR_SYNTAX'] = 'Syntax error.';
+$tw_lang['JSON_ERROR_UTF8'] = 'Malformed UTF-8 characters, possibly incorrectly encoded.';
+$tw_lang['JSON_ERROR_RECURSION'] = 'One or more recursive references in the value to be encoded.';
+$tw_lang['JSON_ERROR_INF_OR_NAN'] = 'One or more NAN or INF values in the value to be encoded.';
+$tw_lang['JSON_ERROR_UNSUPPORTED_TYPE'] = 'A value of a type that cannot be encoded was given.';
+$tw_lang['JSON_ERROR_INVALID_PROPERTY_NAME'] = 'A property name that cannot be encoded was given.';
+$tw_lang['JSON_ERROR_UTF16'] = 'Malformed UTF-16 characters, possibly incorrectly encoded.';
+$tw_lang['JSON_ERROR_UNKNOWN'] = 'Unknown error.';

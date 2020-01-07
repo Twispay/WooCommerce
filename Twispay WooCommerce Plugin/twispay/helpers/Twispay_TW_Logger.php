@@ -6,8 +6,8 @@
  *
  * @package  Twispay/Front
  * @category Front
- * @author   @TODO
- * @version  0.0.1
+ * @author   Twispay
+ * @version  1.0.8
  */
 
 /* Exit if the file is accessed directly. */
@@ -17,10 +17,6 @@ if ( !defined('ABSPATH') ) { exit; }
 if ( ! class_exists( 'Twispay_TW_Logger' ) ) :
     /**
      * Twispay Helper Class
-     *
-     * @class   Twispay_TW_Logger
-     * @version 0.0.1
-     *
      *
      * Class that implements methods to log
      * messages and transactions.
@@ -41,10 +37,10 @@ if ( ! class_exists( 'Twispay_TW_Logger' ) ) :
 
             $already = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE transactionId = '" . $data['transactionId'] . "'" );
             if ( $already ) {
-              /* Update the DB with the transaction data. */
-              $wpdb->query( $wpdb->prepare( "UPDATE " . $wpdb->prefix . "twispay_tw_transactions SET status = '" . $data['status'] . "' WHERE transactionId = '%d'", $data['transactionId'] ) );
+                /* Update the DB with the transaction data. */
+                $wpdb->query( $wpdb->prepare( "UPDATE " . $wpdb->prefix . "twispay_tw_transactions SET status = '" . $data['status'] . "' WHERE transactionId = '%d'", $data['transactionId'] ) );
             } else {
-                $checkout_url = ((false !== $order) && (true !== $order)) ? (wc_get_checkout_url() . 'order-pay/' . explode('_', $data['id_cart'])[0] . '/?pay_for_order=true&key=' . $order->get_data()['order_key'] . '&tw_reload=true') : ("");
+                $checkout_url = ((false !== $order) && (true !== $order)) ? (wc_get_checkout_url() . 'order-pay/' . explode('_', $data['id_cart'])[0] . '/?pay_for_order=true&key=' . $order->get_data()['order_key']) : ("");
                 $wpdb->get_results( "INSERT INTO `" . $wpdb->prefix . "twispay_tw_transactions` (`status`, `id_cart`, `identifier`, `orderId`, `transactionId`, `customerId`, `cardId`, `checkout_url`) VALUES ('" . $data['status'] . "', '" . $data['id_cart'] . "', '" . $data['identifier'] . "', '" . $data['orderId'] . "', '" . $data['transactionId'] . "', '" . $data['customerId'] . "', '" . $data['cardId'] . "', '" . $checkout_url . "');" );
             }
         }
