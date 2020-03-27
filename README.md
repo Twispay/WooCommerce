@@ -17,7 +17,7 @@ For more details concerning our pricing in your region, please check out our [pr
 == Installation ==
 
 The easiest way of installing our module is by visiting the [official module page](https://wordpress.org/plugins/twispay/).
-Alternatively, you can check out our [installation guide](https://twis.li/2ueQ6Rz) for detailed step by step instructions.
+<!-- Alternatively, you can check out our [installation guide](https://twis.li/2ueQ6Rz) for detailed step by step instructions. -->
 1. Log into your WordPress site.
 2. Go to: Plugins > Add New.
 3. Search for "Twispay".
