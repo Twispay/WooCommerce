@@ -12,7 +12,7 @@ Twispay enables new and existing store owners to quickly and effortlessly accept
 
 Our WooCommerce payment extension allows for fast and easy integration with the Twispay Payment Gateway. Quickly start accepting online credit card payments through a secure environment and a fully customizable checkout process. Give your customers the shopping experience they expect, and boost your online sales with our simple and elegant payment plugin.
 
-For more details concerning our pricing in your region, please check out our [pricing page](https://www.twispay.com/prices). To use our payment module and start processing you will need a Twispay [merchant account](https://www.twispay.com/signup). For any assistance during the on-boarding process, our [sales and compliance](https://www.twispay.com/contact-twispay) team are happy to respond to any enquiries you may have.
+For more details concerning our pricing in your region, please check out our [pricing page](https://www.twispay.com/pricing). To use our payment module and start processing you will need a Twispay [merchant account](https://merchant-stage.twispay.com/auth/signup). For any assistance during the on-boarding process, our [sales and compliance](https://www.twispay.com/contact) team are happy to respond to any enquiries you may have.
 
 == Installation ==
 
@@ -25,8 +25,8 @@ Alternatively, you can check out our [installation guide](https://twis.li/2ueQ6R
 5. Select "Activate Now" and you’re ready for customization.
 6. Go to: Twispay
 7. Select **Yes** under **Live mode**. _(Unless you are testing)_
-8. Enter your **Site ID**. _(Twispay Staging Account ID: You can get one from [here for live](https://merchant.twispay.com/login) or from [here for stage](https://merchant-stage.twispay.com/login))_
-9. Enter your **Private Key**. _(Twispay Secret Key: You can get one from [here for live](https://merchant.twispay.com/login) or from [here for stage](https://merchant-stage.twispay.com/login))_
+8. Enter your **Site ID**. _(Twispay Staging Account ID: You can get one from [here for live](https://merchant.twispay.com/auth/signin) or from [here for stage](https://merchant-stage.twispay.com/auth/signin))_
+9. Enter your **Private Key**. _(Twispay Secret Key: You can get one from [here for live](https://merchant.twispay.com/auth/signin) or from [here for stage](https://merchant-stage.twispay.com/auth/signin))_
 10. Select the custom page you want to redirect the customer after the payment **Redirect to custom page Thank you page**. _(Leave 'Default' to redirect to order confirmation default page.)_
 11. Enter your tehnical **Contact Email**. _(This will be displayed to customers in case of a payment error)_
 12. Save your changes.
