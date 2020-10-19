@@ -54,9 +54,10 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
 /* Exit if no order is placed */
 if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
     /* Extract the WooCommerce order. */
-    $order = wc_get_order($_GET['order_id']);
+    $order_id = (int) sanitize_key( $_GET['order_id'] );
+    $order = wc_get_order($order_id);
 
-    if (FALSE != $order && (TRUE == wcs_order_contains_subscription($_GET['order_id'])) && (1 == count($order->get_items()))) {
+    if (FALSE != $order && (TRUE == wcs_order_contains_subscription($order_id)) && (1 == count($order->get_items()))) {
         $subscription = wcs_get_subscriptions_for_order($order);
         $subscription = reset($subscription);
         /* Get all information for the Twispay Payment form. */
@@ -86,7 +87,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         $timestamp = date('YmdHis');
 
         /* Extract the customer details. */
-        $customer = [ 'identifier' => 'r_wo_' . ((0 == $data['customer_id']) ? ($_GET['order_id']) : ($data['customer_id'])) . '_' . $timestamp
+        $customer = [ 'identifier' => 'r_wo_' . ((0 == $data['customer_id']) ? ($order_id) : ($data['customer_id'])) . '_' . $timestamp
                     , 'firstName' => ($data['billing']['first_name']) ? ($data['billing']['first_name']) : ($data['shipping']['first_name'])
                     , 'lastName' => ($data['billing']['last_name']) ? ($data['billing']['last_name']) : ($data['shipping']['last_name'])
                     , 'country' => ($data['billing']['country']) ? ($data['billing']['country']) : ($data['shipping']['country'])
@@ -139,7 +140,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         /* Build the data object to be posted to Twispay. */
         $orderData = [ 'siteId' => $siteID
                      , 'customer' => $customer
-                     , 'order' => [ 'orderId' => $_GET['order_id'] . '_' . $timestamp
+                     , 'order' => [ 'orderId' => (int) sanitize_key( $_GET['order_id'] ) . '_' . $timestamp
                                   , 'type' => 'recurring'
                                   , 'amount' => $data['total'] /* Total sum to pay right now. */
                                   , 'currency' => $data['currency']

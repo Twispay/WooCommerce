@@ -112,7 +112,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
         global $wpdb;
 
         $views = array();
-        $current = ( ! empty( $_REQUEST['status'] ) ? $_REQUEST['status'] : 'all' );
+        $current = ( ! empty( $_REQUEST['status'] ) ? sanitize_text_field( $_REQUEST['status'] ) : 'all' );
 
         //All link
         $class = ( $current == 'all' ? ' class="current"' :'' );
@@ -127,8 +127,8 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
      */
     function column_id_tw_transactions( $item ) {
         $actions = array(
-            'refund'                 => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">' . $this->tw_lang['transaction_list_refund_title'] . '</a>', $_REQUEST['page'], 'refund_payment', $item['transactionId'] ),
-            'cancel_recurring'       => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">' . $this->tw_lang['transaction_list_recurring_title'] . '</a>', $_REQUEST['page'], 'recurring_payment', $item['orderId'] )
+            'refund'                 => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">' . $this->tw_lang['transaction_list_refund_title'] . '</a>', esc_url( $_REQUEST['page'] ), 'refund_payment', $item['transactionId'] ),
+            'cancel_recurring'       => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">' . $this->tw_lang['transaction_list_recurring_title'] . '</a>', esc_url( $_REQUEST['page'] ), 'recurring_payment', $item['orderId'] )
         );
 
         if ( $item['status'] == 'complete-ok' ) {
@@ -228,10 +228,10 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
     function prepare_items() {
         global $wpdb;
 
-        $s = ( isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : 'all' );
-        $ma_status = ( isset( $_REQUEST['status'] ) ? $_REQUEST['status'] : 'all' );
-        $order_by = ( isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '' );
-        $order_how = ( isset( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc' );
+        $s = ( isset( $_REQUEST['s'] ) ? esc_url( $_REQUEST['s'] ) : 'all' );
+        $ma_status = ( isset( $_REQUEST['status'] ) ? esc_url( $_REQUEST['status'] ) : 'all' );
+        $order_by = ( isset( $_REQUEST['orderby'] ) ? esc_url( $_REQUEST['orderby'] ) : '' );
+        $order_how = ( isset( $_REQUEST['order'] ) ? esc_url( $_REQUEST['order'] ) : 'asc' );
 
         $transaction = $wpdb->prefix . "twispay_tw_transactions";
 

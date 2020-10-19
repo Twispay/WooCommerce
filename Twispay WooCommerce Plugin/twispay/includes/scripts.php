@@ -39,7 +39,7 @@ function twispay_tw_check_if_is_admin() {
     );
 
     // Check if current page is one of the Twispay Pages
-    return in_array( $_GET['page'], $tw_pages );
+    return in_array( sanitize_text_field( $_GET['page'] ), $tw_pages );
 }
 
 

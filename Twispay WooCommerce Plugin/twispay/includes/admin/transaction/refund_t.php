@@ -27,7 +27,7 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
     <!-- Get all payment transactions ID from the $_GET parameters -->
     <?php
         if ( isset( $_GET['payment_ad'] ) && $_GET['payment_ad'] ) {
-            foreach ( explode( ',', $_GET['payment_ad'] ) as $key => $a_id ) {
+            foreach ( explode( ',', esc_attr( $_GET['payment_ad'] ) ) as $key => $a_id ) {
                 print_r( 'ID: #' . $a_id );
                 print_r( '<br>' );
             }

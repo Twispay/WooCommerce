@@ -38,7 +38,7 @@ function twispay_tw_configuration() {
                 <h2><?= $tw_lang['configuration_title']; ?></h2>
                 <?php
                     if ( isset( $_GET['notice'] ) && $_GET['notice'] ) {
-                        $notice = $_GET['notice'];
+                        $notice = sanitize_text_field( $_GET['notice'] );
 
                         switch ( $notice ) {
                             case 'edit_configuration':

@@ -39,7 +39,7 @@ function twispay_tw_transaction_administrator() {
     else {
         // Check if the view / edit / delete action is detected, otherwise load the campaigns form
         if ( isset( $_GET['action'] ) && $_GET['action'] ) {
-            $action = $_GET['action'];
+            $action = sanitize_text_field( $_GET['action'] );
 
             switch ( $action ) {
                 case 'refund_payment':
@@ -73,7 +73,7 @@ function twispay_tw_transaction_administrator() {
 
                     <?php
                         if ( isset( $_GET['notice'] ) && $_GET['notice'] ) {
-                            $notice = $_GET['notice'];
+                            $notice = sanitize_text_field( $_GET['notice'] );
 
                             switch ( $notice ) {
                                 case 'error_refund':
@@ -114,7 +114,7 @@ function twispay_tw_transaction_administrator() {
                                 case 'errorp_refund':
                                     ?>
                                         <div class="error notice">
-                                            <p><?= $_GET['emessage']; ?></p>
+                                            <p><?= esc_html( $_GET['emessage'] ); ?></p>
                                         </div>
                                     <?php
                                     break;
@@ -127,7 +127,7 @@ function twispay_tw_transaction_administrator() {
                     ?>
 
                     <form method="get">
-                        <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+                        <input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ) ?>" />
                         <?php $transaction_table->search_box( $tw_lang['transaction_list_search_title'], 'search-query' ); ?>
                     </form>
                     <form method="post">

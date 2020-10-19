@@ -486,10 +486,10 @@ class Twispay_Tw_List_Table {
             return false;
 
         if ( isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] )
-            return $_REQUEST['action'];
+            return esc_url( $_REQUEST['action'] );
 
         if ( isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] )
-            return $_REQUEST['action2'];
+            return esc_url( $_REQUEST['action2'] );
 
         return false;
     }
@@ -554,7 +554,7 @@ class Twispay_Tw_List_Table {
         if ( ! isset( $_GET['post_status'] ) || 'trash' !== $_GET['post_status'] ) {
             $extra_checks .= " AND post_status != 'trash'";
         } elseif ( isset( $_GET['post_status'] ) ) {
-            $extra_checks = $wpdb->prepare( ' AND post_status = %s', $_GET['post_status'] );
+            $extra_checks = $wpdb->prepare( ' AND post_status = %s', sanitize_text_field( $_GET['post_status'] ) );
         }
 
         $months = $wpdb->get_results( $wpdb->prepare( "
@@ -580,7 +580,7 @@ class Twispay_Tw_List_Table {
         if ( ! $month_count || ( 1 == $month_count && 0 == $months[0]->month ) )
             return;
 
-        $m = isset( $_GET['m'] ) ? (int) $_GET['m'] : 0;
+        $m = isset( $_GET['m'] ) ? (int) sanitize_text_field( $_GET['m'] ) : 0;
         ?>
             <label for="filter-by-date" class="screen-reader-text"><?php _e( 'Filter by date' ); ?></label>
             <select name="m" id="filter-by-date">
@@ -589,10 +589,10 @@ class Twispay_Tw_List_Table {
                     foreach ( $months as $arc_row ) {
                             if ( 0 == $arc_row->year )
                                     continue;
-            
+
                             $month = zeroise( $arc_row->month, 2 );
                             $year = $arc_row->year;
-            
+
                             printf( "<option %s value='%s'>%s</option>\n",
                                     selected( $m, $year . $month, false ),
                                     esc_attr( $arc_row->year . $month ),
@@ -1052,7 +1052,7 @@ class Twispay_Tw_List_Table {
         $current_url = remove_query_arg( 'paged', $current_url );
 
         if ( isset( $_GET['orderby'] ) ) {
-            $current_orderby = $_GET['orderby'];
+            $current_orderby = sanitize_text_field( $_GET['orderby'] );
         } else {
             $current_orderby = '';
         }
