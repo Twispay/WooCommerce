@@ -44,14 +44,15 @@ function tw_twispay_p_edit_general_configuration( $request ) {
 
     // Wordpress database refference
     global $wpdb;
+    $table_name = $wpdb->prefix . 'twispay_tw_configuration';
 
     // Check if the Configuration row exist into Database
-    $configuration = $wpdb->get_results( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
+    $configuration = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name" ) );
 
     if ( $configuration ) {
         // Edit the Configuration into Database ( twispay_tw_configuration table )
         $wpdb->update(
-            $wpdb->prefix . 'twispay_tw_configuration',
+            $table_name,
             array(
                 'live_mode'       => $live_mode,
                 'staging_id'      => $staging_site_id,
@@ -69,13 +70,13 @@ function tw_twispay_p_edit_general_configuration( $request ) {
     }
     else {
         // If by any chance the configuration row does not exist, add default one immediately. ( twispay_tw_configuration table )
-        $wpdb->insert( $wpdb->prefix . 'twispay_tw_configuration', array(
+        $wpdb->insert( $table_name, array(
             'live_mode'     => 0
         ) );
 
         // Edit the Configuration into Database ( twispay_tw_configuration table )
         $wpdb->update(
-            $wpdb->prefix . 'twispay_tw_configuration',
+            $table_name,
             array(
                 'live_mode'       => $live_mode,
                 'staging_id'      => $staging_site_id,

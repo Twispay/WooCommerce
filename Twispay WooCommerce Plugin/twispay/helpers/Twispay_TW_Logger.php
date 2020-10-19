@@ -34,14 +34,15 @@ if ( ! class_exists( 'Twispay_TW_Logger' ) ) :
 
             /* Extract the WooCommerce order. */
             $order = wc_get_order($data['id_cart']);
+            $table_name = $wpdb->prefix . 'twispay_tw_configuration';
 
-            $already = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE transactionId = '" . $data['transactionId'] . "'" );
+            $already = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE transactionId = %d", $data['transactionId'] ) );
             if ( $already ) {
                 /* Update the DB with the transaction data. */
-                $wpdb->query( $wpdb->prepare( "UPDATE " . $wpdb->prefix . "twispay_tw_transactions SET status = '" . $data['status'] . "' WHERE transactionId = '%d'", $data['transactionId'] ) );
+                $wpdb->query( $wpdb->prepare( "UPDATE $table_name SET status = `%s` WHERE transactionId = %d", $data['status'], $data['transactionId'] ) );
             } else {
                 $checkout_url = ((false !== $order) && (true !== $order)) ? (wc_get_checkout_url() . 'order-pay/' . explode('_', $data['id_cart'])[0] . '/?pay_for_order=true&key=' . $order->get_data()['order_key']) : ("");
-                $wpdb->get_results( "INSERT INTO `" . $wpdb->prefix . "twispay_tw_transactions` (`status`, `id_cart`, `identifier`, `orderId`, `transactionId`, `customerId`, `cardId`, `checkout_url`) VALUES ('" . $data['status'] . "', '" . $data['id_cart'] . "', '" . $data['identifier'] . "', '" . $data['orderId'] . "', '" . $data['transactionId'] . "', '" . $data['customerId'] . "', '" . $data['cardId'] . "', '" . $checkout_url . "');" );
+                $wpdb->get_results( "INSERT INTO $table_name (`status`, `id_cart`, `identifier`, `orderId`, `transactionId`, `customerId`, `cardId`, `checkout_url`) VALUES ('" . $data['status'] . "', '" . $data['id_cart'] . "', '" . $data['identifier'] . "', '" . $data['orderId'] . "', '" . $data['transactionId'] . "', '" . $data['customerId'] . "', '" . $data['cardId'] . "', '" . $checkout_url . "');" );
             }
         }
 
@@ -56,11 +57,12 @@ if ( ! class_exists( 'Twispay_TW_Logger' ) ) :
          */
         public static function twispay_tw_updateTransactionStatus( $id, $status ) {
             global $wpdb;
+            $table_name = $wpdb->prefix . 'twispay_tw_configuration';
 
-            $already = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE id_cart = '" . $id . "'" );
+            $already = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id_cart = %d", $id ) );
             if ( $already ) {
                 /* Update the DB with the transaction data. */
-                $wpdb->query( $wpdb->prepare( "UPDATE " . $wpdb->prefix . "twispay_tw_transactions SET status = '" . $status . "' WHERE id_cart = '%d'", $id ) );
+                $wpdb->query( $wpdb->prepare( "UPDATE $table_name SET status = `%s` WHERE id_cart = %d", $status, $id ) );
             }
         }
 

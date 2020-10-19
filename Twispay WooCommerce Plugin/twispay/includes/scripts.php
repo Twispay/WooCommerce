@@ -327,10 +327,10 @@ function init_twispay_gateway_class() {
             function process_refund($order_id, $amount = NULL, $reason = '') {
                 global $wpdb;
                 $apiKey = '';
-                $transaction_id = $wpdb->get_var( "SELECT transactionId FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE id_cart = '" . $order_id . "'" );
+                $transaction_id = $wpdb->get_var( $wpdb->prepare( "SELECT transactionId FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE id_cart = %d", $order_id ) );
 
                 /* Get configuration from database. */
-                $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
+                $configuration = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" ) );
 
                 if ( $configuration ) {
                     if ( 1 == $configuration->live_mode ) {
@@ -441,8 +441,8 @@ function subscription_terminated( $subscription ){
     /* Get configuration from database. */
     global $wpdb;
     $apiKey = '';
-    $configuration = $wpdb->get_row("SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration");
-    $serverOrderId = $wpdb->get_var( "SELECT orderId FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE id_cart = '" . $subscription->get_parent_id() . "'" );
+    $configuration = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" ) );
+    $serverOrderId = $wpdb->get_var( $wpdb->prepare( "SELECT orderId FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE id_cart = %d", $subscription->get_parent_id() ) );
     if ( $configuration ) {
         if ( $configuration->live_mode == 1 ) {
             $apiKey = $configuration->live_key;

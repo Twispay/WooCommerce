@@ -65,7 +65,9 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
 
         /* Get configuration from database. */
         global $wpdb;
-        $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
+        $table_name = $wpdb->prefix . 'twispay_tw_configuration';
+
+        $configuration = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name" ) );
 
         /* Get the Site ID and the Private Key. */
         $siteID = '';
