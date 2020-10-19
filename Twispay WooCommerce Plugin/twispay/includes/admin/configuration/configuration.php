@@ -58,7 +58,7 @@ function twispay_tw_configuration() {
                         <tr class="form-field form-required">
                             <th scope="row"><label for="live_mode"><?= $tw_lang['live_mode_label']; ?></label></th>
                             <td>
-                                <?= twispay_tw_get_live_mode( $tw_lang ); ?>
+                                <?= esc_html( twispay_tw_get_live_mode( $tw_lang ) ); ?>
                                 <p class="description"><?= $tw_lang['live_mode_desc']; ?></p>
                             </td>
                         </tr>
@@ -100,14 +100,14 @@ function twispay_tw_configuration() {
                         <tr class="form-field" id="r_custom_thankyou">
                             <th scope="row"><label for="r_custom_thankyou"><?= $tw_lang['r_custom_thankyou_label']; ?></span></label></th>
                             <td>
-                                <?= twispay_tw_get_wp_pages( $tw_lang ); ?>
+                                <?= esc_html( twispay_tw_get_wp_pages( $tw_lang ) ); ?>
                                 <p class="description"><?= $tw_lang['r_custom_thankyou_desc_f']; ?> <a href="<?= get_admin_url() . 'post-new.php?post_type=page'; ?>"><?= $tw_lang['r_custom_thankyou_desc_s']; ?></a>.</p>
                             </td>
                         </tr>
                         <tr class="form-field" id="suppress_email">
                             <th scope="row"><label for="suppress_email"><?= $tw_lang['suppress_email_label']; ?></span></label></th>
                             <td>
-                                <?= twispay_tw_get_suppress_email( $tw_lang ); ?>
+                                <?= esc_html( twispay_tw_get_suppress_email( $tw_lang ) ); ?>
                                 <p class="description"><?= $tw_lang['suppress_email_desc']; ?></p>
                             </td>
                         </tr>

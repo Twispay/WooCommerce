@@ -132,7 +132,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
         );
 
         if ( $item['status'] == 'complete-ok' ) {
-            return sprintf( '%1$s %2$s', $item['id_tw_transactions'], $this->row_actions( $actions ) );
+            return sprintf( '%1$s %2$s', sanitize_key( $item['id_tw_transactions'] ), sanitize_text_field( $this->row_actions( $actions ) ) );
         }
         else {
             return $item['id_tw_transactions'];
@@ -166,8 +166,8 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
     function column_cb( $item ) {
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
-            $this->_args['singular'],
-            $item['id_tw_transactions']
+            sanitize_text_field( $this->_args['singular'] ),
+            sanitize_key( $item['id_tw_transactions'] )
         );
     }
 

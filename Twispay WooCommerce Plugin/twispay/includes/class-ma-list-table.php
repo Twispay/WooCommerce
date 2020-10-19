@@ -597,7 +597,7 @@ class Twispay_Tw_List_Table {
                                     selected( $m, $year . $month, false ),
                                     esc_attr( $arc_row->year . $month ),
                                     /* translators: 1: month name, 2: 4-digit year */
-                                    sprintf( __( '%1$s %2$d' ), $wp_locale->get_month( $month ), $year )
+                                    sprintf( __( '%1$s %2$d' ), esc_html( $wp_locale->get_month( $month ) ), (int) $year )
                             );
                     }
         ?>

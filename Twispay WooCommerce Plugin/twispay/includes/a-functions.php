@@ -28,12 +28,12 @@ function twispay_tw_get_live_mode( $tw_lang ) {
         $html .= '<select name="live_mode" id="live_mode">';
         foreach ( $live_mode as $e_l ) {
             if ( $e_l->live_mode == 1 ) {
-                $html .= '<option value="1" selected>' . $tw_lang['live_mode_option_true'] . '</option>';
-                $html .= '<option value="0">' . $tw_lang['live_mode_option_false'] . '</option>';
+                $html .= '<option value="1" selected>' . esc_html( $tw_lang['live_mode_option_true'] ) . '</option>';
+                $html .= '<option value="0">' . esc_html( $tw_lang['live_mode_option_false'] ) . '</option>';
             }
             else {
-                $html .= '<option value="1">' . $tw_lang['live_mode_option_true'] . '</option>';
-                $html .= '<option value="0"selected>' . $tw_lang['live_mode_option_false'] . '</option>';
+                $html .= '<option value="1">' . esc_html( $tw_lang['live_mode_option_true'] ) . '</option>';
+                $html .= '<option value="0"selected>' . esc_html( $tw_lang['live_mode_option_false'] ) . '</option>';
             }
 
             break;
@@ -50,8 +50,8 @@ function twispay_tw_get_live_mode( $tw_lang ) {
 
         // Now display the default form
         $html .= '<select name="live_mode" id="live_mode">';
-        $html .= '<option value="1">' . $tw_lang['live_mode_option_true'] . '</option>';
-        $html .= '<option value="0" selected>' . $tw_lang['live_mode_option_false'] . '</option>';
+        $html .= '<option value="1">' . esc_html( $tw_lang['live_mode_option_true'] ) . '</option>';
+        $html .= '<option value="0" selected>' . esc_html( $tw_lang['live_mode_option_false'] ) . '</option>';
         $html .= '</select>';
 
         return $html;
@@ -76,12 +76,12 @@ function twispay_tw_get_suppress_email( $tw_lang ) {
         $html .= '<select name="suppress_email" id="suppress_email">';
         foreach ( $suppress_email as $e_s ) {
             if ( $e_s->suppress_email == 1 ) {
-                $html .= '<option value="1" selected>' . $tw_lang['live_mode_option_true'] . '</option>';
-                $html .= '<option value="0">' . $tw_lang['live_mode_option_false'] . '</option>';
+                $html .= '<option value="1" selected>' . esc_html( $tw_lang['live_mode_option_true'] ) . '</option>';
+                $html .= '<option value="0">' . esc_html( $tw_lang['live_mode_option_false'] ) . '</option>';
             }
             else {
-                $html .= '<option value="1">' . $tw_lang['live_mode_option_true'] . '</option>';
-                $html .= '<option value="0"selected>' . $tw_lang['live_mode_option_false'] . '</option>';
+                $html .= '<option value="1">' . esc_html( $tw_lang['live_mode_option_true'] ) . '</option>';
+                $html .= '<option value="0"selected>' . esc_html( $tw_lang['live_mode_option_false'] ) . '</option>';
             }
 
             break;
@@ -110,18 +110,14 @@ function twispay_tw_get_wp_pages( $tw_lang ) {
 
     if ( $wp_pages ) {
         $html .= '<select name="wp_pages" id="wp_pages">';
-        $html .= '<option value="0">' . $tw_lang['get_all_wordpress_pages_default'] . '</option>';
+        $html .= '<option value="0">' . esc_html( $tw_lang['get_all_wordpress_pages_default'] ) . '</option>';
 
         foreach ( $wp_pages as $e_p ) {
             if ( $e_p->post_title != 'Twispay confirmation' ) {
                 if ( $configuration ) {
                     foreach ( $configuration as $e_c ) {
-                        if ( $e_c->thankyou_page == $e_p->guid ) {
-                            $html .= '<option value="' . $e_p->guid . '" selected>' . $e_p->post_title . '</option>';
-                        }
-                        else {
-                            $html .= '<option value="' . $e_p->guid . '">' . $e_p->post_title . '</option>';
-                        }
+                        $html .= '<option value="' . esc_attr( $e_p->guid ) . '"' . selected( $e_c->thankyou_page, $e_p->guid, false ) .' >' . esc_html( $e_p->post_title ) . '</option>';
+
                         break;
                     }
                 }
