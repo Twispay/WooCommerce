@@ -65,11 +65,11 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_status_failed'] . $orderId);
                     ?>
                         <div class="error notice" style="margin-top: 20px;">
-                            <h3><?= $tw_lang['general_error_title']; ?></h3>
+                            <h3><?= esc_html( $tw_lang['general_error_title'] ); ?></h3>
                             <?php if('0' == $configuration->contact_email){ ?>
-                                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
+                                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?= esc_url( $checkout_url ); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s'] ); ?></p>
                             <?php } else { ?>
-                                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
+                                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?= esc_url( $checkout_url ); ?>"><?= esc_html($tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] ); ?> <a href="mailto:<?= sanitize_email( $configuration->contact_email ); ?>"><?= esc_html( $tw_lang['general_error_desc_contact'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_s'] ); ?></p>
                             <?php } ?>
                         </div>
                     <?php
@@ -82,12 +82,12 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_status_hold'] . $orderId);
                     ?>
                         <div class="error notice" style="margin-top: 20px;">
-                            <h3><?= $tw_lang['general_error_title']; ?></h3>
-                            <span><?= $tw_lang['general_error_hold_notice']; ?></span>
+                            <h3><?= esc_html( $tw_lang['general_error_title'] ); ?></h3>
+                            <span><?= esc_html( $tw_lang['general_error_hold_notice'] ); ?></span>
                             <?php if('0' == $configuration->contact_email){ ?>
-                                <p><?= $tw_lang['general_error_desc_f'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
+                                <p><?= esc_html( $tw_lang['general_error_desc_f'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s'] ); ?></p>
                             <?php } else { ?>
-                                <p><?= $tw_lang['general_error_desc_f']; ?><a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
+                                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?><a href="mailto:<?= sanitize_email( $configuration->contact_email ); ?>"><?= esc_html( $tw_lang['general_error_desc_contact'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_s'] ); ?></p>
                             <?php } ?>
                         </div>
                     <?php
@@ -130,11 +130,11 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_wrong_status'] . $serverStatus);
                     ?>
                         <div class="error notice" style="margin-top: 20px;">
-                            <h3><?= $tw_lang['general_error_title']; ?></h3>
+                            <h3><?= esc_html( $tw_lang['general_error_title'] ); ?></h3>
                             <?php if('0' == $configuration->contact_email){ ?>
-                                    <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
+                                    <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?= esc_url( $checkout_url ); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s'] ); ?></p>
                                 <?php } else { ?>
-                                    <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
+                                    <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?= esc_url( $checkout_url ); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] ); ?> <a href="mailto:<?= sanitize_email( $configuration->contact_email ); ?>"><?= esc_html( $tw_lang['general_error_desc_contact'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_s'] ); ?></p>
                                 <?php } ?>
                         </div>
                     <?php

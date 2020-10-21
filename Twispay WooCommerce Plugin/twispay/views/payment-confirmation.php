@@ -32,8 +32,8 @@ require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_S
 if ( !class_exists('WooCommerce') ){
     ?>
         <div class="error notice" style="margin-top: 20px;">
-            <h3><?= $tw_lang['general_error_title']; ?></h3>
-            <p><?= $tw_lang['no_woocommerce_f']; ?> <a target="_blank" href="https://wordpress.org/plugins/woocommerce/"><?= $tw_lang['no_woocommerce_s']; ?></a></p>
+            <h3><?= esc_html( $tw_lang['general_error_title'] ); ?></h3>
+            <p><?= esc_html( $tw_lang['no_woocommerce_f'] ); ?> <a target="_blank" href="https://wordpress.org/plugins/woocommerce/"><?= esc_html( $tw_lang['no_woocommerce_s'] ); ?></a></p>
         </div>
     <?php
 
@@ -54,7 +54,7 @@ if ( $configuration ) {
         $secretKey = $configuration->staging_key;
     } else {
         echo '<style>.loader {display: none;}</style>';
-        die( $tw_lang['twispay_processor_error_missing_configuration'] );
+        die( esc_html( $tw_lang['twispay_processor_error_missing_configuration'] ) );
     }
 }
 
@@ -66,11 +66,11 @@ if( ((FALSE == isset($_POST['opensslResult'])) && (FALSE == isset($_POST['result
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_empty_response']);
     ?>
         <div class="error notice" style="margin-top: 20px;">
-            <h3><?= $tw_lang['general_error_title']; ?></h3>
+            <h3><?= esc_html( $tw_lang['general_error_title'] ); ?></h3>
             <?php if('0' == $configuration->contact_email){ ?>
-                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
+                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s'] ); ?></p>
             <?php } else { ?>
-                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
+                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] ); ?> <a href="mailto:<?= sanitize_email( $configuration->contact_email ); ?>"><?= esc_html( $tw_lang['general_error_desc_contact'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_s'] ); ?></p>
             <?php } ?>
         </div>
     <?php
@@ -84,12 +84,12 @@ if ( '' == $secretKey ) {
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_private']);
     ?>
         <div class="error notice" style="margin-top: 20px;">
-            <h3><?= $tw_lang['general_error_title']; ?></h3>
+            <h3><?= esc_html( $tw_lang['general_error_title'] ); ?></h3>
             <span><?= $tw_lang['general_error_invalid_private']; ?></span>
             <?php if('0' == $configuration->contact_email){ ?>
-                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
+                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s'] ); ?></p>
             <?php } else { ?>
-                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
+                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] ); ?> <a href="mailto:<?= sanitize_email( $configuration->contact_email ); ?>"><?= esc_html( $tw_lang['general_error_desc_contact'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_s'] ); ?></p>
             <?php } ?>
         </div>
     <?php
@@ -107,11 +107,11 @@ if(FALSE === $decrypted){
   Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_decryption_error']);
   ?>
       <div class="error notice" style="margin-top: 20px;">
-          <h3><?= $tw_lang['general_error_title']; ?></h3>
+          <h3><?= esc_html( $tw_lang['general_error_title'] ); ?></h3>
           <?php if('0' == $configuration->contact_email){ ?>
-              <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
+              <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s'] ); ?></p>
           <?php } else { ?>
-              <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
+              <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] ); ?> <a href="mailto:<?= sanitize_email( $configuration->contact_email ); ?>"><?= esc_html( $tw_lang['general_error_desc_contact'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_s'] ); ?></p>
           <?php } ?>
       </div>
   <?php
@@ -131,11 +131,11 @@ if(TRUE !== $orderValidation){
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_validating_failed']);
     ?>
         <div class="error notice" style="margin-top: 20px;">
-            <h3><?= $tw_lang['general_error_title']; ?></h3>
+            <h3><?= esc_html( $tw_lang['general_error_title'] ); ?></h3>
             <?php if('0' == $configuration->contact_email){ ?>
-                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
+                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s'] ); ?></p>
             <?php } else { ?>
-                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
+                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] ); ?> <a href="mailto:<?= sanitize_email( $configuration->contact_email ); ?>"><?= esc_html( $tw_lang['general_error_desc_contact'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_s'] ); ?></p>
             <?php } ?>
         </div>
     <?php
@@ -154,12 +154,12 @@ if( FALSE == $order ){
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_order']);
     ?>
         <div class="error notice" style="margin-top: 20px;">
-            <h3><?= $tw_lang['general_error_title']; ?></h3>
-            <span><?= $tw_lang['general_error_invalid_order']; ?></span>
+            <h3><?= esc_html( $tw_lang['general_error_title'] ); ?></h3>
+            <span><?= esc_html( $tw_lang['general_error_invalid_order'] ); ?></span>
             <?php if('0' == $configuration->contact_email){ ?>
-                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
+                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s'] ); ?></p>
             <?php } else { ?>
-                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
+                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] ); ?> <a href="mailto:<?= sanitize_email( $configuration->contact_email ); ?>"><?= esc_html( $tw_lang['general_error_desc_contact'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_s'] ); ?></p>
             <?php } ?>
         </div>
     <?php
@@ -173,12 +173,12 @@ if ( $_GET['secure_key'] != $order->get_data()['cart_hash'] ){
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_key']);
     ?>
         <div class="error notice" style="margin-top: 20px;">
-            <h3><?= $tw_lang['general_error_title']; ?></h3>
-            <span><?= $tw_lang['general_error_invalid_key']; ?></span>
+            <h3><?= esc_html( $tw_lang['general_error_title'] ); ?></h3>
+            <span><?= esc_html( $tw_lang['general_error_invalid_key'] ); ?></span>
             <?php if('0' == $configuration->contact_email){ ?>
-                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
+                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s'] ); ?></p>
             <?php } else { ?>
-                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?=  wc_get_cart_url(); ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
+                <p><?= esc_html( $tw_lang['general_error_desc_f'] ); ?> <a href="<?=  wc_get_cart_url(); ?>"><?= esc_html( $tw_lang['general_error_desc_try_again'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_or'] ); ?> <a href="mailto:<?= sanitize_email( $configuration->contact_email ); ?>"><?= esc_html( $tw_lang['general_error_desc_contact'] ); ?></a> <?= esc_html( $tw_lang['general_error_desc_s'] ); ?></p>
             <?php } ?>
         </div>
     <?php
