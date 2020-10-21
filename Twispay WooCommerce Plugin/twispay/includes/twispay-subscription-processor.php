@@ -81,7 +81,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
                 $secretKey = $configuration->staging_key;
             } else {
                 echo '<style>.loader {display: none;}</style>';
-                die( $tw_lang['twispay_processor_error_missing_configuration'] );
+                die( esc_html( $tw_lang['twispay_processor_error_missing_configuration'] ) );
             }
         }
 
@@ -167,9 +167,9 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         $hostName = ($configuration && (1 == $configuration->live_mode)) ? ('https://secure.twispay.com' . '?lang=' . $lang) : ('https://secure-stage.twispay.com' . '?lang=' . $lang);
         ?>
 
-            <form action="<?= $hostName; ?>" method="POST" accept-charset="UTF-8" id="twispay_payment_form">
-                <input type="hidden" name="jsonRequest" value="<?= $base64JsonRequest; ?>">
-                <input type="hidden" name="checksum" value="<?= $base64Checksum; ?>">
+            <form action="<?= esc_attr( $hostName ); ?>" method="POST" accept-charset="UTF-8" id="twispay_payment_form">
+                <input type="hidden" name="jsonRequest" value="<?= esc_attr( $base64JsonRequest ); ?>">
+                <input type="hidden" name="checksum" value="<?= esc_html( $base64Checksum ); ?>">
             </form>
 
             <script>document.getElementById( 'twispay_payment_form' ).submit();</script>
@@ -178,16 +178,16 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
     } else {
         if(FALSE == $order){
             echo '<style>.loader {display: none;}</style>';
-            die( $tw_lang['twispay_processor_error_general'] );
+            die( esc_html( $tw_lang['twispay_processor_error_general'] ) );
         } else if(1 < count($order->get_items())){
             echo '<style>.loader {display: none;}</style>';
-            die( $tw_lang['twispay_processor_error_more_items'] );
+            die( esc_html( $tw_lang['twispay_processor_error_more_items'] ) );
         } else {
             echo '<style>.loader {display: none;}</style>';
-            die( $tw_lang['twispay_processor_error_no_item'] );
+            die( esc_html( $tw_lang['twispay_processor_error_no_item'] ) );
         }
     }
 } else {
     echo '<style>.loader {display: none;}</style>';
-    die( $tw_lang['twispay_processor_error_general'] );
+    die( esc_html( $tw_lang['twispay_processor_error_general'] ) );
 }

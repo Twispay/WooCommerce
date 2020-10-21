@@ -21,14 +21,14 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
 
 ?>
 <div class="wrap">
-    <h2><?= $tw_lang['transaction_list_recurring_ptitle']; ?></h2>
-    <p><?= $tw_lang['transaction_list_recurring_subtitle']; ?></p>
+    <h2><?= esc_html( $tw_lang['transaction_list_recurring_ptitle'] ); ?></h2>
+    <p><?= esc_html( $tw_lang['transaction_list_recurring_subtitle'] ); ?></p>
 
     <!-- Get all payment order ID from the $_GET parameters -->
     <?php
         if ( isset( $_GET['order_ad'] ) && $_GET['order_ad'] ) {
             foreach ( explode( ',', $_GET['order_ad'] ) as $key => $a_id ) {
-                print_r( 'ID: #' . $a_id );
+                print_r( 'ID: #' . esc_html( $a_id ) );
                 print_r( '<br>' );
             }
         }
@@ -36,6 +36,6 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
 
     <form method="post" id="recurring_order">
         <input type="hidden" name="tw_general_action" value="recurring_order" />
-        <?php submit_button( $tw_lang['transaction_list_confirm_title'], 'primary', 'createuser', true, array( 'id' => 'confirmdeletion' ) ); ?>
+        <?php submit_button( esc_attr( $tw_lang['transaction_list_confirm_title'] ), 'primary', 'createuser', true, array( 'id' => 'confirmdeletion' ) ); ?>
     </form>
 </div>
