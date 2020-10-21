@@ -24,11 +24,11 @@ if ( !class_exists( 'Twispay_TW_Helper_Response' ) ) :
      * Class that implements methods to decrypt
      * Twispay server responses.
      */
-    class Twispay_TW_Helper_Response{
+    class Twispay_TW_Helper_Response {
         /**
          * Decrypt the response from Twispay server.
          *
-         * @param string $tw_encryptedMessage - The encripted server message.
+         * @param string $tw_encryptedMessage - The encrypted server message.
          * @param string $tw_secretKey        - The secret key (from Twispay).
          * @param array $tw_lang              - The language that the store uses
          *

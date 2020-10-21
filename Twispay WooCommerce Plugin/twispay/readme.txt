@@ -29,7 +29,7 @@ The easiest way of installing our module is by visiting the [official module pag
 8. Enter your **Site ID**. _(Twispay Staging Account ID: You can get one from [here for live](https://merchant.twispay.com/auth/signin) or from [here for stage](https://merchant-stage.twispay.com/auth/signin))_
 9. Enter your **Private Key**. _(Twispay Secret Key: You can get one from [here for live](https://merchant.twispay.com/auth/signin) or from [here for stage](https://merchant-stage.twispay.com/auth/signin))_
 10. Select the custom page you want to redirect the customer after the payment **Redirect to custom page Thank you page**. _(Leave 'Default' to redirect to order confirmation default page.)_
-11. Enter your tehnical **Contact Email**. _(This will be displayed to customers in case of a payment error)_
+11. Enter your technical **Contact Email**. _(This will be displayed to customers in case of a payment error)_
 12. Save your changes.
 
 == Screenshots ==

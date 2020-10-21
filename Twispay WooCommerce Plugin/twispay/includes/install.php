@@ -23,7 +23,7 @@ function twispay_tw_install() {
 	// Create new pages from Twispay Confirmation with shortcodes included
 	wp_insert_post(
 		array(
-			'post_title'     => __( 'Twispay confirmation', 'tw-confirmation' ),
+			'post_title'     => esc_html__( 'Twispay confirmation', 'tw-confirmation' ),
 			'post_content'   => '[tw_payment_confirmation]',
 			'post_status'    => 'publish',
 			'post_author'    => get_current_user_id(),
@@ -64,4 +64,4 @@ function twispay_tw_install() {
 	$wpdb->get_results( $wpdb->prepare( "INSERT INTO `" . $wpdb->prefix . "twispay_tw_configuration` (`live_mode`) VALUES (0);" ) );
 }
 register_activation_hook( TWISPAY_PLUGIN_DIR, 'twispay_tw_install' );
-?>
+
