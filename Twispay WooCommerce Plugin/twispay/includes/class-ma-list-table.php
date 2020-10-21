@@ -815,7 +815,7 @@ class Twispay_Tw_List_Table {
         } else {
             $html_current_page = sprintf( "%s<input class='current-page' id='current-page-selector' type='text' name='paged' value='%s' size='%d' aria-describedby='table-paging' /><span class='tablenav-paging-text'>",
                 '<label for="current-page-selector" class="screen-reader-text">' . __( 'Current Page' ) . '</label>',
-                $current,
+                esc_html( $current ),
                 strlen( $total_pages )
             );
         }
@@ -1065,8 +1065,8 @@ class Twispay_Tw_List_Table {
 
         if ( ! empty( $columns['cb'] ) ) {
             static $cb_counter = 1;
-            $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . __( 'Select All' ) . '</label>'
-                . '<input id="cb-select-all-' . $cb_counter . '" type="checkbox" />';
+            $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . esc_attr( $cb_counter ) . '">' . __( 'Select All' ) . '</label>'
+                . '<input id="cb-select-all-' . esc_attr( $cb_counter ) . '" type="checkbox" />';
             $cb_counter++;
         }
 
@@ -1099,7 +1099,7 @@ class Twispay_Tw_List_Table {
                     $class[] = $desc_first ? 'asc' : 'desc';
                 }
 
-                $column_display_name = '<a href="' . esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) ) . '"><span>' . $column_display_name . '</span><span class="sorting-indicator"></span></a>';
+                $column_display_name = '<a href="' . esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) ) . '"><span>' . esc_html( $column_display_name ) . '</span><span class="sorting-indicator"></span></a>';
             }
 
             $tag = ( 'cb' === $column_key ) ? 'td' : 'th';
@@ -1126,21 +1126,21 @@ class Twispay_Tw_List_Table {
 
         $this->screen->render_screen_reader_content( 'heading_list' );
         ?>
-        <table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
+        <table class="wp-list-table <?php echo sanitize_html_class( implode( ' ', $this->get_table_classes() ) ); ?>">
             <thead>
             <tr>
-                <?php $this->print_column_headers(); ?>
+                <?php esc_html( $this->print_column_headers() ); ?>
             </tr>
             </thead>
             <tbody id="the-list"<?php
                 if ( $singular ) {
-                    echo " data-wp-lists='list:$singular'";
+                    echo esc_html( " data-wp-lists='list:$singular'" );
                 } ?>>
-                <?php $this->display_rows_or_placeholder(); ?>
+                <?php esc_html( $this->display_rows_or_placeholder() ); ?>
             </tbody>
             <tfoot>
             <tr>
-                <?php $this->print_column_headers( false ); ?>
+                <?php esc_html( $this->print_column_headers( false ) ); ?>
             </tr>
             </tfoot>
         </table>
@@ -1175,7 +1175,7 @@ class Twispay_Tw_List_Table {
         <div class="tablenav <?php echo esc_attr( $which ); ?>">
                 <?php if ( $this->has_items() ): ?>
                 <div class="alignleft actions bulkactions">
-                        <?php $this->bulk_actions( $which ); ?>
+                        <?php esc_html( $this->bulk_actions( $which ) ); ?>
                 </div>
                 <?php endif;
                 $this->extra_tablenav( $which );
@@ -1204,10 +1204,10 @@ class Twispay_Tw_List_Table {
      */
     public function display_rows_or_placeholder() {
         if ( $this->has_items() ) {
-            $this->display_rows();
+            esc_html( $this->display_rows() );
         } else {
-            echo '<tr class="no-items"><td class="colspanchange" colspan="' . $this->get_column_count() . '">';
-            $this->no_items();
+            echo '<tr class="no-items"><td class="colspanchange" colspan="' . esc_attr( $this->get_column_count() ) . '">';
+            esc_html( $this->no_items() );
             echo '</td></tr>';
         }
     }
@@ -1233,7 +1233,7 @@ class Twispay_Tw_List_Table {
      */
     public function single_row( $item ) {
         echo '<tr>';
-        $this->single_row_columns( $item );
+        esc_html( $this->single_row_columns( $item ) );
         echo '</tr>';
     }
 
@@ -1275,11 +1275,11 @@ class Twispay_Tw_List_Table {
             // Instead of using esc_attr(), we strip tags to get closer to a user-friendly string.
             $data = 'data-colname="' . wp_strip_all_tags( $column_display_name ) . '"';
 
-            $attributes = "class='$classes' $data";
+            $attributes = sanitize_html_class( "class='$classes' $data" );
 
             if ( 'cb' === $column_name ) {
                 echo '<th scope="row" class="check-column">';
-                echo $this->column_cb( $item );
+                echo esc_html( $this->column_cb( $item ) );
                 echo '</th>';
             } elseif ( method_exists( $this, '_column_' . $column_name ) ) {
                 echo call_user_func(
@@ -1291,13 +1291,13 @@ class Twispay_Tw_List_Table {
                 );
             } elseif ( method_exists( $this, 'column_' . $column_name ) ) {
                 echo "<td $attributes>";
-                echo call_user_func( array( $this, 'column_' . $column_name ), $item );
-                echo $this->handle_row_actions( $item, $column_name, $primary );
+                echo esc_html( call_user_func( array( $this, 'column_' . $column_name ), $item ) );
+                echo esc_html( $this->handle_row_actions( $item, $column_name, $primary ) );
                 echo "</td>";
             } else {
                 echo "<td $attributes>";
-                echo $this->column_default( $item, $column_name );
-                echo $this->handle_row_actions( $item, $column_name, $primary );
+                echo esc_html( $this->column_default( $item, $column_name ) );
+                echo esc_html( $this->handle_row_actions( $item, $column_name, $primary ) );
                 echo "</td>";
             }
         }
