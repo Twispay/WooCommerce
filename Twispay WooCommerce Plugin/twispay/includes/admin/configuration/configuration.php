@@ -93,7 +93,7 @@ function twispay_tw_configuration() {
                         <tr class="form-field" id="s_t_s_notification">
                             <th scope="row"><label for="s_t_s_notification"><?= esc_html( $tw_lang['s_t_s_notification_label'] ); ?></span></label></th>
                             <td>
-                                <input name="s_t_s_notification" disabled="disabled" type="text" value="<?= plugins_url() . '/twispay/includes/validation.php'; ?>" style="max-width: 400px;" />
+                                <input name="s_t_s_notification" disabled="disabled" type="text" value="<?= TWISPAY_PLUGIN_DIR . 'includes/validation.php'; ?>" style="max-width: 400px;" />
                                 <p class="description"><?= esc_html( $tw_lang['s_t_s_notification_desc'] ); ?></p>
                             </td>
                         </tr>

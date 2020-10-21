@@ -126,7 +126,7 @@ function init_twispay_gateway_class() {
                 }
 
                 $this->id = 'twispay';
-                $this->icon =  plugins_url() . '/twispay/logo.png';
+                $this->icon =  TWISPAY_PLUGIN_DIR . 'logo.png';
                 $this->has_fields = true;
                 $this->method_title = $tw_lang['ws_title'];
                 $this->method_description = $tw_lang['ws_description'];
