@@ -17,12 +17,12 @@
  * @return string Html with all Live Mode options
  */
 function twispay_tw_get_live_mode( $tw_lang ) {
-    // Wordpress database refference
+    // Wordpress database reference
     global $wpdb;
     $html = '';
     $table_name = $wpdb->prefix . 'twispay_tw_configuration';
 
-    $live_mode = $wpdb->get_results( $wpdb->prepare( "SELECT live_mode FROM $table_name" ) );
+    $live_mode = $wpdb->get_results( "SELECT live_mode FROM $table_name" );
 
     if ( $live_mode ) {
         $html .= '<select name="live_mode" id="live_mode">';
