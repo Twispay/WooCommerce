@@ -40,6 +40,12 @@ The easiest way of installing our module is by visiting the [official module pag
 
 == Changelog ==
 
+= 1.0.9 =
+* Increased security using best practices (escaping, sanitizing, SQL requests cleaning).
+* Tested up to Wordpress 5.5.1.
+* Fix typos.
+* Fix issues with non-standard /plugins directory path.
+
 = 1.0.8 =
 * Updated unique identifiers to reflect the request type (purchase or recurrent) and the source plugin.
 * Appended the timestamp to the orderId that is encapsulated inside the payment request to ensure unicity.
