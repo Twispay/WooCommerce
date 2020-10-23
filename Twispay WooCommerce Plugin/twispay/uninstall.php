@@ -23,5 +23,5 @@ wp_delete_post( get_page_by_title( 'Twispay confirmation' )->ID );
 // Remove All Tables
 global $wpdb;
 
-$wpdb->query( $wpdb->prepare( "DROP TABLE IF EXISTS " . $wpdb->prefix . "twispay_tw_configuration" ) );
-$wpdb->query( $wpdb->prepare( "DROP TABLE IF EXISTS " . $wpdb->prefix . "twispay_tw_transactions" ) );
+$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "twispay_tw_configuration" );
+$wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "twispay_tw_transactions" );

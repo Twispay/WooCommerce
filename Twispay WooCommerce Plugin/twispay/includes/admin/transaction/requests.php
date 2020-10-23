@@ -36,7 +36,7 @@ function tw_twispay_p_refund_payment_transaction() {
         global $wpdb;
         $apiKey = '';
 
-        $configuration = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" ) );
+        $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
 
         if ( $configuration ) {
             if ( $configuration->live_mode == 1 ) {
@@ -81,7 +81,7 @@ function tw_twispay_p_recurring_order( $request ) {
         /* Get configuration from database. */
         global $wpdb;
         $apiKey = '';
-        $configuration = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" ) );
+        $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
 
         if ( $configuration ) {
             if ( $configuration->live_mode == 1 ) {
@@ -123,7 +123,7 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
     /* Get configuration from database. */
     global $wpdb;
     $apiKey = '';
-    $configuration = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" ) );
+    $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
 
     if ( $configuration ) {
         if ( $configuration->live_mode == 1 ) {

@@ -37,7 +37,7 @@ if( (FALSE == isset($_POST['opensslResult'])) && (FALSE == isset($_POST['result'
 
 /* Get configuration from database. */
 global $wpdb;
-$configuration = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" ) );
+$configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
 
 
 $secretKey = '';

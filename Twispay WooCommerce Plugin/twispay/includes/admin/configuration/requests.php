@@ -47,7 +47,7 @@ function tw_twispay_p_edit_general_configuration( $request ) {
     $table_name = $wpdb->prefix . 'twispay_tw_configuration';
 
     // Check if the Configuration row exist into Database
-    $configuration = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name" ) );
+    $configuration = $wpdb->get_results( "SELECT * FROM $table_name" );
 
     if ( $configuration ) {
         // Edit the Configuration into Database ( twispay_tw_configuration table )

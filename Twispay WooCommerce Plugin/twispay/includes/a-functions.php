@@ -65,12 +65,12 @@ function twispay_tw_get_live_mode( $tw_lang ) {
  * @return string Html with all Suppress Email options
  */
 function twispay_tw_get_suppress_email( $tw_lang ) {
-    // Wordpress database refference
+    // Wordpress database reference
     global $wpdb;
     $html = '';
     $table_name = $wpdb->prefix . 'twispay_tw_configuration';
 
-    $suppress_email = $wpdb->get_results( $wpdb->prepare( "SELECT suppress_email FROM $table_name" ) );
+    $suppress_email = $wpdb->get_results( "SELECT suppress_email FROM $table_name" );
 
     if ( $suppress_email ) {
         $html .= '<select name="suppress_email" id="suppress_email">';
@@ -99,14 +99,12 @@ function twispay_tw_get_suppress_email( $tw_lang ) {
  * @return string Html with all Wordpress Pages options
  */
 function twispay_tw_get_wp_pages( $tw_lang ) {
-    // Wordpress database refference
+    // Wordpress database reference
     global $wpdb;
     $html = '';
-    $table_name_conf = $wpdb->prefix . 'twispay_tw_configuration';
-    $table_name_posts = $wpdb->prefix . 'posts';
 
-    $configuration = $wpdb->get_results( $wpdb->prepare( "SELECT thankyou_page FROM $table_name_conf" ) );
-    $wp_pages = $wpdb->get_results( $wpdb->prepare( "SELECT post_title, guid FROM $table_name_posts WHERE post_type = `page` AND post_status = `publish`" ) );
+    $configuration = $wpdb->get_results( "SELECT thankyou_page FROM " . $wpdb->prefix . "twispay_tw_configuration" );
+    $wp_pages = $wpdb->get_results( "SELECT post_title, guid FROM " . $wpdb->prefix . "posts WHERE post_type = 'page' AND post_status = 'publish' " );
 
     if ( $wp_pages ) {
         $html .= '<select name="wp_pages" id="wp_pages">';
@@ -136,11 +134,11 @@ function twispay_tw_get_wp_pages( $tw_lang ) {
  * @return string contact_email
  */
 function twispay_tw_get_contact_email_o() {
-    // Wordpress database refference
+    // Wordpress database reference
     global $wpdb;
     $table_name = $wpdb->prefix . 'twispay_tw_configuration';
 
-    $contact_email = $wpdb->get_results( $wpdb->prepare( "SELECT contact_email FROM $table_name" ) );
+    $contact_email = $wpdb->get_results( "SELECT contact_email FROM $table_name" );
 
     if ( $contact_email ) {
         return $contact_email[0]->contact_email;
@@ -157,11 +155,11 @@ function twispay_tw_get_contact_email_o() {
  * @return string staging_id
  */
 function twispay_tw_get_staging_site_id() {
-    // Wordpress database refference
+    // Wordpress database reference
     global $wpdb;
     $table_name = $wpdb->prefix . 'twispay_tw_configuration';
 
-    $staging_id = $wpdb->get_results( $wpdb->prepare( "SELECT staging_id FROM $table_name" ) );
+    $staging_id = $wpdb->get_results( "SELECT staging_id FROM $table_name" );
 
     if ( $staging_id ) {
         return $staging_id[0]->staging_id;
@@ -182,7 +180,7 @@ function twispay_tw_get_staging_private_key() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'twispay_tw_configuration';
 
-    $staging_key = $wpdb->get_results( $wpdb->prepare( "SELECT staging_key FROM $table_name" ) );
+    $staging_key = $wpdb->get_results( "SELECT staging_key FROM $table_name" );
 
     if ( $staging_key ) {
         return $staging_key[0]->staging_key;
@@ -203,7 +201,7 @@ function twispay_tw_get_live_site_id() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'twispay_tw_configuration';
 
-    $live_id = $wpdb->get_results( $wpdb->prepare( "SELECT live_id FROM $table_name" ) );
+    $live_id = $wpdb->get_results( "SELECT live_id FROM $table_name" );
 
     if ( $live_id ) {
         return $live_id[0]->live_id;
@@ -224,7 +222,7 @@ function twispay_tw_get_live_private_key() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'twispay_tw_configuration';
 
-    $live_key = $wpdb->get_results( $wpdb->prepare( "SELECT live_key FROM $table_name" ) );
+    $live_key = $wpdb->get_results( "SELECT live_key FROM $table_name" );
 
     if ( $live_key ) {
         return $live_key[0]->live_key;
@@ -233,5 +231,3 @@ function twispay_tw_get_live_private_key() {
         return '';
     }
 }
-
-?>

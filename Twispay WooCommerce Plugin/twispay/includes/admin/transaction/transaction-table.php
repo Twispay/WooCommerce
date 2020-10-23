@@ -94,7 +94,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
     private function get_all_count( $wpdb ) {
         $table_name = $wpdb->prefix . 'twispay_tw_transactions';
 
-        $wpdb->get_results( $wpdb->prepare( "SELECT id_tw_transactions FROM $table_name" ) );
+        $wpdb->get_results( "SELECT id_tw_transactions FROM $table_name" );
 
         return $wpdb->num_rows;
     }
@@ -272,7 +272,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
 
         $this->_column_headers = array( $columns, $hidden, $sortable );
         $this->process_bulk_action();
-        $data = $wpdb->get_results( $wpdb->prepare( $query ), ARRAY_A );
+        $data = $wpdb->get_results( $query, ARRAY_A );
 
         // Set pagination to page.
         $current_page = $this->get_pagenum();
