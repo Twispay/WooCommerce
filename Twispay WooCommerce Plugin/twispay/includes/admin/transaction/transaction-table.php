@@ -132,7 +132,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
         );
 
         if ( $item['status'] == 'complete-ok' ) {
-            return sprintf( '%1$s %2$s', sanitize_key( $item['id_tw_transactions'] ), sanitize_text_field( $this->row_actions( $actions ) ) );
+            return sprintf( '%1$s %2$s', $item['id_tw_transactions'], $this->row_actions( $actions ) );
         }
         else {
             return $item['id_tw_transactions'];
@@ -228,10 +228,10 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
     function prepare_items() {
         global $wpdb;
 
-        $s = ( isset( $_REQUEST['s'] ) ? esc_url( $_REQUEST['s'] ) : 'all' );
-        $ma_status = ( isset( $_REQUEST['status'] ) ? esc_url( $_REQUEST['status'] ) : 'all' );
-        $order_by = ( isset( $_REQUEST['orderby'] ) ? esc_url( $_REQUEST['orderby'] ) : '' );
-        $order_how = ( isset( $_REQUEST['order'] ) ? esc_url( $_REQUEST['order'] ) : 'asc' );
+        $s = ( isset( $_REQUEST['s'] ) ? sanitize_text_field( $_REQUEST['s'] ) : 'all' );
+        $ma_status = ( isset( $_REQUEST['status'] ) ? sanitize_text_field( $_REQUEST['status'] ) : 'all' );
+        $order_by = ( isset( $_REQUEST['orderby'] ) ? sanitize_text_field( $_REQUEST['orderby'] ) : '' );
+        $order_how = ( isset( $_REQUEST['order'] ) ? sanitize_text_field( $_REQUEST['order'] ) : 'asc' );
 
         $transaction = $wpdb->prefix . "twispay_tw_transactions";
 
