@@ -81,10 +81,14 @@ final class Twispay {
      * @return void
      */
     private function twispay_tw_set_constants() {
-	// Set plugin folder
-	if ( ! defined( 'TWISPAY_PLUGIN_DIR' ) ) {
-	   define( 'TWISPAY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-	}
+	    // Set plugin folder
+        if ( ! defined( 'TWISPAY_PLUGIN_DIR' ) ) {
+            define( 'TWISPAY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+        }
+
+        if ( ! defined( 'TWISPAY_PLUGIN_URL' ) ) {
+            define( 'TWISPAY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+        }
     }
 
     /**

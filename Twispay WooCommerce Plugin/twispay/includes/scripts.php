@@ -58,7 +58,7 @@ function twispay_tw_add_admin_js() {
     }
 
     // Load all admin js files for Administrator Pages
-    wp_enqueue_script( 'ma-admin', plugins_url( '../assets/js/admin.js', __FILE__ ) );
+    wp_enqueue_script( 'ma-admin', TWISPAY_PLUGIN_URL . 'assets/js/admin.js' );
     //wp_enqueue_script( 'ma-admin-jquery', plugins_url( '../assets/js/jquery-ui.min.js', __FILE__ ) );
 }
 add_action( 'admin_enqueue_scripts', 'twispay_tw_add_admin_js' );
@@ -79,7 +79,7 @@ function twispay_tw_add_admin_css() {
     }
 
     // Load all admin css files for Administrator Pages
-    wp_enqueue_style( 'ma-admin', plugins_url( '../assets/css/admin.css', __FILE__ ) );
+    wp_enqueue_style( 'ma-admin', TWISPAY_PLUGIN_URL . 'assets/css/admin.css' );
 }
 add_action( 'admin_enqueue_scripts', 'twispay_tw_add_admin_css' );
 
@@ -94,7 +94,7 @@ add_action( 'admin_enqueue_scripts', 'twispay_tw_add_admin_css' );
  */
 function twispay_tw_add_front_css() {
     // Load all front css files
-    wp_enqueue_style( 'ma-front', plugins_url( '../assets/css/front.css', __FILE__ ) );
+    wp_enqueue_style( 'ma-front', TWISPAY_PLUGIN_URL . 'assets/css/front.css' );
 }
 add_action( 'wp_enqueue_scripts', 'twispay_tw_add_front_css' );
 
@@ -126,7 +126,7 @@ function init_twispay_gateway_class() {
                 }
 
                 $this->id = 'twispay';
-                $this->icon =  TWISPAY_PLUGIN_DIR . 'logo.png';
+                $this->icon =  TWISPAY_PLUGIN_URL . 'logo.png';
                 $this->has_fields = true;
                 $this->method_title = $tw_lang['ws_title'];
                 $this->method_description = $tw_lang['ws_description'];

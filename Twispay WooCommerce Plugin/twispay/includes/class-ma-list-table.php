@@ -357,11 +357,11 @@ class Twispay_Tw_List_Table {
         if ( ! empty( $_REQUEST['detached'] ) )
             echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
         ?>
-            <p class="search-box">
-                <label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo $text; ?>:</label>
-                <input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" />
-                <?php submit_button( $text, '', '', false, array( 'id' => 'search-submit' ) ); ?>
-            </p>
+        <p class="search-box">
+            <label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo $text; ?>:</label>
+            <input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" />
+            <?php submit_button( $text, '', '', false, array( 'id' => 'search-submit' ) ); ?>
+        </p>
         <?php
     }
 
@@ -486,10 +486,10 @@ class Twispay_Tw_List_Table {
             return false;
 
         if ( isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] )
-            return esc_url( $_REQUEST['action'] );
+            return $_REQUEST['action'];
 
         if ( isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] )
-            return esc_url( $_REQUEST['action2'] );
+            return $_REQUEST['action2'];
 
         return false;
     }
@@ -554,21 +554,16 @@ class Twispay_Tw_List_Table {
         if ( ! isset( $_GET['post_status'] ) || 'trash' !== $_GET['post_status'] ) {
             $extra_checks .= " AND post_status != 'trash'";
         } elseif ( isset( $_GET['post_status'] ) ) {
-            $extra_checks = $wpdb->prepare( ' AND post_status = %s', sanitize_text_field( $_GET['post_status'] ) );
+            $extra_checks = $wpdb->prepare( ' AND post_status = %s', $_GET['post_status'] );
         }
 
-        $months = $wpdb->get_results(
-            $wpdb->prepare(
-                "
-                SELECT DISTINCT YEAR( post_date ) AS year, MONTH( post_date ) AS month
-                FROM $wpdb->posts
-                WHERE post_type = %s
-                $extra_checks
-                ORDER BY post_date DESC
-                ",
-                $post_type
-            )
-        );
+        $months = $wpdb->get_results( $wpdb->prepare( "
+            SELECT DISTINCT YEAR( post_date ) AS year, MONTH( post_date ) AS month
+            FROM $wpdb->posts
+            WHERE post_type = %s
+            $extra_checks
+            ORDER BY post_date DESC
+        ", $post_type ) );
 
         /**
          * Filters the 'Months' drop-down results.
@@ -585,28 +580,28 @@ class Twispay_Tw_List_Table {
         if ( ! $month_count || ( 1 == $month_count && 0 == $months[0]->month ) )
             return;
 
-        $m = isset( $_GET['m'] ) ? (int) sanitize_text_field( $_GET['m'] ) : 0;
+        $m = isset( $_GET['m'] ) ? (int) $_GET['m'] : 0;
         ?>
-            <label for="filter-by-date" class="screen-reader-text"><?php _e( 'Filter by date' ); ?></label>
-            <select name="m" id="filter-by-date">
-                    <option<?php selected( $m, 0 ); ?> value="0"><?php _e( 'All dates' ); ?></option>
-        <?php
-                    foreach ( $months as $arc_row ) {
-                            if ( 0 == $arc_row->year )
-                                    continue;
+        <label for="filter-by-date" class="screen-reader-text"><?php _e( 'Filter by date' ); ?></label>
+        <select name="m" id="filter-by-date">
+            <option<?php selected( $m, 0 ); ?> value="0"><?php _e( 'All dates' ); ?></option>
+            <?php
+            foreach ( $months as $arc_row ) {
+                if ( 0 == $arc_row->year )
+                    continue;
 
-                            $month = zeroise( $arc_row->month, 2 );
-                            $year = $arc_row->year;
+                $month = zeroise( $arc_row->month, 2 );
+                $year = $arc_row->year;
 
-                            printf( "<option %s value='%s'>%s</option>\n",
-                                    selected( $m, $year . $month, false ),
-                                    esc_attr( $arc_row->year . $month ),
-                                    /* translators: 1: month name, 2: 4-digit year */
-                                    sprintf( __( '%1$s %2$d' ), esc_html( $wp_locale->get_month( $month ) ), (int) $year )
-                            );
-                    }
-        ?>
-            </select>
+                printf( "<option %s value='%s'>%s</option>\n",
+                    selected( $m, $year . $month, false ),
+                    esc_attr( $arc_row->year . $month ),
+                    /* translators: 1: month name, 2: 4-digit year */
+                    sprintf( __( '%1$s %2$d' ), $wp_locale->get_month( $month ), $year )
+                );
+            }
+            ?>
+        </select>
         <?php
     }
 
@@ -620,22 +615,22 @@ class Twispay_Tw_List_Table {
      */
     protected function view_switcher( $current_mode ) {
         ?>
-            <input type="hidden" name="mode" value="<?php echo esc_attr( $current_mode ); ?>" />
-            <div class="view-switch">
-        <?php
-                foreach ( $this->modes as $mode => $title ) {
-                        $classes = array( 'view-' . $mode );
-                        if ( $current_mode === $mode )
-                                $classes[] = 'current';
-                        printf(
-                                "<a href='%s' class='%s' id='view-switch-$mode'><span class='screen-reader-text'>%s</span></a>\n",
-                                esc_url( add_query_arg( 'mode', $mode ) ),
-                                implode( ' ', $classes ),
-                                $title
-                        );
-                }
-        ?>
-            </div>
+        <input type="hidden" name="mode" value="<?php echo esc_attr( $current_mode ); ?>" />
+        <div class="view-switch">
+            <?php
+            foreach ( $this->modes as $mode => $title ) {
+                $classes = array( 'view-' . $mode );
+                if ( $current_mode === $mode )
+                    $classes[] = 'current';
+                printf(
+                    "<a href='%s' class='%s' id='view-switch-$mode'><span class='screen-reader-text'>%s</span></a>\n",
+                    esc_url( add_query_arg( 'mode', $mode ) ),
+                    implode( ' ', $classes ),
+                    $title
+                );
+            }
+            ?>
+        </div>
         <?php
     }
 
@@ -663,7 +658,7 @@ class Twispay_Tw_List_Table {
             printf( '<span aria-hidden="true">Ñ</span><span class="screen-reader-text">%s</span>',
                 __( 'No comments' )
             );
-        // Approved comments have different display depending on some conditions.
+            // Approved comments have different display depending on some conditions.
         } elseif ( $approved_comments ) {
             printf( '<a href="%s" class="post-com-count post-com-count-approved"><span class="comment-count-approved" aria-hidden="true">%s</span><span class="screen-reader-text">%s</span></a>',
                 esc_url( add_query_arg( array( 'p' => $post_id, 'comment_status' => 'approved' ), admin_url( 'edit-comments.php' ) ) ),
@@ -820,7 +815,7 @@ class Twispay_Tw_List_Table {
         } else {
             $html_current_page = sprintf( "%s<input class='current-page' id='current-page-selector' type='text' name='paged' value='%s' size='%d' aria-describedby='table-paging' /><span class='tablenav-paging-text'>",
                 '<label for="current-page-selector" class="screen-reader-text">' . __( 'Current Page' ) . '</label>',
-                esc_html( $current ),
+                $current,
                 strlen( $total_pages )
             );
         }
@@ -1057,7 +1052,7 @@ class Twispay_Tw_List_Table {
         $current_url = remove_query_arg( 'paged', $current_url );
 
         if ( isset( $_GET['orderby'] ) ) {
-            $current_orderby = sanitize_text_field( $_GET['orderby'] );
+            $current_orderby = $_GET['orderby'];
         } else {
             $current_orderby = '';
         }
@@ -1070,8 +1065,8 @@ class Twispay_Tw_List_Table {
 
         if ( ! empty( $columns['cb'] ) ) {
             static $cb_counter = 1;
-            $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . esc_attr( $cb_counter ) . '">' . __( 'Select All' ) . '</label>'
-                . '<input id="cb-select-all-' . esc_attr( $cb_counter ) . '" type="checkbox" />';
+            $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . __( 'Select All' ) . '</label>'
+                . '<input id="cb-select-all-' . $cb_counter . '" type="checkbox" />';
             $cb_counter++;
         }
 
@@ -1104,7 +1099,7 @@ class Twispay_Tw_List_Table {
                     $class[] = $desc_first ? 'asc' : 'desc';
                 }
 
-                $column_display_name = '<a href="' . esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) ) . '"><span>' . esc_html( $column_display_name ) . '</span><span class="sorting-indicator"></span></a>';
+                $column_display_name = '<a href="' . esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) ) . '"><span>' . $column_display_name . '</span><span class="sorting-indicator"></span></a>';
             }
 
             $tag = ( 'cb' === $column_key ) ? 'td' : 'th';
@@ -1131,21 +1126,21 @@ class Twispay_Tw_List_Table {
 
         $this->screen->render_screen_reader_content( 'heading_list' );
         ?>
-        <table class="wp-list-table <?php echo sanitize_html_class( implode( ' ', $this->get_table_classes() ) ); ?>">
+        <table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
             <thead>
             <tr>
-                <?php esc_html( $this->print_column_headers() ); ?>
+                <?php $this->print_column_headers(); ?>
             </tr>
             </thead>
             <tbody id="the-list"<?php
-                if ( $singular ) {
-                    echo esc_html( " data-wp-lists='list:$singular'" );
-                } ?>>
-                <?php esc_html( $this->display_rows_or_placeholder() ); ?>
+            if ( $singular ) {
+                echo " data-wp-lists='list:$singular'";
+            } ?>>
+            <?php $this->display_rows_or_placeholder(); ?>
             </tbody>
             <tfoot>
             <tr>
-                <?php esc_html( $this->print_column_headers( false ) ); ?>
+                <?php $this->print_column_headers( false ); ?>
             </tr>
             </tfoot>
         </table>
@@ -1178,15 +1173,15 @@ class Twispay_Tw_List_Table {
         }
         ?>
         <div class="tablenav <?php echo esc_attr( $which ); ?>">
-                <?php if ( $this->has_items() ): ?>
+            <?php if ( $this->has_items() ): ?>
                 <div class="alignleft actions bulkactions">
-                        <?php esc_html( $this->bulk_actions( $which ) ); ?>
+                    <?php $this->bulk_actions( $which ); ?>
                 </div>
-                <?php endif;
-                $this->extra_tablenav( $which );
-                $this->pagination( $which );
-        ?>
-                <br class="clear" />
+            <?php endif;
+            $this->extra_tablenav( $which );
+            $this->pagination( $which );
+            ?>
+            <br class="clear" />
         </div>
         <?php
     }
@@ -1209,10 +1204,10 @@ class Twispay_Tw_List_Table {
      */
     public function display_rows_or_placeholder() {
         if ( $this->has_items() ) {
-            esc_html( $this->display_rows() );
+            $this->display_rows();
         } else {
-            echo '<tr class="no-items"><td class="colspanchange" colspan="' . esc_attr( $this->get_column_count() ) . '">';
-            esc_html( $this->no_items() );
+            echo '<tr class="no-items"><td class="colspanchange" colspan="' . $this->get_column_count() . '">';
+            $this->no_items();
             echo '</td></tr>';
         }
     }
@@ -1238,7 +1233,7 @@ class Twispay_Tw_List_Table {
      */
     public function single_row( $item ) {
         echo '<tr>';
-        esc_html( $this->single_row_columns( $item ) );
+        $this->single_row_columns( $item );
         echo '</tr>';
     }
 
@@ -1280,11 +1275,11 @@ class Twispay_Tw_List_Table {
             // Instead of using esc_attr(), we strip tags to get closer to a user-friendly string.
             $data = 'data-colname="' . wp_strip_all_tags( $column_display_name ) . '"';
 
-            $attributes = sanitize_html_class( "class='$classes' $data" );
+            $attributes = "class='$classes' $data";
 
             if ( 'cb' === $column_name ) {
                 echo '<th scope="row" class="check-column">';
-                echo esc_html( $this->column_cb( $item ) );
+                echo $this->column_cb( $item );
                 echo '</th>';
             } elseif ( method_exists( $this, '_column_' . $column_name ) ) {
                 echo call_user_func(
@@ -1296,13 +1291,13 @@ class Twispay_Tw_List_Table {
                 );
             } elseif ( method_exists( $this, 'column_' . $column_name ) ) {
                 echo "<td $attributes>";
-                echo esc_html( call_user_func( array( $this, 'column_' . $column_name ), $item ) );
-                echo esc_html( $this->handle_row_actions( $item, $column_name, $primary ) );
+                echo call_user_func( array( $this, 'column_' . $column_name ), $item );
+                echo $this->handle_row_actions( $item, $column_name, $primary );
                 echo "</td>";
             } else {
                 echo "<td $attributes>";
-                echo esc_html( $this->column_default( $item, $column_name ) );
-                echo esc_html( $this->handle_row_actions( $item, $column_name, $primary ) );
+                echo $this->column_default( $item, $column_name );
+                echo $this->handle_row_actions( $item, $column_name, $primary );
                 echo "</td>";
             }
         }

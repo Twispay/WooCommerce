@@ -166,8 +166,8 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
     function column_cb( $item ) {
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
-            sanitize_text_field( $this->_args['singular'] ),
-            sanitize_key( $item['id_tw_transactions'] )
+            esc_attr( $this->_args['singular'] ),
+            esc_attr( $item['id_tw_transactions'] )
         );
     }
 
