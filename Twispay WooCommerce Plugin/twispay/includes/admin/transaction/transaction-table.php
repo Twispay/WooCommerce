@@ -127,8 +127,8 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
      */
     function column_id_tw_transactions( $item ) {
         $actions = array(
-            'refund'                 => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">' . $this->tw_lang['transaction_list_refund_title'] . '</a>', esc_url( $_REQUEST['page'] ), 'refund_payment', $item['transactionId'] ),
-            'cancel_recurring'       => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">' . $this->tw_lang['transaction_list_recurring_title'] . '</a>', esc_url( $_REQUEST['page'] ), 'recurring_payment', $item['orderId'] )
+            'refund'                 => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">' . $this->tw_lang['transaction_list_refund_title'] . '</a>', sanitize_text_field( $_REQUEST['page'] ), 'refund_payment', $item['transactionId'] ),
+            'cancel_recurring'       => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">' . $this->tw_lang['transaction_list_recurring_title'] . '</a>', sanitize_text_field( $_REQUEST['page'] ), 'recurring_payment', $item['orderId'] )
         );
 
         if ( $item['status'] == 'complete-ok' ) {

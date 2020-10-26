@@ -54,7 +54,7 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
 /* Exit if no order is placed */
 if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
     /* Extract the WooCommerce order. */
-    $order_id = (int) sanitize_key( $_GET['order_id'] );
+    $order_id = (int) sanitize_text_field( $_GET['order_id'] );
     $order = wc_get_order($order_id);
 
     if (FALSE != $order && (TRUE == wcs_order_contains_subscription($order_id)) && (1 == count($order->get_items()))) {
@@ -142,7 +142,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         /* Build the data object to be posted to Twispay. */
         $orderData = [ 'siteId' => $siteID
                      , 'customer' => $customer
-                     , 'order' => [ 'orderId' => (int) sanitize_key( $_GET['order_id'] ) . '_' . $timestamp
+                     , 'order' => [ 'orderId' => (int) sanitize_text_field( $_GET['order_id'] ) . '_' . $timestamp
                                   , 'type' => 'recurring'
                                   , 'amount' => $data['total'] /* Total sum to pay right now. */
                                   , 'currency' => $data['currency']

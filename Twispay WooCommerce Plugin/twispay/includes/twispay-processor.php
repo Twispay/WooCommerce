@@ -55,7 +55,7 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
 /* Exit if no order is placed */
 if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
     /* Extract the WooCommerce order. */
-    $order = wc_get_order((int) sanitize_key( $_GET['order_id'] ));
+    $order = wc_get_order((int) sanitize_text_field( $_GET['order_id'] ));
 
     if ( FALSE != $order ) {
         /* Get all information for the Twispay Payment form. */
@@ -85,7 +85,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         $timestamp = date('YmdHis');
 
         /* Extract the customer details. */
-        $customer = [ 'identifier' => 'p_wo_' . ((0 == $data['customer_id']) ? (sanitize_key( $_GET['order_id'] )) : ($data['customer_id'])) . '_' . $timestamp
+        $customer = [ 'identifier' => 'p_wo_' . ((0 == $data['customer_id']) ? (sanitize_text_field( $_GET['order_id'] )) : ($data['customer_id'])) . '_' . $timestamp
                     , 'firstName' => ($data['billing']['first_name']) ? ($data['billing']['first_name']) : ($data['shipping']['first_name'])
                     , 'lastName' => ($data['billing']['last_name']) ? ($data['billing']['last_name']) : ($data['shipping']['last_name'])
                     , 'country' => ($data['billing']['country']) ? ($data['billing']['country']) : ($data['shipping']['country'])
@@ -118,7 +118,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         /* Build the data object to be posted to Twispay. */
         $orderData = [ 'siteId' => $siteID
                      , 'customer' => $customer
-                     , 'order' => [ 'orderId' => sanitize_key( $_GET['order_id'] ) . '_' . $timestamp
+                     , 'order' => [ 'orderId' => sanitize_text_field( $_GET['order_id'] ) . '_' . $timestamp
                                   , 'type' => 'purchase'
                                   , 'amount' => $data['total']
                                   , 'currency' => $data['currency']

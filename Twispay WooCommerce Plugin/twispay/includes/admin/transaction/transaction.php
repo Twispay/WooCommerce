@@ -114,7 +114,7 @@ function twispay_tw_transaction_administrator() {
                                 case 'errorp_refund':
                                     ?>
                                         <div class="error notice">
-                                            <p><?= esc_html( $_GET['emessage'] ); ?></p>
+                                            <p><?= esc_html( wp_unslash( $_GET['emessage'] ) ); ?></p>
                                         </div>
                                     <?php
                                     break;
