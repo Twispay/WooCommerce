@@ -1,30 +1,36 @@
 // Document ready statement.
 jQuery( document ).ready( function( $ ) {
+    const liveMode = $( '#live_mode' );
+    const liveSiteId = $( '#live_site_id' );
+    const livePrivateKey = $( '#live_private_key' );
+    const stagingSiteId = $( '#staging_site_id' );
+    const stagingPrivateKey = $( '#staging_private_key' );
+
     // Hiding and showing on start LIVE/STAGING INPUTS
-    if ( $( '#live_mode' ).val() == '1' ) {
-        $( '#live_site_id' ).fadeIn();
-        $( '#live_private_key' ).fadeIn();
+    if ( liveMode.val() == '1' ) {
+        liveSiteId.fadeIn();
+        livePrivateKey.fadeIn();
     }
-    else if ( $( '#live_mode' ).val() == '0' ) {
-        $( '#staging_site_id' ).fadeIn();
-        $( '#staging_private_key' ).fadeIn();
+    else if ( liveMode.val() == '0' ) {
+        stagingSiteId.fadeIn();
+        stagingPrivateKey.fadeIn();
     }
-    
+
     // Trigger for hiding and showing LIVE/STAGING INPUTS
-    $( '#live_mode' ).on( 'change', function() {
+    liveMode.on( 'change', function() {
         if ( this.value == '1' ) {
-            $( '#staging_site_id' ).fadeOut(0);
-            $( '#staging_private_key' ).fadeOut(0);
-            
-            $( '#live_site_id' ).fadeIn(0);
-            $( '#live_private_key' ).fadeIn(0);
+            stagingSiteId.fadeOut(0);
+            stagingPrivateKey.fadeOut(0);
+
+            liveSiteId.fadeIn(0);
+            livePrivateKey.fadeIn(0);
         }
         else if ( this.value == '0' ) {
-            $( '#live_site_id' ).fadeOut(0);
-            $( '#live_private_key' ).fadeOut(0);
-            
-            $( '#staging_site_id' ).fadeIn(0);
-            $( '#staging_private_key' ).fadeIn(0);
+            liveSiteId.fadeOut(0);
+            livePrivateKey.fadeOut(0);
+
+            stagingSiteId.fadeIn(0);
+            stagingPrivateKey.fadeIn(0);
         }
     } );
 } );

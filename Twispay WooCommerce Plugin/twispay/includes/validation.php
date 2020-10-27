@@ -55,7 +55,7 @@ if ( $configuration ) {
 /* Check if there is NO secret key. */
 if ( '' == $secretKey ) {
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_private']);
-    die($tw_lang['log_error_invalid_private']);
+    die( esc_html( $tw_lang['log_error_invalid_private'] ));
 }
 
 
@@ -67,7 +67,7 @@ $decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encrypt
 if(FALSE === $decrypted){
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_decryption_error']);
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_openssl'] . (isset($_POST['opensslResult'])) ? ($_POST['opensslResult']) : ($_POST['result']));
-    die($tw_lang['log_error_decryption_error']);
+    die( esc_html( $tw_lang['log_error_decryption_error'] ));
 } else {
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_string_decrypted']);
 }
@@ -80,7 +80,7 @@ $orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decry
 /* Check if server sesponse validation failed.  */
 if(TRUE !== $orderValidation){
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_validating_failed']);
-    die($tw_lang['log_error_validating_failed']);
+    die( esc_html( $tw_lang['log_error_validating_failed'] ));
 }
 
 
@@ -92,7 +92,7 @@ $order = wc_get_order($orderId);
 /* Check if the WooCommerce order extraction failed. */
 if( FALSE == $order ){
     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_order']);
-    die($tw_lang['log_error_invalid_order']);
+    die( esc_html( $tw_lang['log_error_invalid_order'] ));
 }
 
 

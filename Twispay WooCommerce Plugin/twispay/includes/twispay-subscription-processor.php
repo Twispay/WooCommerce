@@ -54,9 +54,10 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
 /* Exit if no order is placed */
 if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
     /* Extract the WooCommerce order. */
-    $order = wc_get_order($_GET['order_id']);
+    $order_id = (int) sanitize_text_field( $_GET['order_id'] );
+    $order = wc_get_order($order_id);
 
-    if (FALSE != $order && (TRUE == wcs_order_contains_subscription($_GET['order_id'])) && (1 == count($order->get_items()))) {
+    if (FALSE != $order && (TRUE == wcs_order_contains_subscription($order_id)) && (1 == count($order->get_items()))) {
         $subscription = wcs_get_subscriptions_for_order($order);
         $subscription = reset($subscription);
         /* Get all information for the Twispay Payment form. */
@@ -64,7 +65,9 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
 
         /* Get configuration from database. */
         global $wpdb;
-        $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
+        $table_name = $wpdb->prefix . 'twispay_tw_configuration';
+
+        $configuration = $wpdb->get_row("SELECT * FROM $table_name" );
 
         /* Get the Site ID and the Private Key. */
         $siteID = '';
@@ -78,7 +81,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
                 $secretKey = $configuration->staging_key;
             } else {
                 echo '<style>.loader {display: none;}</style>';
-                die( $tw_lang['twispay_processor_error_missing_configuration'] );
+                die( esc_html( $tw_lang['twispay_processor_error_missing_configuration'] ) );
             }
         }
 
@@ -86,7 +89,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         $timestamp = date('YmdHis');
 
         /* Extract the customer details. */
-        $customer = [ 'identifier' => 'r_wo_' . ((0 == $data['customer_id']) ? ($_GET['order_id']) : ($data['customer_id'])) . '_' . $timestamp
+        $customer = [ 'identifier' => 'r_wo_' . ((0 == $data['customer_id']) ? ($order_id) : ($data['customer_id'])) . '_' . $timestamp
                     , 'firstName' => ($data['billing']['first_name']) ? ($data['billing']['first_name']) : ($data['shipping']['first_name'])
                     , 'lastName' => ($data['billing']['last_name']) ? ($data['billing']['last_name']) : ($data['shipping']['last_name'])
                     , 'country' => ($data['billing']['country']) ? ($data['billing']['country']) : ($data['shipping']['country'])
@@ -139,7 +142,7 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         /* Build the data object to be posted to Twispay. */
         $orderData = [ 'siteId' => $siteID
                      , 'customer' => $customer
-                     , 'order' => [ 'orderId' => $_GET['order_id'] . '_' . $timestamp
+                     , 'order' => [ 'orderId' => (int) sanitize_text_field( $_GET['order_id'] ) . '_' . $timestamp
                                   , 'type' => 'recurring'
                                   , 'amount' => $data['total'] /* Total sum to pay right now. */
                                   , 'currency' => $data['currency']
@@ -164,9 +167,9 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
         $hostName = ($configuration && (1 == $configuration->live_mode)) ? ('https://secure.twispay.com' . '?lang=' . $lang) : ('https://secure-stage.twispay.com' . '?lang=' . $lang);
         ?>
 
-            <form action="<?= $hostName; ?>" method="POST" accept-charset="UTF-8" id="twispay_payment_form">
-                <input type="hidden" name="jsonRequest" value="<?= $base64JsonRequest; ?>">
-                <input type="hidden" name="checksum" value="<?= $base64Checksum; ?>">
+            <form action="<?= esc_attr( $hostName ); ?>" method="POST" accept-charset="UTF-8" id="twispay_payment_form">
+                <input type="hidden" name="jsonRequest" value="<?= esc_attr( $base64JsonRequest ); ?>">
+                <input type="hidden" name="checksum" value="<?= esc_html( $base64Checksum ); ?>">
             </form>
 
             <script>document.getElementById( 'twispay_payment_form' ).submit();</script>
@@ -175,16 +178,16 @@ if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
     } else {
         if(FALSE == $order){
             echo '<style>.loader {display: none;}</style>';
-            die( $tw_lang['twispay_processor_error_general'] );
+            die( esc_html( $tw_lang['twispay_processor_error_general'] ) );
         } else if(1 < count($order->get_items())){
             echo '<style>.loader {display: none;}</style>';
-            die( $tw_lang['twispay_processor_error_more_items'] );
+            die( esc_html( $tw_lang['twispay_processor_error_more_items'] ) );
         } else {
             echo '<style>.loader {display: none;}</style>';
-            die( $tw_lang['twispay_processor_error_no_item'] );
+            die( esc_html( $tw_lang['twispay_processor_error_no_item'] ) );
         }
     }
 } else {
     echo '<style>.loader {display: none;}</style>';
-    die( $tw_lang['twispay_processor_error_general'] );
+    die( esc_html( $tw_lang['twispay_processor_error_general'] ) );
 }

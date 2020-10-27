@@ -2,7 +2,7 @@
 Contributors: twispay
 Tags: payment, gateway, module
 Requires at least: 4.6
-Tested up to: 5.3
+Tested up to: 5.5.1
 
 Twispay enables new and existing store owners to quickly and effortlessly accept online credit card payments over their WooCommerce shop
 
@@ -29,7 +29,7 @@ The easiest way of installing our module is by visiting the [official module pag
 8. Enter your **Site ID**. _(Twispay Staging Account ID: You can get one from [here for live](https://merchant.twispay.com/auth/signin) or from [here for stage](https://merchant-stage.twispay.com/auth/signin))_
 9. Enter your **Private Key**. _(Twispay Secret Key: You can get one from [here for live](https://merchant.twispay.com/auth/signin) or from [here for stage](https://merchant-stage.twispay.com/auth/signin))_
 10. Select the custom page you want to redirect the customer after the payment **Redirect to custom page Thank you page**. _(Leave 'Default' to redirect to order confirmation default page.)_
-11. Enter your tehnical **Contact Email**. _(This will be displayed to customers in case of a payment error)_
+11. Enter your technical **Contact Email**. _(This will be displayed to customers in case of a payment error)_
 12. Save your changes.
 
 == Screenshots ==
@@ -39,6 +39,12 @@ The easiest way of installing our module is by visiting the [official module pag
 3. Fully customizable checkout experience
 
 == Changelog ==
+
+= 1.0.9 =
+* Increased security using best practices (escaping, sanitizing, SQL requests cleaning).
+* Tested up to Wordpress 5.5.1.
+* Fix typos.
+* Fix issues with non-standard /plugins directory path.
 
 = 1.0.8 =
 * Updated unique identifiers to reflect the request type (purchase or recurrent) and the source plugin.

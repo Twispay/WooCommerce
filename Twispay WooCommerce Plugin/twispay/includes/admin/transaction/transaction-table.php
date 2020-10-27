@@ -92,7 +92,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
      * @param Object $wpdb         Wordpress refference to database.
      */
     private function get_all_count( $wpdb ) {
-        $table_name = $wpdb->prefix . 'twispay_tw_transactions  ';
+        $table_name = $wpdb->prefix . 'twispay_tw_transactions';
 
         $wpdb->get_results( "SELECT id_tw_transactions FROM $table_name" );
 
@@ -112,7 +112,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
         global $wpdb;
 
         $views = array();
-        $current = ( ! empty( $_REQUEST['status'] ) ? $_REQUEST['status'] : 'all' );
+        $current = ( ! empty( $_REQUEST['status'] ) ? sanitize_text_field( $_REQUEST['status'] ) : 'all' );
 
         //All link
         $class = ( $current == 'all' ? ' class="current"' :'' );
@@ -127,8 +127,8 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
      */
     function column_id_tw_transactions( $item ) {
         $actions = array(
-            'refund'                 => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">' . $this->tw_lang['transaction_list_refund_title'] . '</a>', $_REQUEST['page'], 'refund_payment', $item['transactionId'] ),
-            'cancel_recurring'       => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">' . $this->tw_lang['transaction_list_recurring_title'] . '</a>', $_REQUEST['page'], 'recurring_payment', $item['orderId'] )
+            'refund'                 => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">' . $this->tw_lang['transaction_list_refund_title'] . '</a>', sanitize_text_field( $_REQUEST['page'] ), 'refund_payment', $item['transactionId'] ),
+            'cancel_recurring'       => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">' . $this->tw_lang['transaction_list_recurring_title'] . '</a>', sanitize_text_field( $_REQUEST['page'] ), 'recurring_payment', $item['orderId'] )
         );
 
         if ( $item['status'] == 'complete-ok' ) {
@@ -166,8 +166,8 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
     function column_cb( $item ) {
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
-            $this->_args['singular'],
-            $item['id_tw_transactions']
+            esc_attr( $this->_args['singular'] ),
+            esc_attr( $item['id_tw_transactions'] )
         );
     }
 
@@ -228,10 +228,10 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
     function prepare_items() {
         global $wpdb;
 
-        $s = ( isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : 'all' );
-        $ma_status = ( isset( $_REQUEST['status'] ) ? $_REQUEST['status'] : 'all' );
-        $order_by = ( isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '' );
-        $order_how = ( isset( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc' );
+        $s = ( isset( $_REQUEST['s'] ) ? sanitize_text_field( $_REQUEST['s'] ) : 'all' );
+        $ma_status = ( isset( $_REQUEST['status'] ) ? sanitize_text_field( $_REQUEST['status'] ) : 'all' );
+        $order_by = ( isset( $_REQUEST['orderby'] ) ? sanitize_text_field( $_REQUEST['orderby'] ) : '' );
+        $order_how = ( isset( $_REQUEST['order'] ) ? sanitize_text_field( $_REQUEST['order'] ) : 'asc' );
 
         $transaction = $wpdb->prefix . "twispay_tw_transactions";
 

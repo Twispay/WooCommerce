@@ -31,7 +31,7 @@ function twispay_tw_transaction_administrator() {
     if ( ! class_exists( 'WooCommerce' ) ) {
         ?>
             <div class="error notice" style="margin-top: 20px;">
-                <p><?= $tw_lang['no_woocommerce_f']; ?> <a target="_blank" href="https://wordpress.org/plugins/woocommerce/"><?= $tw_lang['no_woocommerce_s']; ?></a>.</p>
+                <p><?= esc_html( $tw_lang['no_woocommerce_f'] ); ?> <a target="_blank" href="https://wordpress.org/plugins/woocommerce/"><?= esc_html( $tw_lang['no_woocommerce_s'] ); ?></a>.</p>
                 <div class="clearfix"></div>
             </div>
         <?php
@@ -39,7 +39,7 @@ function twispay_tw_transaction_administrator() {
     else {
         // Check if the view / edit / delete action is detected, otherwise load the campaigns form
         if ( isset( $_GET['action'] ) && $_GET['action'] ) {
-            $action = $_GET['action'];
+            $action = sanitize_text_field( $_GET['action'] );
 
             switch ( $action ) {
                 case 'refund_payment':
@@ -53,17 +53,17 @@ function twispay_tw_transaction_administrator() {
         else {
             ?>
                 <div class="wrap">
-                    <h1><?= $tw_lang['transaction_title']; ?></h1>
+                    <h1><?= esc_html( $tw_lang['transaction_title'] ); ?></h1>
 
                     <?php if( class_exists('WC_Subscriptions') ){ ?>
                         <form method="post" id="synchronize_subscriptions">
                             <table class="form-table">
                                 <tr class="form-field" id="contact_email_o">
-                                    <th scope="row"><label><?= $tw_lang['subscriptions_sync_label']; ?></span></label></th>
+                                    <th scope="row"><label><?= esc_html( $tw_lang['subscriptions_sync_label'] ); ?></span></label></th>
                                     <td>
                                         <input type="hidden" name="tw_general_action" value="synchronize_subscriptions" />
-                                        <?php submit_button( $tw_lang['subscriptions_sync_button'], 'primary', 'createuser', true, array( 'id' => 'synchronizesubscriptions' ) ); ?>
-                                        <p class="description"><?= $tw_lang['subscriptions_sync_desc']; ?></p>
+                                        <?php submit_button( esc_attr( $tw_lang['subscriptions_sync_button'] ), 'primary', 'createuser', true, array( 'id' => 'synchronizesubscriptions' ) ); ?>
+                                        <p class="description"><?= esc_html( $tw_lang['subscriptions_sync_desc'] ); ?></p>
                                     </td>
                                 </tr>
                             </table>
@@ -73,48 +73,48 @@ function twispay_tw_transaction_administrator() {
 
                     <?php
                         if ( isset( $_GET['notice'] ) && $_GET['notice'] ) {
-                            $notice = $_GET['notice'];
+                            $notice = sanitize_text_field( $_GET['notice'] );
 
                             switch ( $notice ) {
                                 case 'error_refund':
                                     ?>
                                         <div class="error notice">
-                                            <p><?= $tw_lang['transaction_error_refund']; ?></p>
+                                            <p><?= esc_html( $tw_lang['transaction_error_refund'] ); ?></p>
                                         </div>
                                     <?php
                                     break;
                                 case 'error_recurring':
                                     ?>
                                         <div class="error notice">
-                                            <p><?= $tw_lang['transaction_error_recurring']; ?></p>
+                                            <p><?= esc_html( $tw_lang['transaction_error_recurring'] ); ?></p>
                                         </div>
                                     <?php
                                     break;
                                 case 'success_refund':
                                     ?>
                                         <div class="updated notice">
-                                            <p><?= $tw_lang['transaction_success_refund']; ?></p>
+                                            <p><?= esc_html( $tw_lang['transaction_success_refund'] ); ?></p>
                                         </div>
                                     <?php
                                     break;
                                 case 'success_recurring':
                                     ?>
                                         <div class="updated notice">
-                                            <p><?= $tw_lang['transaction_success_recurring']; ?></p>
+                                            <p><?= esc_html( $tw_lang['transaction_success_recurring'] ); ?></p>
                                         </div>
                                     <?php
                                     break;
                                 case 'sync_finished':
                                     ?>
                                         <div class="updated notice">
-                                            <p><?= $tw_lang['transaction_sync_finished']; ?></p>
+                                            <p><?= esc_html( $tw_lang['transaction_sync_finished'] ); ?></p>
                                         </div>
                                     <?php
                                     break;
                                 case 'errorp_refund':
                                     ?>
                                         <div class="error notice">
-                                            <p><?= $_GET['emessage']; ?></p>
+                                            <p><?= esc_html( wp_unslash( $_GET['emessage'] ) ); ?></p>
                                         </div>
                                     <?php
                                     break;
@@ -127,8 +127,8 @@ function twispay_tw_transaction_administrator() {
                     ?>
 
                     <form method="get">
-                        <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
-                        <?php $transaction_table->search_box( $tw_lang['transaction_list_search_title'], 'search-query' ); ?>
+                        <input type="hidden" name="page" value="<?php echo esc_attr( $_REQUEST['page'] ) ?>" />
+                        <?php $transaction_table->search_box( esc_html( $tw_lang['transaction_list_search_title'] ), 'search-query' ); ?>
                     </form>
                     <form method="post">
                         <?php $transaction_table->prepare_items(); $transaction_table->display(); ?>

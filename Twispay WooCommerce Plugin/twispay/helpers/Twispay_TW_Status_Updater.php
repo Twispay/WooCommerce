@@ -23,20 +23,20 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
      * of orders and subscriptions based on the status received
      * from the server.
      */
-    class Twispay_TW_Status_Updater{
+    class Twispay_TW_Status_Updater {
         /* Array containing the possible result statuses. */
-        public static $RESULT_STATUSES = [ 'UNCERTAIN' => 'uncertain' /* No response from provider */
-                                         , 'IN_PROGRESS' => 'in-progress' /* Authorized */
-                                         , 'COMPLETE_OK' => 'complete-ok' /* Captured */
-                                         , 'COMPLETE_FAIL' => 'complete-failed' /* Not authorized */
-                                         , 'CANCEL_OK' => 'cancel-ok' /* Capture reversal */
-                                         , 'REFUND_OK' => 'refund-ok' /* Settlement reversal */
-                                         , 'VOID_OK' => 'void-ok' /* Authorization reversal */
-                                         , 'CHARGE_BACK' => 'charge-back' /* Charge-back received */
-                                         , 'THREE_D_PENDING' => '3d-pending' /* Waiting for 3d authentication */
-                                         , 'EXPIRING' => 'expiring' /* The recurring order has expired */
-                                         ];
-
+        public static $RESULT_STATUSES = [
+                'UNCERTAIN' => 'uncertain' /* No response from provider */
+            , 'IN_PROGRESS' => 'in-progress' /* Authorized */
+            , 'COMPLETE_OK' => 'complete-ok' /* Captured */
+            , 'COMPLETE_FAIL' => 'complete-failed' /* Not authorized */
+            , 'CANCEL_OK' => 'cancel-ok' /* Capture reversal */
+            , 'REFUND_OK' => 'refund-ok' /* Settlement reversal */
+            , 'VOID_OK' => 'void-ok' /* Authorization reversal */
+            , 'CHARGE_BACK' => 'charge-back' /* Charge-back received */
+            , 'THREE_D_PENDING' => '3d-pending' /* Waiting for 3d authentication */
+            , 'EXPIRING' => 'expiring' /* The recurring order has expired */
+        ];
 
         /**
          * Update the status of an Woocommerce order according to the received server status.
@@ -49,7 +49,7 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
          *
          * @return void
          */
-        public static function updateStatus_backUrl($orderId, $serverStatus, $checkout_url, $tw_lang, $configuration){
+        public static function updateStatus_backUrl($orderId, $serverStatus, $checkout_url, $tw_lang, $configuration) {
             /* Extract the order. */
             $order = wc_get_order($orderId);
 
@@ -64,14 +64,36 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
 
                     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_status_failed'] . $orderId);
                     ?>
-                        <div class="error notice" style="margin-top: 20px;">
-                            <h3><?= $tw_lang['general_error_title']; ?></h3>
-                            <?php if('0' == $configuration->contact_email){ ?>
-                                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
+                    <div class="error notice" style="margin-top: 20px;">
+                        <h3><?php echo esc_html($tw_lang['general_error_title']); ?></h3>
+
+                        <p>
+                            <?php echo esc_html($tw_lang['general_error_desc_f']); ?>
+
+                            <a href="<?php echo esc_url($checkout_url); ?>">
+                                <?php echo esc_html($tw_lang['general_error_desc_try_again']); ?>
+                            </a>
+
+                            <?php if ('0' == $configuration->contact_email) { ?>
+                                <?php
+                                printf(
+                                    '%s %s %s',
+                                    esc_html($tw_lang['general_error_desc_or']),
+                                    esc_html($tw_lang['general_error_desc_contact']),
+                                    esc_html($tw_lang['general_error_desc_s'])
+                                );
+                                ?>
                             <?php } else { ?>
-                                <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
+                                <?php echo esc_html($tw_lang['general_error_desc_or']); ?>
+
+                                <a href="mailto:<?php echo sanitize_email($configuration->contact_email); ?>">
+                                    <?php echo esc_html($tw_lang['general_error_desc_contact']); ?>
+                                </a>
+
+                                <?php echo esc_html($tw_lang['general_error_desc_s']); ?>
                             <?php } ?>
-                        </div>
+                        </p>
+                    </div>
                     <?php
                 break;
 
@@ -81,15 +103,31 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
 
                     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_status_hold'] . $orderId);
                     ?>
-                        <div class="error notice" style="margin-top: 20px;">
-                            <h3><?= $tw_lang['general_error_title']; ?></h3>
-                            <span><?= $tw_lang['general_error_hold_notice']; ?></span>
-                            <?php if('0' == $configuration->contact_email){ ?>
-                                <p><?= $tw_lang['general_error_desc_f'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
-                            <?php } else { ?>
-                                <p><?= $tw_lang['general_error_desc_f']; ?><a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
-                            <?php } ?>
-                        </div>
+                    <div class="error notice" style="margin-top: 20px;">
+                        <h3><?php echo esc_html($tw_lang['general_error_title']); ?></h3>
+
+                        <span><?php echo esc_html($tw_lang['general_error_hold_notice']); ?></span>
+
+                        <?php if ('0' == $configuration->contact_email) { ?>
+                            <p>
+                                <?php printf(
+                                    '%s %s %s',
+                                    esc_html($tw_lang['general_error_desc_f']),
+                                    esc_html($tw_lang['general_error_desc_contact']),
+                                    esc_html($tw_lang['general_error_desc_s'])
+                                );
+                                ?>
+                            </p>
+                        <?php } else { ?>
+                            <p><?php echo esc_html($tw_lang['general_error_desc_f']); ?>
+                                <a href="mailto:<?php echo sanitize_email($configuration->contact_email); ?>">
+                                    <?php echo esc_html($tw_lang['general_error_desc_contact']); ?>
+                                </a>
+
+                                <?php echo esc_html($tw_lang['general_error_desc_s']); ?>
+                            </p>
+                        <?php } ?>
+                    </div>
                     <?php
                 break;
 
@@ -129,19 +167,40 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                 default:
                     Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_wrong_status'] . $serverStatus);
                     ?>
-                        <div class="error notice" style="margin-top: 20px;">
-                            <h3><?= $tw_lang['general_error_title']; ?></h3>
-                            <?php if('0' == $configuration->contact_email){ ?>
-                                    <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or'] . $tw_lang['general_error_desc_contact'] . $tw_lang['general_error_desc_s']; ?></p>
-                                <?php } else { ?>
-                                    <p><?= $tw_lang['general_error_desc_f']; ?> <a href="<?= $checkout_url; ?>"><?= $tw_lang['general_error_desc_try_again']; ?></a> <?= $tw_lang['general_error_desc_or']; ?> <a href="mailto:<?= $configuration->contact_email; ?>"><?= $tw_lang['general_error_desc_contact']; ?></a> <?= $tw_lang['general_error_desc_s']; ?></p>
-                                <?php } ?>
-                        </div>
+                    <div class="error notice" style="margin-top: 20px;">
+                        <h3><?php echo esc_html($tw_lang['general_error_title']); ?></h3>
+
+                        <p>
+                            <?php echo esc_html($tw_lang['general_error_desc_f']); ?>
+
+                            <a href="<?php echo esc_url($checkout_url); ?>">
+                                <?php echo esc_html($tw_lang['general_error_desc_try_again']); ?>
+                            </a>
+
+                            <?php if ('0' == $configuration->contact_email) { ?>
+                                <?php
+                                printf(
+                                    '%s %s %s',
+                                    esc_html($tw_lang['general_error_desc_or']),
+                                    esc_html($tw_lang['general_error_desc_contact']),
+                                    esc_html($tw_lang['general_error_desc_s'])
+                                );
+                                ?>
+                            <?php } else { ?>
+                                <?php echo esc_html($tw_lang['general_error_desc_or']); ?>
+
+                                <a href="mailto:<?php echo sanitize_email($configuration->contact_email); ?>">
+                                    <?php echo esc_html($tw_lang['general_error_desc_contact']); ?>
+                                </a>
+
+                                <?php echo esc_html($tw_lang['general_error_desc_s']); ?>
+                            <?php } ?>
+                        </p>
+                    </div>
                     <?php
                 break;
             }
         }
-
 
         /**
          * Update the status of an Woocommerce subscription according to the received server status.
@@ -152,7 +211,7 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
          *
          * @return void
          */
-        public static function updateStatus_IPN($orderId, $serverStatus, $tw_lang){
+        public static function updateStatus_IPN($orderId, $serverStatus, $tw_lang) {
             /* Extract the order. */
             $order = wc_get_order($orderId);
 

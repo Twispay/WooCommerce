@@ -3,7 +3,7 @@
  * Plugin Name: Twispay Credit Card Payments
  * Plugin URI: https://wordpress.org/plugins/twispay/
  * Description: Plugin for Twispay payment gateway.
- * Version: 1.0.7
+ * Version: 1.0.9
  * Author: twispay
  * Author URI: https://www.twispay.com
  * License: GPLv2
@@ -13,7 +13,7 @@
  * @package  Twispay
  * @category Core
  * @author   Twispay
- * @version  1.0.8
+ * @version  1.0.9
  */
 
 // Exit if the file is accessed directly
@@ -81,10 +81,14 @@ final class Twispay {
      * @return void
      */
     private function twispay_tw_set_constants() {
-	// Set plugin folder
-	if ( ! defined( 'TWISPAY_PLUGIN_DIR' ) ) {
-	   define( 'TWISPAY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-	}
+	    // Set plugin folder
+        if ( ! defined( 'TWISPAY_PLUGIN_DIR' ) ) {
+            define( 'TWISPAY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+        }
+
+        if ( ! defined( 'TWISPAY_PLUGIN_URL' ) ) {
+            define( 'TWISPAY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+        }
     }
 
     /**

@@ -21,14 +21,14 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
 
 ?>
 <div class="wrap">
-    <h2><?= $tw_lang['transaction_list_refund_ptitle']; ?></h2>
-    <p><?= $tw_lang['transaction_list_refund_subtitle']; ?></p>
+    <h2><?= esc_html( $tw_lang['transaction_list_refund_ptitle'] ); ?></h2>
+    <p><?= esc_html( $tw_lang['transaction_list_refund_subtitle'] ); ?></p>
 
     <!-- Get all payment transactions ID from the $_GET parameters -->
     <?php
         if ( isset( $_GET['payment_ad'] ) && $_GET['payment_ad'] ) {
-            foreach ( explode( ',', $_GET['payment_ad'] ) as $key => $a_id ) {
-                print_r( 'ID: #' . $a_id );
+            foreach ( explode( ',', esc_attr( $_GET['payment_ad'] ) ) as $key => $a_id ) {
+                print_r( 'ID: #' . esc_html( $a_id ) );
                 print_r( '<br>' );
             }
         }
@@ -36,6 +36,6 @@ if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ) {
 
     <form method="post" id="refund_payment_transaction">
         <input type="hidden" name="tw_general_action" value="refund_payment_transaction" />
-        <?php submit_button( $tw_lang['transaction_list_confirm_title'], 'primary', 'createuser', true, array( 'id' => 'confirmdeletion' ) ); ?>
+        <?php submit_button( esc_attr( $tw_lang['transaction_list_confirm_title'] ), 'primary', 'createuser', true, array( 'id' => 'confirmdeletion' ) ); ?>
     </form>
 </div>

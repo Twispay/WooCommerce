@@ -20,7 +20,7 @@
 function twispay_tw_main_action() {
     // Check if there is a form process in rolling
     if ( isset( $_REQUEST['tw_general_action'] ) ) {
-        $request = $_REQUEST['tw_general_action'];
+        $request = sanitize_text_field( $_REQUEST['tw_general_action'] );
 
         // Check if current user have administrator permisions. If not, throw 403 error
         if ( ! current_user_can( 'administrator' ) ) {

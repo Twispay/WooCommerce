@@ -30,11 +30,12 @@ require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_S
  */
 function tw_twispay_p_refund_payment_transaction() {
     if ( isset( $_GET['payment_ad'] ) && $_GET['payment_ad'] ) {
-        $transaction_id = $_GET['payment_ad'];
+        $transaction_id = sanitize_text_field( $_GET['payment_ad'] );
 
         /* Get configuration from database. */
         global $wpdb;
         $apiKey = '';
+
         $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
 
         if ( $configuration ) {
@@ -75,7 +76,7 @@ add_action( 'tw_refund_payment_transaction', 'tw_twispay_p_refund_payment_transa
  */
 function tw_twispay_p_recurring_order( $request ) {
     if ( isset( $_GET['order_ad'] ) && $_GET['order_ad'] ) {
-        $order_ad = $_GET['order_ad'];
+        $order_ad = sanitize_text_field( $_GET['order_ad'] );
 
         /* Get configuration from database. */
         global $wpdb;
