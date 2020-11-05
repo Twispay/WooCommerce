@@ -80,7 +80,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
 
         ?>
             <p class="search-box">
-                <input type="search" id="<?php echo $input_id; ?>" name="s" value="<?php _admin_search_query(); ?>" />
+                <input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" />
                 <?php submit_button( $text, 'button', '', false, array(  'id' => 'search-submit' ) ); ?>
             </p>
         <?php
@@ -127,8 +127,8 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
      */
     function column_id_tw_transactions( $item ) {
         $actions = array(
-            'refund'                 => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">' . $this->tw_lang['transaction_list_refund_title'] . '</a>', esc_url( $_REQUEST['page'] ), 'refund_payment', $item['transactionId'] ),
-            'cancel_recurring'       => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">' . $this->tw_lang['transaction_list_recurring_title'] . '</a>', esc_url( $_REQUEST['page'] ), 'recurring_payment', $item['orderId'] )
+            'refund'                 => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">' . $this->tw_lang['transaction_list_refund_title'] . '</a>', esc_attr( $_REQUEST['page'] ), 'refund_payment', esc_attr( $item['transactionId'] ) ),
+            'cancel_recurring'       => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">' . $this->tw_lang['transaction_list_recurring_title'] . '</a>', esc_attr( $_REQUEST['page'] ), 'recurring_payment', esc_attr( $item['orderId'] ) )
         );
 
         if ( $item['status'] == 'complete-ok' ) {
@@ -147,16 +147,21 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
     function column_default( $item, $column_name ) {
         global $woocommerce;
 
+        $column = '';
+
         switch ( $column_name ) {
             case 'id_tw_transactions':
             case 'customer_name':
             case 'transactionId':
             case 'status':
             case 'checkout_url':
-                return $item[$column_name];
+                $column =  $item[$column_name];
+                break;
             case 'id_cart':
-                return '#' . $item[$column_name];
+                $column = '#' . $item[$column_name];
         }
+
+        return $column;
     }
 
     /**

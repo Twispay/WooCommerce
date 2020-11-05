@@ -302,15 +302,22 @@ function init_twispay_gateway_class() {
              */
             function process_payment( $order_id ) {
                 /* Extract the order; */
-                $order = new WC_Order( $order_id );
+//                $order = new WC_Order( $order_id );
+
+//                $actual_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+                $actual_link = $_SERVER['HTTP_REFERER'];
 
                 /* Check if the order contains a subscription. */
                 if(class_exists('WC_Subscriptions') && (TRUE == wcs_order_contains_subscription($order_id))){
                     /* Redirect to file that processes the subscriptions payments requests. */
-                    return array('result' => 'success', 'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-subscription-processor.php?order_id=' . $order_id);
+//                    return array('result' => 'success', 'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-subscription-processor.php?order_id=' . $order_id);
+                    $args = array( 'order_id' =>  $order_id, 'subscription' => true);
+                    return array('result' => 'success', 'redirect' => esc_url( add_query_arg( $args, $actual_link ) ) );
                 } else {
                     /* Redirect to file that processes the purchase payments requests. */
-                    return array('result' => 'success', 'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id);
+//                    return array('result' => 'success', 'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id);
+                    $args = array( 'order_id' =>  $order_id );
+                    return array('result' => 'success', 'redirect' => esc_url( add_query_arg( $args, $actual_link ) ) );
                 }
             }
 
@@ -340,10 +347,10 @@ function init_twispay_gateway_class() {
                 if ( $configuration ) {
                     if ( 1 == $configuration->live_mode ) {
                         $apiKey = $configuration->live_key;
-                        $url = 'https://api.twispay.com/transaction/' . $transaction_id;
+                        $url = 'https://api.twispay.com/transaction/' . sanitize_key( $transaction_id );
                     } else if ( 0 == $configuration->live_mode ) {
                         $apiKey = $configuration->staging_key;
-                        $url = 'https://api-stage.twispay.com/transaction/' . $transaction_id;
+                        $url = 'https://api-stage.twispay.com/transaction/' . sanitize_key( $transaction_id );
                     }
                 }
 
@@ -456,10 +463,10 @@ function subscription_terminated( $subscription ){
     if ( $configuration ) {
         if ( $configuration->live_mode == 1 ) {
             $apiKey = $configuration->live_key;
-            $url = 'https://api.twispay.com/order/' . $serverOrderId;
+            $url = 'https://api.twispay.com/order/' . sanitize_key( $serverOrderId );
         } else if ( $configuration->live_mode == 0 ) {
             $apiKey = $configuration->staging_key;
-            $url = 'https://api-stage.twispay.com/order/' . $serverOrderId;
+            $url = 'https://api-stage.twispay.com/order/' . sanitize_key( $serverOrderId );
         }
     }
 
@@ -476,9 +483,9 @@ function subscription_terminated( $subscription ){
     $response = wp_remote_request($url, $args);
 
     if ( $response['response']['message'] == 'OK' ) {
-        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_ok_set_status'] . $subscription->get_parent_id());
+        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_ok_set_status'] . esc_html( $subscription->get_parent_id() ));
     } else {
-        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_error_set_status'] . $subscription->get_parent_id());
+        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_error_set_status'] . esc_html( $subscription->get_parent_id() ));
     }
 }
 add_action('woocommerce_subscription_status_cancelled', 'subscription_terminated');

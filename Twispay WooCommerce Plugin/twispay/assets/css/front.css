@@ -19,7 +19,3 @@
 .wc_payment_method.payment_method_twispay > label:first-of-type {
     margin: 23px 0;
 }
-
-@media(max-width: 989px) {
-
-}

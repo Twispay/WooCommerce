@@ -86,7 +86,7 @@ function twispay_tw_configuration() {
                         <tr class="form-field" id="live_private_key">
                             <th scope="row"><label for="live_private_key"><?= esc_html( $tw_lang['live_key_label'] ); ?></span></label></th>
                             <td>
-                                <input name="live_private_key" type="text" value="<?= esc_html( twispay_tw_get_live_private_key() ); ?>" style="max-width: 400px;" />
+                                <input name="live_private_key" type="text" value="<?= esc_attr( twispay_tw_get_live_private_key() ); ?>" style="max-width: 400px;" />
                                 <p class="description"><?= esc_html( $tw_lang['live_key_desc'] ); ?> <a target="_blank" href="https://merchant.twispay.com/login"><?= esc_html( $tw_lang['r_custom_thankyou_desc_s'] ); ?></a>.</p>
                             </td>
                         </tr>

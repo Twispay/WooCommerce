@@ -168,13 +168,13 @@ if ( !class_exists( 'Twispay_TW_Helper_Response' ) ) :
 
                 return FALSE;
             } else {
-                $data = [ 'id_cart'          => explode('_', $tw_response['externalOrderId'])[0]
-                        , 'status'           => (empty($tw_response['status'])) ? ($tw_response['transactionStatus']) : ($tw_response['status'])
-                        , 'identifier'       => $tw_response['identifier']
-                        , 'orderId'          => (int)$tw_response['orderId']
-                        , 'transactionId'    => (int)$tw_response['transactionId']
-                        , 'customerId'       => (int)$tw_response['customerId']
-                        , 'cardId'           => (!empty($tw_response['cardId'])) ? (( int )$tw_response['cardId']) : (0)];
+                $data = [ 'id_cart'          => sanitize_text_field( explode('_', $tw_response['externalOrderId'])[0] )
+                        , 'status'           => sanitize_text_field((empty($tw_response['status'])) ? ($tw_response['transactionStatus']) : ($tw_response['status']) )
+                        , 'identifier'       => sanitize_text_field( $tw_response['identifier'] )
+                        , 'orderId'          => (int) $tw_response['orderId']
+                        , 'transactionId'    => (int) $tw_response['transactionId']
+                        , 'customerId'       => (int) $tw_response['customerId']
+                        , 'cardId'           => (!empty($tw_response['cardId'])) ? ((int) $tw_response['cardId']) : (0)];
 
                 Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_response_data'] . json_encode($data));
 

@@ -40,7 +40,7 @@ function twispay_tw_transaction_log_administrator() {
                 <p><?= esc_html( $tw_lang['transaction_log_subtitle'] ); ?></p>
                 <?php
                     if ( file_exists( TWISPAY_PLUGIN_DIR . 'twispay-log.txt' ) ) {
-                        echo '<textarea readonly style="width: 900px; height: 386px; margin-top: 10px;">' . file_get_contents( TWISPAY_PLUGIN_DIR . 'twispay-log.txt' ) . '</textarea>';
+                        echo '<textarea readonly style="width: 900px; height: 386px; margin-top: 10px;">' . wp_kses( file_get_contents( TWISPAY_PLUGIN_DIR . 'twispay-log.txt' ), wp_kses_allowed_html( 'strip' ) ) . '</textarea>';
                     } else {
                         echo '<p>' . esc_html( $tw_lang['transaction_log_no_log'] ) . '</p>';
                     }
