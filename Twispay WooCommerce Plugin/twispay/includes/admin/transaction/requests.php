@@ -144,8 +144,7 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
     }
 
     /* Extract all the subscriptions. */
-//    $subscriptions = wcs_get_subscriptions(['subscriptions_per_page' => -1]);
-    $subscriptions = wc_get_orders(['posts_per_page' => -1]);
+    $subscriptions = wcs_get_subscriptions(['subscriptions_per_page' => -1]);
     $skip = FALSE;
 
     foreach ($subscriptions as $key => $subscription) {
