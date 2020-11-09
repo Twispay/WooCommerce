@@ -157,7 +157,7 @@ final class Twispay {
                     overflow: hidden !important;
                 }
                 .wrapper-loader{
-                    background-color: rgba(255,255,255,0.95);
+                    background-color: #fff;
                     height: 100%;
                     left: 0;
                     position: absolute;
@@ -329,7 +329,7 @@ final class Twispay {
                     overflow: hidden !important;
                 }
                 .wrapper-loader{
-                    background-color: rgba(255,255,255,0.95);
+                    background-color: #fff;
                     height: 100%;
                     left: 0;
                     position: absolute;
