@@ -152,65 +152,28 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
         $skip = FALSE;
         $order_id = (int) trim(str_replace('#', '', $subscription->get_order_number()));
 
-        /* Create a new cURL session. */
-//        $channel = curl_init();
-
         /* Construct the URL. */
         $url = str_replace('__EXTERNAL_ORDER_ID__', $order_id, $baseUrl);
 
-        /* Set the URL and other needed fields. */
-//        curl_setopt($channel, CURLOPT_URL, $url);
-//        curl_setopt($channel, CURLOPT_RETURNTRANSFER, TRUE);
-//        curl_setopt($channel, CURLOPT_HEADER, FALSE);
-//        curl_setopt($channel, CURLOPT_HTTPHEADER, ['accept: application/json', 'Authorization: ' . $apiKey]);
-
         /* Execute the request. This means to perform a "GET"/"PUT" request at the specified URL. */
-//        $response = curl_exec($channel);
         $args = array('method' => 'GET', 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]);
         $response = wp_remote_request( $url, $args );
 
         /* Check if the CURL call failed. */
-//        if(FALSE === $response) {
         if( is_wp_error($response) ) {
-//            Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_call_failed'] . curl_error($channel) );
             Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_call_failed'] . WP_Error::get_error_message() );
             $skip = TRUE;
         }
 
-//        if((FALSE == $skip) && (200 != curl_getinfo($channel, CURLINFO_HTTP_CODE))){
         if((FALSE == $skip) && (200 != wp_remote_retrieve_response_code( $response ))){
-//            Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_http_code'] . curl_getinfo($channel, CURLINFO_HTTP_CODE) );
             Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_http_code'] . wp_remote_retrieve_response_code( $response ) );
             $skip = TRUE;
         }
-
-        /* Close the cURL session. */
-//        curl_close($channel);
 
         if(FALSE == $skip){
             if ( $response['response']['message'] == 'OK' ) {
 
                 $response_body = json_decode($response['body']);
-
-                /*
-                $fileOpen = fopen( __DIR__ . '/log.log', 'a');
-                if($fileOpen) {
-                    $fileWrite = fwrite ( $fileOpen, '*************************** Log to File ****************' . PHP_EOL);
-                    if($fileWrite){
-                        fwrite ( $fileOpen, 'date - ' . date('d M Y H:i:s') . PHP_EOL);
-                        fwrite ( $fileOpen, '$response_body - ' . serialize($response_body) . PHP_EOL);
-                        fwrite ( $fileOpen, '$response - ' . serialize($response) . PHP_EOL);
-                        fwrite ( $fileOpen, '$order_id - ' . $order_id . PHP_EOL);
-                        fwrite ( $fileOpen, '$url - ' . $url . PHP_EOL);
-                        fclose ( $fileOpen );
-                    } else {
-                        echo '<script>alert("Error for writing file");</script>';
-                    }
-
-                } else {
-                    echo '<script>alert("Error for opening file");</script>';
-                }
-                */
 
                 /* Check if any order was found on the server. */
                 if('Success' == $response_body->message){
