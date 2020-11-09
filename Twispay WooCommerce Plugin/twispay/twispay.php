@@ -152,6 +152,19 @@ final class Twispay {
     public function twispay_processor() {
 
         $str = '<style>
+                body {
+                    height: 100%;
+                    overflow: hidden !important;
+                }
+                .wrapper-loader{
+                    background-color: rgba(255,255,255,0.95);
+                    height: 100%;
+                    left: 0;
+                    position: absolute;
+                    width: 100%;
+                    top: 0;
+                    z-index: 1000;
+                }
                 .loader {
                     margin: 15% auto 0;
                     border: 14px solid #f3f3f3;
@@ -168,7 +181,9 @@ final class Twispay {
                 }
             </style>
 
-            <div class="loader"></div>
+            <div class="wrapper-loader">
+                <div class="loader"></div>
+            </div>
 
             <script>window.history.replaceState( "twispay", "Twispay", "../twispay.php" );</script>';
 
@@ -309,6 +324,19 @@ final class Twispay {
 
     public function twispay_subscription_processor() {
         $str = '<style>
+                body {
+                    height: 100%;
+                    overflow: hidden !important;
+                }
+                .wrapper-loader{
+                    background-color: rgba(255,255,255,0.95);
+                    height: 100%;
+                    left: 0;
+                    position: absolute;
+                    width: 100%;
+                    top: 0;
+                    z-index: 1000;
+                }
                 .loader {
                     margin: 15% auto 0;
                     border: 14px solid #f3f3f3;
@@ -325,7 +353,9 @@ final class Twispay {
                 }
             </style>
         
-            <div class="loader"></div>
+            <div class="wrapper-loader">
+                <div class="loader"></div>
+            </div>
         
             <script>window.history.replaceState( "twispay", "Twispay", "../twispay.php" );</script>';
 
