@@ -153,39 +153,23 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
         $skip = FALSE;
         $order_id = (int) trim(str_replace('#', '', $subscription->get_order_number()));
 
-        /* Create a new cURL session. */
-//        $channel = curl_init();
-
         /* Construct the URL. */
         $url = str_replace('__EXTERNAL_ORDER_ID__', $order_id, $baseUrl);
 
-        /* Set the URL and other needed fields. */
-//        curl_setopt($channel, CURLOPT_URL, $url);
-//        curl_setopt($channel, CURLOPT_RETURNTRANSFER, TRUE);
-//        curl_setopt($channel, CURLOPT_HEADER, FALSE);
-//        curl_setopt($channel, CURLOPT_HTTPHEADER, ['accept: application/json', 'Authorization: ' . $apiKey]);
-
         /* Execute the request. This means to perform a "GET"/"PUT" request at the specified URL. */
-//        $response = curl_exec($channel);
         $args = array('method' => 'GET', 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]);
         $response = wp_remote_request( $url, $args );
 
         /* Check if the CURL call failed. */
         if( FALSE === $response ) {
-//            Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_call_failed'] . curl_error($channel) );
             Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_call_failed'] . WP_Error::get_error_message() );
             $skip = TRUE;
         }
 
         if((FALSE == $skip) && (200 != wp_remote_retrieve_response_code( $response ))){
-//        if((FALSE == $skip) && (200 != curl_getinfo($channel, CURLINFO_HTTP_CODE))){
-//            Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_http_code'] . curl_getinfo($channel, CURLINFO_HTTP_CODE) );
             Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_http_code'] . wp_remote_retrieve_response_code( $response ) );
             $skip = TRUE;
         }
-
-        /* Close the cURL session. */
-//        curl_close($channel);
 
         $response = json_decode($response['body']);
 

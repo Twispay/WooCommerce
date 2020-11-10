@@ -12,9 +12,6 @@
 /* Exit if the file is accessed directly. */
 if ( !defined('ABSPATH') ) { exit; }
 
-//$parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
-//require_once( $parse_uri[0] . 'wp-load.php' );
-
 define('SHORTINIT', true);
 
 require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );

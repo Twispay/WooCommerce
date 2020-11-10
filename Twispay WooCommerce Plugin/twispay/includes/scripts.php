@@ -309,13 +309,31 @@ function init_twispay_gateway_class() {
 
                 /* Check if the order contains a subscription. */
                 if(class_exists('WC_Subscriptions') && (TRUE == wcs_order_contains_subscription($order_id))){
-                    /* Redirect to file that processes the subscriptions payments requests. */
-//                    return array('result' => 'success', 'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-subscription-processor.php?order_id=' . $order_id);
+                    /*
+                     * Redirect to virtual page for products with subscription.
+                     * The content of the file was moved to the main twispay.php file, and hooks for the virtual page
+                     * were also created.
+                     *
+                     * The virtual page differs from the usual one by adding get parameters to the page url, in
+                     * this case - ?order_id=xx&subscription=true will be added to the page address url
+                     *
+                     * The woocommerce_after_checkout_form hook will intercept the passed parameters and redirect
+                     * to the twispay payment gateway page
+                     */
                     $args = array( 'order_id' =>  $order_id, 'subscription' => true);
                     return array('result' => 'success', 'redirect' => esc_url( add_query_arg( $args, $actual_link ) ) );
                 } else {
-                    /* Redirect to file that processes the purchase payments requests. */
-//                    return array('result' => 'success', 'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id);
+                    /*
+                     * Redirect to virtual page for products with default payment method.
+                     * The content of the file was moved to the main twispay.php file, and hooks for the virtual page
+                     * were also created.
+                     *
+                     * The virtual page differs from the usual one by adding get parameters to the page url, in
+                     * this case - ?order_id=xx will be added to the page address url
+                     *
+                     * The woocommerce_after_checkout_form hook will intercept the passed parameters and redirect
+                     * to the twispay payment gateway page
+                     */
                     $args = array( 'order_id' =>  $order_id );
                     return array('result' => 'success', 'redirect' => esc_url( add_query_arg( $args, $actual_link ) ) );
                 }
