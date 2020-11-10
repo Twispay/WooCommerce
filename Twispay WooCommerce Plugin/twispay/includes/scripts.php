@@ -301,11 +301,6 @@ function init_twispay_gateway_class() {
              * @return array with Result and Redirect
              */
             function process_payment( $order_id ) {
-                /* Extract the order; */
-//                $order = new WC_Order( $order_id );
-
-//                $actual_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-                $actual_link = $_SERVER['HTTP_REFERER'];
 
                 /* Check if the order contains a subscription. */
                 if(class_exists('WC_Subscriptions') && (TRUE == wcs_order_contains_subscription($order_id))){
@@ -321,7 +316,7 @@ function init_twispay_gateway_class() {
                      * to the twispay payment gateway page
                      */
                     $args = array( 'order_id' =>  $order_id, 'subscription' => true);
-                    return array('result' => 'success', 'redirect' => esc_url( add_query_arg( $args, $actual_link ) ) );
+                    return array('result' => 'success', 'redirect' => esc_url( add_query_arg( $args, wc_get_checkout_url() ) ) );
                 } else {
                     /*
                      * Redirect to virtual page for products with default payment method.
@@ -335,7 +330,7 @@ function init_twispay_gateway_class() {
                      * to the twispay payment gateway page
                      */
                     $args = array( 'order_id' =>  $order_id );
-                    return array('result' => 'success', 'redirect' => esc_url( add_query_arg( $args, $actual_link ) ) );
+                    return array('result' => 'success', 'redirect' => esc_url( add_query_arg( $args, wc_get_checkout_url() ) ) );
                 }
             }
 
