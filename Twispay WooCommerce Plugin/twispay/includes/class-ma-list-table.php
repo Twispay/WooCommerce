@@ -146,8 +146,8 @@ class Twispay_Tw_List_Table {
         if ( ! $args['plural'] )
             $args['plural'] = $this->screen->base;
 
-        $args['plural'] = sanitize_key( $args['plural'] );
-        $args['singular'] = sanitize_key( $args['singular'] );
+        $args['plural'] = sanitize_text_field( $args['plural'] );
+        $args['singular'] = sanitize_text_field( $args['singular'] );
 
         $this->_args = $args;
 
