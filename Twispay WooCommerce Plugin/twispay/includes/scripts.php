@@ -302,6 +302,16 @@ function init_twispay_gateway_class() {
              */
             function process_payment( $order_id ) {
 
+                /*
+                 * For several pages get order working this conditions $actual_link is not equal home page
+                 * and get page name, for example default - /checkout/
+                 * For single page all in one (cart and checkout page) $actual_link is equal home page
+                 * and condition str_replace(home_url(), '', $actual_link) === '' return true
+                 *
+                 */
+                $actual_link = wc_get_checkout_url();
+                if( str_replace(home_url(), '', $actual_link) === '') $actual_link = wc_get_cart_url();
+
                 /* Check if the order contains a subscription. */
                 if(class_exists('WC_Subscriptions') && (TRUE == wcs_order_contains_subscription($order_id))){
                     /*
@@ -325,7 +335,7 @@ function init_twispay_gateway_class() {
                       'redirect' => esc_url(
                         add_query_arg(
                           $args,
-                          is_cart() ? wc_get_cart_url() : wc_get_checkout_url()
+                          $actual_link
                         )
                       )
                     );
@@ -348,7 +358,7 @@ function init_twispay_gateway_class() {
                       'redirect' => esc_url(
                         add_query_arg(
                           $args,
-                          is_cart() ? wc_get_cart_url() : wc_get_checkout_url()
+                          $actual_link
                         )
                       )
                     );
