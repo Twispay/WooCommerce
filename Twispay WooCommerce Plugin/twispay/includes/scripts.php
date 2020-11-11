@@ -315,8 +315,20 @@ function init_twispay_gateway_class() {
                      * The woocommerce_after_checkout_form hook will intercept the passed parameters and redirect
                      * to the twispay payment gateway page
                      */
-                    $args = array( 'order_id' =>  $order_id, 'subscription' => true);
-                    return array('result' => 'success', 'redirect' => esc_url( add_query_arg( $args, wc_get_checkout_url() ) ) );
+                    $args = array(
+                      'order_id' =>  $order_id,
+                      'subscription' => true
+                    );
+
+                    return array(
+                      'result' => 'success',
+                      'redirect' => esc_url(
+                        add_query_arg(
+                          $args,
+                          is_cart() ? wc_get_cart_url() : wc_get_checkout_url()
+                        )
+                      )
+                    );
                 } else {
                     /*
                      * Redirect to virtual page for products with default payment method.
@@ -330,7 +342,16 @@ function init_twispay_gateway_class() {
                      * to the twispay payment gateway page
                      */
                     $args = array( 'order_id' =>  $order_id );
-                    return array('result' => 'success', 'redirect' => esc_url( add_query_arg( $args, wc_get_checkout_url() ) ) );
+
+                    return array(
+                      'result' => 'success',
+                      'redirect' => esc_url(
+                        add_query_arg(
+                          $args,
+                          is_cart() ? wc_get_cart_url() : wc_get_checkout_url()
+                        )
+                      )
+                    );
                 }
             }
 
