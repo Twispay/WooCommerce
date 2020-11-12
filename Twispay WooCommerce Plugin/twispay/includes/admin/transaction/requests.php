@@ -151,10 +151,9 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
     foreach ($subscriptions as $key => $subscription) {
         /* Reset skip flag. */
         $skip = FALSE;
-        $order_id = (int) trim(str_replace('#', '', $subscription->get_order_number()));
 
         /* Construct the URL. */
-        $url = str_replace('__EXTERNAL_ORDER_ID__', $order_id, $baseUrl);
+        $url = str_replace('__EXTERNAL_ORDER_ID__', $subscription->get_parent_id(), $baseUrl);
 
         /* Execute the request. This means to perform a "GET"/"PUT" request at the specified URL. */
         $args = array('method' => 'GET', 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]);
@@ -171,10 +170,10 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
             $skip = TRUE;
         }
 
-        $response = json_decode($response['body']);
-
         if(FALSE == $skip){
-            if ( $response->message == 'Success' ) {
+            $response = json_decode($response['body']);
+
+            if ( 'Success' == $response->message ) {
 
                 /* Check if any order was found on the server. */
                 if($response->pagination->currentItemCount){
@@ -188,7 +187,7 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
                 /* Redirect to the Transaction list Page with success. */
                 wp_safe_redirect( admin_url( 'admin.php?page=tw-transaction&notice=success_recurring' ) );
             } else {
-                Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_get_status'] . $order_id );
+                Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_get_status'] . $subscription->get_parent_id() );
             }
         }
     }
