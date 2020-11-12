@@ -305,17 +305,22 @@ function init_twispay_gateway_class() {
                 /*
                  * For several pages get order working this conditions $actual_link is not equal home page
                  * and get page name, for example default - /checkout/
+                 *
                  * For single page all in one (cart and checkout page) $actual_link is equal home page
-                 * and condition str_replace(home_url(), '', $actual_link) === '' return true
+                 * if in admin setting page Woocommerce -> Settings -> Advanced the field "Checkout page"
+                 * - must be empty then condition str_replace(home_url(), '', $actual_link) === '' returning true
                  *
                  */
                 $actual_link = wc_get_checkout_url();
-                if( str_replace(home_url(), '', $actual_link) === '') $actual_link = wc_get_cart_url();
+
+                if ( str_replace( home_url(), '', $actual_link ) === '' ) {
+                    $actual_link = wc_get_cart_url();
+                }
 
                 /* Check if the order contains a subscription. */
-                if(class_exists('WC_Subscriptions') && (TRUE == wcs_order_contains_subscription($order_id))){
+                if ( class_exists( 'WC_Subscriptions' ) && ( TRUE == wcs_order_contains_subscription( $order_id ) ) ) {
                     /*
-                     * Redirect to virtual page for products with subscription.
+                     * Redirect to the virtual page for products with subscription.
                      * The content of the file was moved to the main twispay.php file, and hooks for the virtual page
                      * were also created.
                      *
@@ -325,10 +330,7 @@ function init_twispay_gateway_class() {
                      * The woocommerce_after_checkout_form hook will intercept the passed parameters and redirect
                      * to the twispay payment gateway page
                      */
-                    $args = array(
-                      'order_id' =>  $order_id,
-                      'subscription' => true
-                    );
+                    $args = array( 'order_id' =>  $order_id . '_sub' );
 
                     return array(
                       'result' => 'success',
@@ -341,7 +343,7 @@ function init_twispay_gateway_class() {
                     );
                 } else {
                     /*
-                     * Redirect to virtual page for products with default payment method.
+                     * Redirect to the virtual page for products with default payment method.
                      * The content of the file was moved to the main twispay.php file, and hooks for the virtual page
                      * were also created.
                      *
@@ -364,7 +366,6 @@ function init_twispay_gateway_class() {
                     );
                 }
             }
-
 
             /**
              * Twispay Process Payment function

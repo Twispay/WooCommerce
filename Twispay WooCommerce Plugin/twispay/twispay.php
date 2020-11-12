@@ -73,11 +73,10 @@ final class Twispay {
 
         add_filter( 'query_vars', array( $this, 'twispay_query_vars_filter' ) );
 
-
-        if( isset( $_GET['order_id'] ) && ! isset( $_GET['subscription'] )) {
+        if( isset( $_GET['order_id'] ) && strpos( $_GET['order_id'], '_sub' ) === false ) {
             add_action('woocommerce_after_checkout_form', array( $this, 'twispay_processor' ) );
         }
-        if( isset( $_GET['order_id'] ) && isset( $_GET['subscription'] )) {
+        if( isset( $_GET['order_id'] ) && strpos( $_GET['order_id'], '_sub' ) !== false) {
             add_action('woocommerce_after_checkout_form', array( $this, 'twispay_subscription_processor' ) );
         }
     }
@@ -145,7 +144,6 @@ final class Twispay {
 
     public function twispay_query_vars_filter( $vars ) {
         $vars[] .= 'order_id';
-        $vars[] .= 'subscription';
         return $vars;
     }
 
@@ -186,9 +184,6 @@ final class Twispay {
             </div>
 
             <script>window.history.replaceState( "twispay", "Twispay", "../twispay.php" );</script>';
-
-//        $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
-//        require_once( $parse_uri[0] . 'wp-load.php' );
 
         /* Require the "Twispay_TW_Helper_Notify" class. */
         require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Helper_Notify.php' );
@@ -358,9 +353,6 @@ final class Twispay {
             </div>
         
             <script>window.history.replaceState( "twispay", "Twispay", "../twispay.php" );</script>';
-
-//        $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
-//        require_once( $parse_uri[0] . 'wp-load.php' );
 
         /* Require the "Twispay_TW_Helper_Notify" class. */
         require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Helper_Notify.php' );
