@@ -76,7 +76,7 @@ add_action( 'tw_refund_payment_transaction', 'tw_twispay_p_refund_payment_transa
  */
 function tw_twispay_p_recurring_order( $request ) {
     if ( isset( $_GET['order_ad'] ) && $_GET['order_ad'] ) {
-      
+
         $order_ad = (int) sanitize_key( $_GET['order_ad'] );
 
         /* Get configuration from database. */
@@ -172,26 +172,6 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
         }
 
         $response = json_decode($response['body']);
-
-        $fileOpen = fopen( __DIR__ . '/Check response.log', 'a');
-        if($fileOpen) {
-            $fileWrite = fwrite ( $fileOpen, '*************************** Log to File ****************' . PHP_EOL);
-            if($fileWrite){
-                fwrite ( $fileOpen, 'date - ' . date('d M Y H:i:s') . PHP_EOL);
-                fwrite ( $fileOpen, '$response - ' . serialize($response) . PHP_EOL);
-                fwrite ( $fileOpen, '$response->message - ' . $response->message . PHP_EOL);
-                fwrite ( $fileOpen, '$response->pagination->currentItemCount - ' . $response->pagination->currentItemCount . PHP_EOL);
-                fwrite ( $fileOpen, '$request - ' . serialize( $request ) . PHP_EOL);
-                fwrite ( $fileOpen, '$response->data - ' . serialize( $response->data ) . PHP_EOL);
-                fwrite ( $fileOpen, '$response->data[0]->orderStatus - ' . $response->data[0]->orderStatus . PHP_EOL);
-                fclose ( $fileOpen );
-            } else {
-                echo '<script>alert("Error for writing file");</script>';
-            }
-
-        } else {
-            echo '<script>alert("Error for opening file");</script>';
-        }
 
         if(FALSE == $skip){
             if ( $response->message == 'Success' ) {
