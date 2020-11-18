@@ -301,19 +301,71 @@ function init_twispay_gateway_class() {
              * @return array with Result and Redirect
              */
             function process_payment( $order_id ) {
-                /* Extract the order; */
-                $order = new WC_Order( $order_id );
+
+                /*
+                 * For several pages get order working this conditions $actual_link is not equal home page
+                 * and get page name, for example default - /checkout/
+                 *
+                 * For single page all in one (cart and checkout page) $actual_link is equal home page
+                 * if in admin setting page Woocommerce -> Settings -> Advanced the field "Checkout page"
+                 * - must be empty then condition str_replace(home_url(), '', $actual_link) === '' returning true
+                 *
+                 */
+                $actual_link = wc_get_checkout_url();
+
+                if ( str_replace( home_url(), '', $actual_link ) === '' ) {
+                    $actual_link = wc_get_cart_url();
+                }
 
                 /* Check if the order contains a subscription. */
-                if(class_exists('WC_Subscriptions') && (TRUE == wcs_order_contains_subscription($order_id))){
-                    /* Redirect to file that processes the subscriptions payments requests. */
-                    return array('result' => 'success', 'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-subscription-processor.php?order_id=' . $order_id);
+                if ( class_exists( 'WC_Subscriptions' ) && ( TRUE == wcs_order_contains_subscription( $order_id ) ) ) {
+                    /*
+                     * Redirect to the virtual page for products with subscription.
+                     * The content of the file was moved to the main twispay.php file, and hooks for the virtual page
+                     * were also created.
+                     *
+                     * The virtual page differs from the usual one by adding get parameters to the page url, in
+                     * this case - ?order_id=xx&subscription=true will be added to the page address url
+                     *
+                     * The woocommerce_after_checkout_form hook will intercept the passed parameters and redirect
+                     * to the twispay payment gateway page
+                     */
+                    $args = array( 'order_id' =>  $order_id . '_sub' );
+
+                    return array(
+                      'result' => 'success',
+                      'redirect' => esc_url(
+                        add_query_arg(
+                          $args,
+                          $actual_link
+                        )
+                      )
+                    );
                 } else {
-                    /* Redirect to file that processes the purchase payments requests. */
-                    return array('result' => 'success', 'redirect' => plugin_dir_url( __FILE__ ) . 'twispay-processor.php?order_id=' . $order_id);
+                    /*
+                     * Redirect to the virtual page for products with default payment method.
+                     * The content of the file was moved to the main twispay.php file, and hooks for the virtual page
+                     * were also created.
+                     *
+                     * The virtual page differs from the usual one by adding get parameters to the page url, in
+                     * this case - ?order_id=xx will be added to the page address url
+                     *
+                     * The woocommerce_after_checkout_form hook will intercept the passed parameters and redirect
+                     * to the twispay payment gateway page
+                     */
+                    $args = array( 'order_id' =>  $order_id );
+
+                    return array(
+                      'result' => 'success',
+                      'redirect' => esc_url(
+                        add_query_arg(
+                          $args,
+                          $actual_link
+                        )
+                      )
+                    );
                 }
             }
-
 
             /**
              * Twispay Process Payment function
@@ -340,10 +392,10 @@ function init_twispay_gateway_class() {
                 if ( $configuration ) {
                     if ( 1 == $configuration->live_mode ) {
                         $apiKey = $configuration->live_key;
-                        $url = 'https://api.twispay.com/transaction/' . $transaction_id;
+                        $url = 'https://api.twispay.com/transaction/' . sanitize_key( $transaction_id );
                     } else if ( 0 == $configuration->live_mode ) {
                         $apiKey = $configuration->staging_key;
-                        $url = 'https://api-stage.twispay.com/transaction/' . $transaction_id;
+                        $url = 'https://api-stage.twispay.com/transaction/' . sanitize_key( $transaction_id );
                     }
                 }
 
@@ -456,10 +508,10 @@ function subscription_terminated( $subscription ){
     if ( $configuration ) {
         if ( $configuration->live_mode == 1 ) {
             $apiKey = $configuration->live_key;
-            $url = 'https://api.twispay.com/order/' . $serverOrderId;
+            $url = 'https://api.twispay.com/order/' . sanitize_key( $serverOrderId );
         } else if ( $configuration->live_mode == 0 ) {
             $apiKey = $configuration->staging_key;
-            $url = 'https://api-stage.twispay.com/order/' . $serverOrderId;
+            $url = 'https://api-stage.twispay.com/order/' . sanitize_key( $serverOrderId );
         }
     }
 
@@ -476,9 +528,9 @@ function subscription_terminated( $subscription ){
     $response = wp_remote_request($url, $args);
 
     if ( $response['response']['message'] == 'OK' ) {
-        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_ok_set_status'] . $subscription->get_parent_id());
+        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_ok_set_status'] . esc_html( $subscription->get_parent_id() ));
     } else {
-        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_error_set_status'] . $subscription->get_parent_id());
+        Twispay_TW_Logger::twispay_tw_log($tw_lang['subscriptions_log_error_set_status'] . esc_html( $subscription->get_parent_id() ));
     }
 }
 add_action('woocommerce_subscription_status_cancelled', 'subscription_terminated');

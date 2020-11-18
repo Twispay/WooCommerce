@@ -131,7 +131,10 @@ function twispay_tw_transaction_administrator() {
                         <?php $transaction_table->search_box( esc_html( $tw_lang['transaction_list_search_title'] ), 'search-query' ); ?>
                     </form>
                     <form method="post">
-                        <?php $transaction_table->prepare_items(); $transaction_table->display(); ?>
+                        <?php
+                            $transaction_table->prepare_items();
+                            $transaction_table->display();
+                        ?>
                     </form>
                 </div>
             <?php

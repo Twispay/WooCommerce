@@ -1,19 +1,7 @@
-#staging_site_id {
-    display: none;
-}
-
-#staging_private_key {
-    display: none;
-}
-
-#live_site_id {
-    display: none;
-}
-
-#live_private_key {
-    display: none;
-}
-
+#staging_site_id,
+#staging_private_key,
+#live_site_id,
+#live_private_key,
 .tablenav {
     display: none;
 }

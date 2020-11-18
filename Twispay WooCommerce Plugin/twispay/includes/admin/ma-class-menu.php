@@ -51,12 +51,12 @@ class Twispay_Tw_Admin_Menu {
         }
 
         // Add main adminsitrator page
-        add_menu_page( __( 'Twispay', 'twispay' ), __( $tw_lang['menu_main_title'], 'twispay' ), 'administrator', 'twispay', 'twispay_tw_configuration', 'dashicons-editor-paste-text', 1000 );
+        add_menu_page( __( 'Twispay', 'twispay' ), esc_attr__( $tw_lang['menu_main_title'], 'twispay' ), 'administrator', 'twispay', 'twispay_tw_configuration', 'dashicons-editor-paste-text', 1000 );
 
         // Add submenus
-        add_submenu_page( 'twispay', __( $tw_lang['menu_configuration_tab'], 'twispay' ), __( $tw_lang['menu_configuration_tab'], 'twispay' ), 'administrator', 'twispay', 'twispay_tw_configuration' );
-        add_submenu_page( 'twispay', __( $tw_lang['menu_transaction_tab'], 'twispay' ), __( $tw_lang['menu_transaction_tab'], 'twispay' ), 'administrator', 'tw-transaction', 'twispay_tw_transaction_administrator' );
-        add_submenu_page( 'twispay', __( $tw_lang['menu_transaction_log_tab'], 'twispay' ), __( $tw_lang['menu_transaction_log_tab'], 'twispay' ), 'administrator', 'tw-transaction-log', 'twispay_tw_transaction_log_administrator' );
+        add_submenu_page( 'twispay', esc_attr__( $tw_lang['menu_configuration_tab'], 'twispay' ), esc_attr__( $tw_lang['menu_configuration_tab'], 'twispay' ), 'administrator', 'twispay', 'twispay_tw_configuration' );
+        add_submenu_page( 'twispay', esc_attr__( $tw_lang['menu_transaction_tab'], 'twispay' ), esc_attr__( $tw_lang['menu_transaction_tab'], 'twispay' ), 'administrator', 'tw-transaction', 'twispay_tw_transaction_administrator' );
+        add_submenu_page( 'twispay', esc_attr__( $tw_lang['menu_transaction_log_tab'], 'twispay' ), esc_attr__( $tw_lang['menu_transaction_log_tab'], 'twispay' ), 'administrator', 'tw-transaction-log', 'twispay_tw_transaction_log_administrator' );
     }
 }
 

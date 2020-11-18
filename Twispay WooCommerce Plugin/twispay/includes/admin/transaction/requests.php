@@ -40,10 +40,10 @@ function tw_twispay_p_refund_payment_transaction() {
 
         if ( $configuration ) {
             if ( $configuration->live_mode == 1 ) {
-                $apiKey = $configuration->live_key;
+                $apiKey = sanitize_text_field( $configuration->live_key );
                 $url = 'https://api.twispay.com/transaction/' . $transaction_id;
             } else if ( $configuration->live_mode == 0 ) {
-                $apiKey = $configuration->staging_key;
+                $apiKey = sanitize_text_field( $configuration->staging_key );
                 $url = 'https://api-stage.twispay.com/transaction/' . $transaction_id;
             }
         }
@@ -76,7 +76,8 @@ add_action( 'tw_refund_payment_transaction', 'tw_twispay_p_refund_payment_transa
  */
 function tw_twispay_p_recurring_order( $request ) {
     if ( isset( $_GET['order_ad'] ) && $_GET['order_ad'] ) {
-        $order_ad = sanitize_text_field( $_GET['order_ad'] );
+
+        $order_ad = (int) sanitize_key( $_GET['order_ad'] );
 
         /* Get configuration from database. */
         global $wpdb;
@@ -85,10 +86,10 @@ function tw_twispay_p_recurring_order( $request ) {
 
         if ( $configuration ) {
             if ( $configuration->live_mode == 1 ) {
-                $apiKey = $configuration->live_key;
+                $apiKey = sanitize_text_field( $configuration->live_key );
                 $url = 'https://api.twispay.com/order/' . $order_ad;
             } else if ( $configuration->live_mode == 0 ) {
-                $apiKey = $configuration->staging_key;
+                $apiKey = sanitize_text_field( $configuration->staging_key );
                 $url = 'https://api-stage.twispay.com/order/' . $order_ad;
             }
         }
@@ -127,10 +128,10 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
 
     if ( $configuration ) {
         if ( $configuration->live_mode == 1 ) {
-            $apiKey = $configuration->live_key;
+            $apiKey = sanitize_text_field( $configuration->live_key );
             $baseUrl = 'https://api.twispay.com/order?externalOrderId=__EXTERNAL_ORDER_ID__&orderType=recurring&page=1&perPage=1&reverseSorting=0';
         } else if ( $configuration->live_mode == 0 ) {
-            $apiKey = $configuration->staging_key;
+            $apiKey = sanitize_text_field( $configuration->staging_key );
             $baseUrl = 'https://api-stage.twispay.com/order?externalOrderId=__EXTERNAL_ORDER_ID__&orderType=recurring&page=1&perPage=1&reverseSorting=0';
         }
     }
@@ -151,39 +152,29 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
         /* Reset skip flag. */
         $skip = FALSE;
 
-        /* Create a new cURL session. */
-        $channel = curl_init();
-
         /* Construct the URL. */
         $url = str_replace('__EXTERNAL_ORDER_ID__', $subscription->get_parent_id(), $baseUrl);
 
-        /* Set the URL and other needed fields. */
-        curl_setopt($channel, CURLOPT_URL, $url);
-        curl_setopt($channel, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($channel, CURLOPT_HEADER, FALSE);
-        curl_setopt($channel, CURLOPT_HTTPHEADER, ['accept: application/json', 'Authorization: ' . $apiKey]);
-
         /* Execute the request. This means to perform a "GET"/"PUT" request at the specified URL. */
-        $response = curl_exec($channel);
+        $args = array('method' => 'GET', 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]);
+        $response = wp_remote_request( $url, $args );
 
         /* Check if the CURL call failed. */
-        if(FALSE === $response) {
-            Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_call_failed'] . curl_error($channel) );
+        if( FALSE === $response ) {
+            Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_call_failed'] . WP_Error::get_error_message() );
             $skip = TRUE;
         }
 
-        if((FALSE == $skip) && (200 != curl_getinfo($channel, CURLINFO_HTTP_CODE))){
-            Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_http_code'] . curl_getinfo($channel, CURLINFO_HTTP_CODE) );
+        if((FALSE == $skip) && (200 != wp_remote_retrieve_response_code( $response ))){
+            Twispay_TW_Logger::twispay_tw_log( $tw_lang['subscriptions_log_error_http_code'] . wp_remote_retrieve_response_code( $response ) );
             $skip = TRUE;
         }
-
-        /* Close the cURL session. */
-        curl_close($channel);
 
         if(FALSE == $skip){
-            $response = json_decode($response);
+            $response = json_decode($response['body']);
 
             if ( 'Success' == $response->message ) {
+
                 /* Check if any order was found on the server. */
                 if($response->pagination->currentItemCount){
                     /* Synchronize the statuses. */

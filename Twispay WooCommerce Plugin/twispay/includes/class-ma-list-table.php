@@ -1048,16 +1048,16 @@ class Twispay_Tw_List_Table {
     public function print_column_headers( $with_id = true ) {
         list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
 
-        $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+        $current_url = esc_url( set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ) );
         $current_url = remove_query_arg( 'paged', $current_url );
 
         if ( isset( $_GET['orderby'] ) ) {
-            $current_orderby = $_GET['orderby'];
+            $current_orderby = sanitize_text_field( $_GET['orderby'] );
         } else {
             $current_orderby = '';
         }
 
-        if ( isset( $_GET['order'] ) && 'desc' === $_GET['order'] ) {
+        if ( isset( $_GET['order'] ) && 'desc' === sanitize_text_field( $_GET['order'] ) ) {
             $current_order = 'desc';
         } else {
             $current_order = 'asc';
@@ -1065,8 +1065,8 @@ class Twispay_Tw_List_Table {
 
         if ( ! empty( $columns['cb'] ) ) {
             static $cb_counter = 1;
-            $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . __( 'Select All' ) . '</label>'
-                . '<input id="cb-select-all-' . $cb_counter . '" type="checkbox" />';
+            $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . esc_attr( $cb_counter ) . '">' . __( 'Select All' ) . '</label>'
+                . '<input id="cb-select-all-' . esc_attr( $cb_counter ) . '" type="checkbox" />';
             $cb_counter++;
         }
 
@@ -1099,7 +1099,7 @@ class Twispay_Tw_List_Table {
                     $class[] = $desc_first ? 'asc' : 'desc';
                 }
 
-                $column_display_name = '<a href="' . esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) ) . '"><span>' . $column_display_name . '</span><span class="sorting-indicator"></span></a>';
+                $column_display_name = '<a href="' . esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) ) . '"><span>' . esc_html( $column_display_name ) . '</span><span class="sorting-indicator"></span></a>';
             }
 
             $tag = ( 'cb' === $column_key ) ? 'td' : 'th';
@@ -1120,7 +1120,7 @@ class Twispay_Tw_List_Table {
      * @access public
      */
     public function display() {
-        $singular = $this->_args['singular'];
+        $singular = esc_attr( $this->_args['singular'] );
 
         $this->display_tablenav( 'top' );
 
@@ -1206,7 +1206,7 @@ class Twispay_Tw_List_Table {
         if ( $this->has_items() ) {
             $this->display_rows();
         } else {
-            echo '<tr class="no-items"><td class="colspanchange" colspan="' . $this->get_column_count() . '">';
+            echo '<tr class="no-items"><td class="colspanchange" colspan="' . esc_attr( $this->get_column_count() ) . '">';
             $this->no_items();
             echo '</td></tr>';
         }

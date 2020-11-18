@@ -29,16 +29,16 @@
  * @return void
  */
 function tw_twispay_p_edit_general_configuration( $request ) {
-    $live_mode = $request['live_mode'];
-    $staging_site_id = $request['staging_site_id'];
-    $staging_private_key = $request['staging_private_key'];
-    $live_site_id = $request['live_site_id'];
-    $live_private_key = $request['live_private_key'];
-    $thankyou_page = $request['wp_pages'];
-    $suppress_email = $request['suppress_email'];
-    $contact_email_o = $request['contact_email_o'];
+    $live_mode              = sanitize_text_field( $request['live_mode'] );
+    $staging_site_id        = sanitize_text_field( $request['staging_site_id'] );
+    $staging_private_key    = sanitize_text_field( $request['staging_private_key'] );
+    $live_site_id           = sanitize_text_field( $request['live_site_id'] );
+    $live_private_key       = sanitize_text_field( $request['live_private_key'] );
+    $thankyou_page          = sanitize_text_field( $request['wp_pages'] );
+    $suppress_email         = sanitize_text_field( $request['suppress_email'] );
+    $contact_email_o        = sanitize_email( $request['contact_email_o'] );
 
-    if ( $contact_email_o == '' ) {
+    if ( $contact_email_o === '' ) {
         $contact_email_o = 0;
     }
 
@@ -61,7 +61,7 @@ function tw_twispay_p_edit_general_configuration( $request ) {
                 'live_key'        => $live_private_key,
                 'thankyou_page'   => $thankyou_page,
                 'suppress_email'  => $suppress_email,
-                'contact_email'  => $contact_email_o
+                'contact_email'   => $contact_email_o
             ),
             array(
                 'id_tw_configuration'  => $configuration[0]->id_tw_configuration
@@ -70,9 +70,12 @@ function tw_twispay_p_edit_general_configuration( $request ) {
     }
     else {
         // If by any chance the configuration row does not exist, add default one immediately. ( twispay_tw_configuration table )
-        $wpdb->insert( $table_name, array(
-            'live_mode'     => 0
-        ) );
+        $wpdb->insert(
+            $table_name,
+            array(
+                'live_mode'     => 0
+            )
+        );
 
         // Edit the Configuration into Database ( twispay_tw_configuration table )
         $wpdb->update(
@@ -85,7 +88,7 @@ function tw_twispay_p_edit_general_configuration( $request ) {
                 'live_key'        => $live_private_key,
                 'thankyou_page'   => $thankyou_page,
                 'suppress_email'  => $suppress_email,
-                'contact_email'  => $contact_email_o
+                'contact_email'   => $contact_email_o
             ),
             array(
                 'id_tw_configuration'  => $wpdb->insert_id
