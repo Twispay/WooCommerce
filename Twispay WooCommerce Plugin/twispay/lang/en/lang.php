@@ -114,7 +114,7 @@ $tw_lang['log_ok_status_refund'] = '[RESPONSE]: Status refund-ok for order ID: '
 $tw_lang['log_ok_status_failed'] = '[RESPONSE]: Status failed for order ID: ';
 $tw_lang['log_ok_status_hold'] = '[RESPONSE]: Status on-hold for order ID: ';
 $tw_lang['log_ok_status_uncertain'] = '[RESPONSE]: Status uncertain for order ID: ';
-$tw_lang['log_ok_validating_complete'] = '[RESPONSE]: Validating completed for order ID: ';
+$tw_lang['log_ok_validating_complete'] = '[RESPONSE]: Validating completed for order ID: %s';
 
 $tw_lang['log_error_validating_failed'] = '[RESPONSE-ERROR]: Validation failed.';
 $tw_lang['log_error_decryption_error'] = '[RESPONSE-ERROR]: Decryption failed.';
