@@ -15,6 +15,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit;
 }
 
+Twispay_TW_Logger::twispay_clear_logs();
+delete_option( Twispay_TW_Logger::LOGS_PATH_OPTION_KEY );
+
 delete_option( 'twispay_tw_installed' );
 
 // Delete All TW Twispay Pages

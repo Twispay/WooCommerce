@@ -186,7 +186,7 @@ if ( !class_exists( 'Twispay_TW_Helper_Response' ) ) :
                 }
 
                 Twispay_TW_Logger::twispay_tw_logTransaction( $data );
-                Twispay_TW_Logger::twispay_tw_log( $tw_lang['log_ok_validating_complete'] . $data['id_cart'] );
+                Twispay_TW_Logger::twispay_tw_log( sprintf($tw_lang['log_ok_validating_complete'], $data['id_cart']) );
 
                 return TRUE;
             }
