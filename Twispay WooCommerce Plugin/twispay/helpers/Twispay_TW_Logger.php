@@ -37,18 +37,50 @@ if (!class_exists('Twispay_TW_Logger')) :
         public static function twispay_tw_logTransaction($data)
         {
             global $wpdb;
+            $tableName = "{$wpdb->prefix}twispay_tw_transactions";
 
             /* Extract the WooCommerce order. */
             $order = wc_get_order($data['id_cart']);
 
-            $already = $wpdb->get_row("SELECT * FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE transactionId = '" . $data['transactionId'] . "'");
+            $already = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$tableName} WHERE transactionId = '%d'", $data['transactionId']));
+
             if ($already) {
                 /* Update the DB with the transaction data. */
-                $wpdb->query($wpdb->prepare("UPDATE " . $wpdb->prefix . "twispay_tw_transactions SET status = '" . $data['status'] . "' WHERE transactionId = '%d'", $data['transactionId']));
-            } else {
-                $checkout_url = ((false !== $order) && (true !== $order)) ? (wc_get_checkout_url() . 'order-pay/' . explode('_', $data['id_cart'])[0] . '/?pay_for_order=true&key=' . $order->get_data()['order_key']) : ("");
-                $wpdb->get_results("INSERT INTO `" . $wpdb->prefix . "twispay_tw_transactions` (`status`, `id_cart`, `identifier`, `orderId`, `transactionId`, `customerId`, `cardId`, `checkout_url`) VALUES ('" . $data['status'] . "', '" . $data['id_cart'] . "', '" . $data['identifier'] . "', '" . $data['orderId'] . "', '" . $data['transactionId'] . "', '" . $data['customerId'] . "', '" . $data['cardId'] . "', '" . $checkout_url . "');");
+                $wpdb->update($tableName, [
+                    'status' => $data['status'],
+                ], [
+                    'transactionId' => $data['transactionId'],
+                ], [
+                    'status' => '%s',
+                ], [
+                    'transactionId' => '%d',
+                ]);
+                return;
             }
+
+            $checkout_url = ((false !== $order) && (true !== $order)) ?
+                (wc_get_checkout_url() . 'order-pay/' . explode('_', $data['id_cart'])[0] . '/?pay_for_order=true&key=' . $order->get_data()['order_key']) :
+                ("");
+
+            $wpdb->insert($tableName, [
+                'status' => $data['status'],
+                'id_cart' => $data['id_cart'],
+                'identifier' => $data['identifier'],
+                'orderId' => $data['orderId'],
+                'transactionId' => $data['transactionId'],
+                'customerId' => $data['customerId'],
+                'cardId' => $data['cardId'],
+                'checkout_url' => $checkout_url,
+            ], [
+                'status' => '%s',
+                'id_cart' => '%d',
+                'identifier' => '%s',
+                'orderId' => '%d',
+                'transactionId' => '%d',
+                'customerId' => '%d',
+                'cardId' => '%d',
+                'checkout_url' => '%s',
+            ]);
         }
 
 
@@ -64,11 +96,25 @@ if (!class_exists('Twispay_TW_Logger')) :
         {
             global $wpdb;
 
-            $already = $wpdb->get_row("SELECT * FROM " . $wpdb->prefix . "twispay_tw_transactions WHERE id_cart = '" . $id . "'");
-            if ($already) {
-                /* Update the DB with the transaction data. */
-                $wpdb->query($wpdb->prepare("UPDATE " . $wpdb->prefix . "twispay_tw_transactions SET status = '" . $status . "' WHERE id_cart = '%d'", $id));
+            $tableName = "{
+            $wpdb->prefix}twispay_tw_transactions";
+
+            $already = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$tableName} WHERE id_cart = '%d'", $id));
+
+            if (!$already) {
+                return;
             }
+
+            $wpdb->update($tableName, [
+                'status' => $status,
+            ], [
+                'id_cart' => $id,
+            ], [
+                'status' => '%s',
+            ], [
+                    'id_cart' => '%d',
+                ]
+            );
         }
 
 
@@ -99,10 +145,15 @@ if (!class_exists('Twispay_TW_Logger')) :
                 return;
             }
 
-            if (is_readable(TWISPAY_PLUGIN_DIR . 'twispay-log.txt')) {
-                update_option('twispay_log_is_migrated', 1);
-                @rename(TWISPAY_PLUGIN_DIR . 'twispay-log.txt', self::twispay_get_log_file_path());
+            if (!is_readable(TWISPAY_PLUGIN_DIR . 'twispay-log.txt')) {
+                return;
             }
+
+            if (!rename(TWISPAY_PLUGIN_DIR . 'twispay-log.txt', self::twispay_get_log_file_path())) {
+                return;
+            }
+
+            update_option('twispay_log_is_migrated', 1);
         }
 
         /**
