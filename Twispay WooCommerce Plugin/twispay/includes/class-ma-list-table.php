@@ -486,10 +486,10 @@ class Twispay_Tw_List_Table {
             return false;
 
         if ( isset( $_REQUEST['action'] ) && -1 != sanitize_text_field( $_REQUEST['action'] ) )
-            return sanitize_text_field( $_REQUEST['action'] );
+            return $_REQUEST['action'];
 
         if ( isset( $_REQUEST['action2'] ) && -1 != sanitize_text_field( $_REQUEST['action2'] ) )
-            return sanitize_text_field( $_REQUEST['action2'] );
+            return $_REQUEST['action2'];
 
         return false;
     }
@@ -515,7 +515,7 @@ class Twispay_Tw_List_Table {
         foreach ( $actions as $action => $link ) {
             ++$i;
             ( $i == $action_count ) ? $sep = '' : $sep = ' | ';
-            $out .= '<span class=' . sanitize_html_class( $action ) . '>' . esc_html( $link . $sep ) . '</span>';
+            $out .= "<span class='$action'>$link$sep</span>";
         }
         $out .= '</div>';
 
@@ -846,7 +846,7 @@ class Twispay_Tw_List_Table {
         if ( ! empty( $infinite_scroll ) ) {
             $pagination_links_class = ' hide-if-js';
         }
-        $output .= '\n<span class="' . sanitize_html_class( $pagination_links_class ) . '">' . esc_html( join( '\n', $page_links ) ) . '</span>';
+        $output .= "\n<span class='$pagination_links_class'>" . join( "\n", $page_links ) . '</span>';
 
         if ( $total_pages ) {
             $page_class = $total_pages < 2 ? ' one-page' : '';
@@ -1107,7 +1107,7 @@ class Twispay_Tw_List_Table {
             $id = $with_id ? "id='$column_key'" : '';
 
             if ( ! empty( $class ) )
-                $class = 'class="' . sanitize_html_class( join( ' ', $class ) ) . '"';
+                $class = "class='" . join( ' ', $class ) . "'";
 
             echo "<$tag $scope $id $class>$column_display_name</$tag>";
         }

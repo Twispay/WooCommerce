@@ -117,7 +117,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
         //All link
         $class = ( $current == 'all' ? ' class="current"' :'' );
         $all_url = remove_query_arg( 'status' );
-        $views['all'] = "<a href='{$all_url }' {$class} >" . esc_attr( $this->tw_lang['transaction_list_all_views'] ) . "<span class='view_count'> ( " . esc_attr( $this->get_all_count( $wpdb ) ) . " )</span></a>";
+        $views['all'] = "<a href='{$all_url }' {$class} >" . $this->tw_lang['transaction_list_all_views'] . "<span class='view_count'> ( " . esc_attr( $this->get_all_count( $wpdb ) ) . " )</span></a>";
 
         return $views;
     }
@@ -127,8 +127,8 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
      */
     function column_id_tw_transactions( $item ) {
         $actions = array(
-            'refund'                 => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">' . esc_attr( $this->tw_lang['transaction_list_refund_title'] ) . '</a>', esc_attr( $_REQUEST['page'] ), 'refund_payment', esc_attr( $item['transactionId'] ) ),
-            'cancel_recurring'       => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">' . esc_attr( $this->tw_lang['transaction_list_recurring_title'] ) . '</a>', esc_attr( $_REQUEST['page'] ), 'recurring_payment', esc_attr( $item['orderId'] ) )
+            'refund'                 => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">' . $this->tw_lang['transaction_list_refund_title'] . '</a>', esc_attr( $_REQUEST['page'] ), 'refund_payment', esc_attr( $item['transactionId'] ) ),
+            'cancel_recurring'       => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">' . $this->tw_lang['transaction_list_recurring_title'] . '</a>', esc_attr( $_REQUEST['page'] ), 'recurring_payment', esc_attr( $item['orderId'] ) )
         );
 
         if ( $item['status'] == 'complete-ok' ) {
