@@ -73,11 +73,14 @@ final class Twispay {
 
         add_filter( 'query_vars', array( $this, 'twispay_query_vars_filter' ) );
 
-        if( isset( $_GET['order_id'] ) && strpos( $_GET['order_id'], '_sub' ) === false ) {
+        if( isset( $_GET['order_id'] ) && strpos( sanitize_text_field( $_GET['order_id'] ), '_sub' ) === false ) {
             add_action('woocommerce_after_checkout_form', array( $this, 'twispay_processor' ) );
         }
-        if( isset( $_GET['order_id'] ) && strpos( $_GET['order_id'], '_sub' ) !== false) {
+        if( isset( $_GET['order_id'] ) && strpos( sanitize_text_field( $_GET['order_id'] ), '_sub' ) !== false) {
             add_action('woocommerce_after_checkout_form', array( $this, 'twispay_subscription_processor' ) );
+        }
+        if( isset( $_GET['server_to_server'] ) && sanitize_text_field( $_GET['server_to_server'] ) === 'true' ) {
+            $this->server_to_server();
         }
     }
 
@@ -144,6 +147,7 @@ final class Twispay {
 
     public function twispay_query_vars_filter( $vars ) {
         $vars[] .= 'order_id';
+        $vars[] .= 'server_to_server';
         return $vars;
     }
 
@@ -199,7 +203,7 @@ final class Twispay {
 
 
         /* Exit if no order is placed */
-        if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
+        if ( isset( $_GET['order_id'] ) && sanitize_key( $_GET['order_id'] ) ) {
             /* Extract the WooCommerce order. */
             $order = wc_get_order((int) sanitize_key( $_GET['order_id'] ));
 
@@ -368,7 +372,7 @@ final class Twispay {
 
 
         /* Exit if no order is placed */
-        if ( isset( $_GET['order_id'] ) && $_GET['order_id'] ) {
+        if ( isset( $_GET['order_id'] ) && sanitize_key( $_GET['order_id'] ) ) {
             /* Extract the WooCommerce order. */
             $order_id = (int) sanitize_key( $_GET['order_id'] );
             $order = wc_get_order($order_id);
@@ -510,6 +514,102 @@ final class Twispay {
             echo $str;
             die( esc_html( $tw_lang['twispay_processor_error_general'] ) );
         }
+    }
+
+    public function server_to_server() {
+
+        /* Load languages */
+        $lang = explode( '-', get_bloginfo( 'language' ) )[0];
+        if ( file_exists( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' ) ){
+            require( TWISPAY_PLUGIN_DIR . 'lang/' . $lang . '/lang.php' );
+        } else {
+            require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
+        }
+
+        /* Require the "Twispay_TW_Logger" class. */
+        require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Logger.php' );
+        /* Require the "Twispay_TW_Helper_Response" class. */
+        require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Helper_Response.php' );
+        /* Require the "Twispay_TW_Status_Updater" class. */
+        require_once( TWISPAY_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'helpers' . DIRECTORY_SEPARATOR . 'Twispay_TW_Status_Updater.php' );
+
+
+        /* Check if the POST is corrupted: Doesn't contain the 'opensslResult' and the 'result' fields. */
+        if( (FALSE == isset($_POST['opensslResult'])) && (FALSE == isset($_POST['result'])) ) {
+            Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_empty_response']);
+            die($tw_lang['log_error_empty_response']);
+        }
+
+
+        /* Get configuration from database. */
+        global $wpdb;
+        $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
+
+
+        $secretKey = '';
+        if ( $configuration ) {
+            if ( 1 == $configuration->live_mode ) {
+                $secretKey = $configuration->live_key;
+            } else if ( 0 == $configuration->live_mode ) {
+                $secretKey = $configuration->staging_key;
+            } else {
+                /* TODO: Error? */
+            }
+        }
+
+
+        /* Check if there is NO secret key. */
+        if ( '' == $secretKey ) {
+            Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_private']);
+            die( esc_html( $tw_lang['log_error_invalid_private'] ));
+        }
+
+        /* Extract the server response and decript it. */
+        $decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encryptedResponse*/(isset($_POST['opensslResult'])) ? (esc_html($_POST['opensslResult'])) : (esc_html($_POST['result'])), $secretKey, $tw_lang);
+
+
+        /* Check if decryption failed.  */
+        if(FALSE === $decrypted){
+            Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_decryption_error']);
+            Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_openssl'] . (isset($_POST['opensslResult'])) ? (esc_html($_POST['opensslResult'])) : (esc_html($_POST['result'])));
+            die( esc_html( $tw_lang['log_error_decryption_error'] ));
+        } else {
+            Twispay_TW_Logger::twispay_tw_log($tw_lang['log_ok_string_decrypted']);
+        }
+
+
+        /* Validate the decripted response. */
+        $orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decrypted, $tw_lang);
+
+
+        /* Check if server sesponse validation failed.  */
+        if(TRUE !== $orderValidation){
+            Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_validating_failed']);
+            die( esc_html( $tw_lang['log_error_validating_failed'] ));
+        }
+
+
+        /* Extract the WooCommerce order. */
+        $orderId = explode('_', $decrypted['externalOrderId'])[0];
+        $order = wc_get_order($orderId);
+
+
+        /* Check if the WooCommerce order extraction failed. */
+        if( FALSE == $order ){
+            Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_invalid_order']);
+            die( esc_html( $tw_lang['log_error_invalid_order'] ));
+        }
+
+
+        /* Extract the transaction status. */
+        $status = (empty($decrypted['status'])) ? ($decrypted['transactionStatus']) : ($decrypted['status']);
+
+
+        /* Set the status of the WooCommerce order according to the received status. */
+        Twispay_TW_Status_Updater::updateStatus_IPN($orderId, $status, $tw_lang);
+
+        /* Send the 200 OK response back to the Twispay server. */
+        die('OK');
     }
 }
 

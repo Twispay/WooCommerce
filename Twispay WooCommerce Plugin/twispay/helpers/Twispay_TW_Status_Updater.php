@@ -221,7 +221,6 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                     $order->update_status('failed', __( $tw_lang['wa_order_failed_notice'], 'woocommerce' ));
 
                     if(class_exists('WC_Subscriptions') && wcs_order_contains_subscription($order)){
-//                        WC_Subscriptions_Manager::process_subscription_payment_failure_on_order($order);
                         WC_Subscriptions_Manager::maybe_process_failed_renewal_for_repair( $orderId );
                     }
 

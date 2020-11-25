@@ -37,7 +37,7 @@ function twispay_tw_configuration() {
             <div class="wrap">
                 <h2><?= esc_html( $tw_lang['configuration_title'] ); ?></h2>
                 <?php
-                    if ( isset( $_GET['notice'] ) && $_GET['notice'] ) {
+                    if ( isset( $_GET['notice'] ) && sanitize_text_field( $_GET['notice'] ) ) {
                         $notice = sanitize_text_field( $_GET['notice'] );
 
                         switch ( $notice ) {
@@ -93,7 +93,7 @@ function twispay_tw_configuration() {
                         <tr class="form-field" id="s_t_s_notification">
                             <th scope="row"><label for="s_t_s_notification"><?= esc_html( $tw_lang['s_t_s_notification_label'] ); ?></span></label></th>
                             <td>
-                                <input name="s_t_s_notification" disabled="disabled" type="text" value="<?= TWISPAY_PLUGIN_DIR . 'includes/validation.php'; ?>" style="max-width: 400px;" />
+                                <input name="s_t_s_notification" disabled="disabled" type="text" value="<?= home_url($path = '?server_to_server=true'); ?>" style="max-width: 400px;" />
                                 <p class="description"><?= esc_html( $tw_lang['s_t_s_notification_desc'] ); ?></p>
                             </td>
                         </tr>

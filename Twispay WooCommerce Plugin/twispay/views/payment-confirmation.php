@@ -153,7 +153,7 @@ if ('' == $secretKey) {
 
 
 /* Extract the server response and decrypt it. */
-$decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encryptedResponse*/(isset($_POST['opensslResult'])) ? ($_POST['opensslResult']) : ($_POST['result']), $secretKey, $tw_lang);
+$decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encryptedResponse*/(isset($_POST['opensslResult'])) ? (esc_html($_POST['opensslResult'])) : (esc_html($_POST['result'])), $secretKey, $tw_lang);
 
 /* Check if decryption failed.  */
 if (FALSE === $decrypted) {
@@ -285,7 +285,7 @@ if (FALSE == $order) {
 }
 
 /* Check if the WooCommerce order cart hash does NOT MATCH the one sent to the server. */
-if ($_GET['secure_key'] != $order->get_data()['cart_hash']) {
+if ( sanitize_text_field( $_GET['secure_key'] ) != $order->get_data()['cart_hash']) {
     Twispay_TW_Logger::twispay_tw_log( esc_html( $tw_lang['log_error_invalid_key'] ) );
     ?>
     <div class="error notice" style="margin-top: 20px;">
@@ -328,6 +328,6 @@ if ($_GET['secure_key'] != $order->get_data()['cart_hash']) {
 /* Extract the transaction status. */
 $status = (empty($decrypted['status'])) ? ($decrypted['transactionStatus']) : ($decrypted['status']);
 /* Reconstruct the checkout URL to use it to allow client to try again in case of error. */
-$checkout_url = wc_get_checkout_url() . 'order-pay/' . $orderId . '/?pay_for_order=true&key=' . $order->get_data()['order_key'];
+$checkout_url = esc_url( wc_get_checkout_url() . 'order-pay/' . $orderId . '/?pay_for_order=true&key=' . $order->get_data()['order_key'] );
 
 Twispay_TW_Status_Updater::updateStatus_backUrl($orderId, $status, $checkout_url, $tw_lang, $configuration);

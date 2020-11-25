@@ -38,7 +38,7 @@ function twispay_tw_transaction_administrator() {
     }
     else {
         // Check if the view / edit / delete action is detected, otherwise load the campaigns form
-        if ( isset( $_GET['action'] ) && $_GET['action'] ) {
+        if ( isset( $_GET['action'] ) && sanitize_text_field( $_GET['action'] ) ) {
             $action = sanitize_text_field( $_GET['action'] );
 
             switch ( $action ) {
@@ -72,7 +72,7 @@ function twispay_tw_transaction_administrator() {
 
 
                     <?php
-                        if ( isset( $_GET['notice'] ) && $_GET['notice'] ) {
+                        if ( isset( $_GET['notice'] ) && sanitize_text_field( $_GET['notice'] ) ) {
                             $notice = sanitize_text_field( $_GET['notice'] );
 
                             switch ( $notice ) {
