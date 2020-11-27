@@ -143,8 +143,8 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
 
         if ( $item['status'] == 'complete-ok' ) {
             return sprintf( '%1$s %2$s',
-                esc_attr( $item['id_tw_transactions'] ),
-                esc_attr( $this->row_actions( $actions ) )
+                $item['id_tw_transactions'],
+                $this->row_actions( $actions )
             );
         }
         else {

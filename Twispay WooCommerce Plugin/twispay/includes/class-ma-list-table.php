@@ -515,7 +515,7 @@ class Twispay_Tw_List_Table {
         foreach ( $actions as $action => $link ) {
             ++$i;
             ( $i == $action_count ) ? $sep = '' : $sep = ' | ';
-            $out .= '<span class="' . esc_attr( $action ) . '">' . esc_html( $link ) . esc_html( $sep ) . '</span>';
+            $out .= '<span class="' . $action . '">' . $link.$sep . '</span>';
         }
         $out .= '</div>';
 
