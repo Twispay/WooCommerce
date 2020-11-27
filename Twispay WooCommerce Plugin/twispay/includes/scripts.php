@@ -128,8 +128,8 @@ function init_twispay_gateway_class() {
                 $this->id = 'twispay';
                 $this->icon =  TWISPAY_PLUGIN_URL . 'logo.png';
                 $this->has_fields = true;
-                $this->method_title = $tw_lang['ws_title'];
-                $this->method_description = $tw_lang['ws_description'];
+                $this->method_title = esc_html( $tw_lang['ws_title'] );
+                $this->method_description = esc_html( $tw_lang['ws_description'] );
                 if( class_exists('WC_Subscriptions') ){
                     $this->supports = [ 'products'
                                       , 'refunds'
@@ -164,41 +164,41 @@ function init_twispay_gateway_class() {
 
                 $this->form_fields = array(
                     'enabled' => array(
-                        'title'    => __( $tw_lang['ws_enable_disable_title'], 'woocommerce' ),
+                        'title'    => esc_html__( $tw_lang['ws_enable_disable_title'], 'woocommerce' ),
                         'type'     => 'checkbox',
-                        'label'    => __( $tw_lang['ws_enable_disable_label'], 'woocommerce' ),
+                        'label'    => esc_html__( $tw_lang['ws_enable_disable_label'], 'woocommerce' ),
                         'default'  => 'yes'
                     ),
                     'title' => array(
-                        'title'        => __( $tw_lang['ws_title_title'], 'woocommerce' ),
+                        'title'        => esc_html__( $tw_lang['ws_title_title'], 'woocommerce' ),
                         'type'         => 'text',
-                        'description'  => __( $tw_lang['ws_title_desc'], 'woocommerce' ),
-                        'default'      => __( 'Twispay', 'woocommerce' ),
+                        'description'  => esc_html__( $tw_lang['ws_title_desc'], 'woocommerce' ),
+                        'default'      => esc_html__( 'Twispay', 'woocommerce' ),
                         'desc_tip'     => true
                     ),
                     'description' => array(
-                        'title'        => __( $tw_lang['ws_description_title'], 'woocommerce' ),
+                        'title'        => esc_html__( $tw_lang['ws_description_title'], 'woocommerce' ),
                         'type'         => 'textarea',
-                        'description'  => __( $tw_lang['ws_description_desc'], 'woocommerce' ),
-                        'default'      => __( $tw_lang['ws_description_default'], 'woocommerce' ),
+                        'description'  => esc_html__( $tw_lang['ws_description_desc'], 'woocommerce' ),
+                        'default'      => esc_html__( $tw_lang['ws_description_default'], 'woocommerce' ),
                         'desc_tip'     => true
                     ),
                     'enable_for_methods' => array(
-                        'title'              => __( $tw_lang['ws_enable_methods_title'], 'woocommerce' ),
+                        'title'              => esc_html__( $tw_lang['ws_enable_methods_title'], 'woocommerce' ),
                         'type'               => 'multiselect',
                         'class'              => 'wc-enhanced-select',
                         'css'                => 'width: 400px;',
                         'default'            => '',
-                        'description'        => __( $tw_lang['ws_enable_methods_desc'], 'woocommerce' ),
+                        'description'        => esc_html__( $tw_lang['ws_enable_methods_desc'], 'woocommerce' ),
                         'options'            => $shipping_methods,
                         'desc_tip'           => true,
                         'custom_attributes'  => array(
-                            'data-placeholder'  => __( $tw_lang['ws_enable_methods_placeholder'], 'woocommerce' ),
+                            'data-placeholder'  => esc_html__( $tw_lang['ws_enable_methods_placeholder'], 'woocommerce' ),
                         ),
                     ),
                     'enable_for_virtual' => array(
-                        'title'    => __( $tw_lang['ws_vorder_title'], 'woocommerce' ),
-                        'label'    => __( $tw_lang['ws_vorder_desc'], 'woocommerce' ),
+                        'title'    => esc_html__( $tw_lang['ws_vorder_title'], 'woocommerce' ),
+                        'label'    => esc_html__( $tw_lang['ws_vorder_desc'], 'woocommerce' ),
                         'type'     => 'checkbox',
                         'default'  => 'yes',
                     )
@@ -457,7 +457,7 @@ function twispay_tw_isa_order_received_text( $text, $order ) {
         require( TWISPAY_PLUGIN_DIR . 'lang/en/lang.php' );
     }
 
-    return $tw_lang['order_confirmation_title'];
+    return esc_html( $tw_lang['order_confirmation_title'] );
 }
 add_filter('woocommerce_thankyou_order_received_text', 'twispay_tw_isa_order_received_text', 10, 2 );
 
