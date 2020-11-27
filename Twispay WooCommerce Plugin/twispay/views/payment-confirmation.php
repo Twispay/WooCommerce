@@ -73,7 +73,7 @@ if ( $configuration ) {
                                           /* OR */
 /* Check if the 'backUrl' is corrupted: Doesn't contain the 'secure_key' field. */
 if (((FALSE == isset($_POST['opensslResult'])) && (FALSE == isset($_POST['result']))) || (FALSE == isset($_GET['secure_key']))) {
-    Twispay_TW_Logger::twispay_tw_log( esc_html( $tw_lang['log_error_empty_response'] ) );
+    Twispay_TW_Logger::twispay_tw_log( $tw_lang['log_error_empty_response'] );
     ?>
     <div class="error notice" style="margin-top: 20px;">
         <h3><?php echo esc_html($tw_lang['general_error_title']); ?></h3>
@@ -112,7 +112,7 @@ if (((FALSE == isset($_POST['opensslResult'])) && (FALSE == isset($_POST['result
 
 /* Check if there is NO secret key. */
 if ('' == $secretKey) {
-    Twispay_TW_Logger::twispay_tw_log( esc_html( $tw_lang['log_error_invalid_private'] ) );
+    Twispay_TW_Logger::twispay_tw_log( $tw_lang['log_error_invalid_private'] );
     ?>
     <div class="error notice" style="margin-top: 20px;">
         <h3><?php echo esc_html($tw_lang['general_error_title']); ?></h3>
@@ -157,7 +157,7 @@ $decrypted = Twispay_TW_Helper_Response::twispay_tw_decrypt_message(/*tw_encrypt
 
 /* Check if decryption failed.  */
 if (FALSE === $decrypted) {
-    Twispay_TW_Logger::twispay_tw_log( esc_html( $tw_lang['log_error_decryption_error'] ) );
+    Twispay_TW_Logger::twispay_tw_log( $tw_lang['log_error_decryption_error'] );
     ?>
     <div class="error notice" style="margin-top: 20px;">
         <h3><?php echo esc_html($tw_lang['general_error_title']); ?></h3>
@@ -193,7 +193,7 @@ if (FALSE === $decrypted) {
 
     die();
 } else {
-    Twispay_TW_Logger::twispay_tw_log( esc_html( $tw_lang['log_ok_string_decrypted'] ) );
+    Twispay_TW_Logger::twispay_tw_log( $tw_lang['log_ok_string_decrypted'] );
 }
 
 /* Validate the decrypted response. */
@@ -201,7 +201,7 @@ $orderValidation = Twispay_TW_Helper_Response::twispay_tw_checkValidation($decry
 
 /* Check if server response validation failed.  */
 if (TRUE !== $orderValidation) {
-    Twispay_TW_Logger::twispay_tw_log( esc_html( $tw_lang['log_error_validating_failed'] ) );
+    Twispay_TW_Logger::twispay_tw_log( $tw_lang['log_error_validating_failed'] );
     ?>
     <div class="error notice" style="margin-top: 20px;">
         <h3><?php echo esc_html($tw_lang['general_error_title']); ?></h3>
@@ -245,7 +245,7 @@ $order = wc_get_order($orderId);
 
 /* Check if the WooCommerce order extraction failed. */
 if (FALSE == $order) {
-    Twispay_TW_Logger::twispay_tw_log( esc_html( $tw_lang['log_error_invalid_order'] ) );
+    Twispay_TW_Logger::twispay_tw_log( $tw_lang['log_error_invalid_order'] );
     ?>
     <div class="error notice" style="margin-top: 20px;">
         <h3><?php echo esc_html($tw_lang['general_error_title']); ?></h3>
@@ -286,7 +286,7 @@ if (FALSE == $order) {
 
 /* Check if the WooCommerce order cart hash does NOT MATCH the one sent to the server. */
 if ( sanitize_text_field( $_GET['secure_key'] ) != $order->get_data()['cart_hash']) {
-    Twispay_TW_Logger::twispay_tw_log( esc_html( $tw_lang['log_error_invalid_key'] ) );
+    Twispay_TW_Logger::twispay_tw_log( $tw_lang['log_error_invalid_key'] );
     ?>
     <div class="error notice" style="margin-top: 20px;">
         <h3><?php echo esc_html($tw_lang['general_error_title']); ?></h3>
@@ -328,6 +328,6 @@ if ( sanitize_text_field( $_GET['secure_key'] ) != $order->get_data()['cart_hash
 /* Extract the transaction status. */
 $status = (empty($decrypted['status'])) ? ($decrypted['transactionStatus']) : ($decrypted['status']);
 /* Reconstruct the checkout URL to use it to allow client to try again in case of error. */
-$checkout_url = wc_get_checkout_url() . 'order-pay/' . $orderId . '/?pay_for_order=true&key=' . $order->get_data()['order_key'];
+$checkout_url = esc_url( wc_get_checkout_url() . 'order-pay/' . $orderId . '/?pay_for_order=true&key=' . $order->get_data()['order_key'] );
 
 Twispay_TW_Status_Updater::updateStatus_backUrl($orderId, $status, $checkout_url, $tw_lang, $configuration);
