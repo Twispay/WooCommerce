@@ -153,7 +153,7 @@ function tw_twispay_p_synchronize_subscriptions( $request ) {
         $skip = FALSE;
 
         /* Construct the URL. */
-        $url = str_replace('__EXTERNAL_ORDER_ID__', $subscription->get_parent_id(), $baseUrl);
+        $url = str_replace('__EXTERNAL_ORDER_ID__', esc_html( $subscription->get_parent_id() ), $baseUrl);
 
         /* Execute the request. This means to perform a "GET"/"PUT" request at the specified URL. */
         $args = array('method' => 'GET', 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]);
