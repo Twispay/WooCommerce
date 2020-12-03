@@ -33,7 +33,7 @@ function twispay_tw_get_live_mode( $tw_lang ) {
             }
             else {
                 $html .= '<option value="1">' . esc_html( $tw_lang['live_mode_option_true'] ) . '</option>';
-                $html .= '<option value="0"selected>' . esc_html( $tw_lang['live_mode_option_false'] ) . '</option>';
+                $html .= '<option value="0" selected>' . esc_html( $tw_lang['live_mode_option_false'] ) . '</option>';
             }
 
             break;
@@ -81,7 +81,7 @@ function twispay_tw_get_suppress_email( $tw_lang ) {
             }
             else {
                 $html .= '<option value="1">' . esc_html( $tw_lang['live_mode_option_true'] ) . '</option>';
-                $html .= '<option value="0"selected>' . esc_html( $tw_lang['live_mode_option_false'] ) . '</option>';
+                $html .= '<option value="0" selected>' . esc_html( $tw_lang['live_mode_option_false'] ) . '</option>';
             }
 
             break;

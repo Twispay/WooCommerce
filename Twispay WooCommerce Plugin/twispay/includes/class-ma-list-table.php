@@ -158,8 +158,8 @@ class Twispay_Tw_List_Table {
 
         if ( empty( $this->modes ) ) {
             $this->modes = array(
-                'list'    => __( 'List View' ),
-                'excerpt' => __( 'Excerpt View' )
+                'list'    => esc_html__( 'List View' ),
+                'excerpt' => esc_html__( 'Excerpt View' )
             );
         }
     }
@@ -284,7 +284,7 @@ class Twispay_Tw_List_Table {
 
         // Redirect if page number is invalid and headers are not already sent.
         if ( ! headers_sent() && ! wp_doing_ajax() && $args['total_pages'] > 0 && $this->get_pagenum() > $args['total_pages'] ) {
-            wp_redirect( add_query_arg( 'paged', $args['total_pages'] ) );
+            wp_redirect( esc_url( add_query_arg( 'paged', $args['total_pages'] ) ) );
             exit;
         }
 
@@ -330,7 +330,7 @@ class Twispay_Tw_List_Table {
      * @access public
      */
     public function no_items() {
-        _e( 'No items found.' );
+        esc_html_e( 'No items found.' );
     }
 
     /**
@@ -358,9 +358,9 @@ class Twispay_Tw_List_Table {
             echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
         ?>
         <p class="search-box">
-            <label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo $text; ?>:</label>
+            <label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html( $text ); ?>:</label>
             <input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" />
-            <?php submit_button( $text, '', '', false, array( 'id' => 'search-submit' ) ); ?>
+            <?php submit_button( esc_html( $text ), '', '', false, array( 'id' => 'search-submit' ) ); ?>
         </p>
         <?php
     }
@@ -457,19 +457,19 @@ class Twispay_Tw_List_Table {
         if ( empty( $this->_actions ) )
             return;
 
-        echo '<label for="bulk-action-selector-' . esc_attr( $which ) . '" class="screen-reader-text">' . __( 'Select bulk action' ) . '</label>';
-        echo '<select name="action' . $two . '" id="bulk-action-selector-' . esc_attr( $which ) . "\">\n";
-        echo '<option value="-1">' . __( 'Bulk Actions' ) . "</option>\n";
+        echo '<label for="bulk-action-selector-' . esc_attr( $which ) . '" class="screen-reader-text">' . esc_html( 'Select bulk action' ) . '</label>';
+        echo '<select name="action' . esc_attr( $two ) . '" id="bulk-action-selector-' . esc_attr( $which ) . "\">\n";
+        echo '<option value="-1">' . esc_html__( 'Bulk Actions' ) . "</option>\n";
 
         foreach ( $this->_actions as $name => $title ) {
             $class = 'edit' === $name ? ' class="hide-if-no-js"' : '';
 
-            echo "\t" . '<option value="' . $name . '"' . $class . '>' . $title . "</option>\n";
+            echo "\t" . '<option value="' . esc_attr( $name ) . '"' . $class . '>' . esc_html( $title ) . "</option>\n";
         }
 
         echo "</select>\n";
 
-        submit_button( __( 'Apply' ), 'action', '', false, array( 'id' => "doaction$two" ) );
+        submit_button( esc_attr__( 'Apply' ), 'action', '', false, array( 'id' => "doaction$two" ) );
         echo "\n";
     }
 
@@ -485,10 +485,10 @@ class Twispay_Tw_List_Table {
         if ( isset( $_REQUEST['filter_action'] ) && ! empty( $_REQUEST['filter_action'] ) )
             return false;
 
-        if ( isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] )
+        if ( isset( $_REQUEST['action'] ) && -1 != sanitize_text_field( $_REQUEST['action'] ) )
             return $_REQUEST['action'];
 
-        if ( isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] )
+        if ( isset( $_REQUEST['action2'] ) && -1 != sanitize_text_field( $_REQUEST['action2'] ) )
             return $_REQUEST['action2'];
 
         return false;
@@ -515,11 +515,11 @@ class Twispay_Tw_List_Table {
         foreach ( $actions as $action => $link ) {
             ++$i;
             ( $i == $action_count ) ? $sep = '' : $sep = ' | ';
-            $out .= "<span class='$action'>$link$sep</span>";
+            $out .= '<span class="' . $action . '">' . $link.$sep . '</span>';
         }
         $out .= '</div>';
 
-        $out .= '<button type="button" class="toggle-row"><span class="screen-reader-text">' . __( 'Show more details' ) . '</span></button>';
+        $out .= '<button type="button" class="toggle-row"><span class="screen-reader-text">' . esc_html__( 'Show more details' ) . '</span></button>';
 
         return $out;
     }
@@ -551,10 +551,10 @@ class Twispay_Tw_List_Table {
         }
 
         $extra_checks = "AND post_status != 'auto-draft'";
-        if ( ! isset( $_GET['post_status'] ) || 'trash' !== $_GET['post_status'] ) {
+        if ( ! isset( $_GET['post_status'] ) || 'trash' !== sanitize_text_field( $_GET['post_status'] ) ) {
             $extra_checks .= " AND post_status != 'trash'";
         } elseif ( isset( $_GET['post_status'] ) ) {
-            $extra_checks = $wpdb->prepare( ' AND post_status = %s', $_GET['post_status'] );
+            $extra_checks = $wpdb->prepare( ' AND post_status = %s', sanitize_text_field( $_GET['post_status'] ) );
         }
 
         $months = $wpdb->get_results( $wpdb->prepare( "
@@ -580,7 +580,7 @@ class Twispay_Tw_List_Table {
         if ( ! $month_count || ( 1 == $month_count && 0 == $months[0]->month ) )
             return;
 
-        $m = isset( $_GET['m'] ) ? (int) $_GET['m'] : 0;
+        $m = isset( $_GET['m'] ) ? (int) sanitize_text_field( $_GET['m'] ) : 0;
         ?>
         <label for="filter-by-date" class="screen-reader-text"><?php _e( 'Filter by date' ); ?></label>
         <select name="m" id="filter-by-date">
@@ -597,7 +597,10 @@ class Twispay_Tw_List_Table {
                     selected( $m, $year . $month, false ),
                     esc_attr( $arc_row->year . $month ),
                     /* translators: 1: month name, 2: 4-digit year */
-                    sprintf( __( '%1$s %2$d' ), $wp_locale->get_month( $month ), $year )
+                    sprintf( esc_html__( '%1$s %2$d' ),
+                        esc_attr( $wp_locale->get_month( $month ) ),
+                        esc_attr( $year )
+                    )
                 );
             }
             ?>
@@ -625,8 +628,8 @@ class Twispay_Tw_List_Table {
                 printf(
                     "<a href='%s' class='%s' id='view-switch-$mode'><span class='screen-reader-text'>%s</span></a>\n",
                     esc_url( add_query_arg( 'mode', $mode ) ),
-                    implode( ' ', $classes ),
-                    $title
+                    esc_attr( implode( ' ', $classes ) ),
+                    esc_html( $title )
                 );
             }
             ?>
@@ -649,39 +652,39 @@ class Twispay_Tw_List_Table {
         $approved_comments_number = number_format_i18n( $approved_comments );
         $pending_comments_number = number_format_i18n( $pending_comments );
 
-        $approved_only_phrase = sprintf( _n( '%s comment', '%s comments', $approved_comments ), $approved_comments_number );
-        $approved_phrase = sprintf( _n( '%s approved comment', '%s approved comments', $approved_comments ), $approved_comments_number );
-        $pending_phrase = sprintf( _n( '%s pending comment', '%s pending comments', $pending_comments ), $pending_comments_number );
+        $approved_only_phrase = sprintf( _n( '%s comment', '%s comments', $approved_comments ), esc_attr( $approved_comments_number ) );
+        $approved_phrase = sprintf( _n( '%s approved comment', '%s approved comments', $approved_comments ), esc_attr( $approved_comments_number ) );
+        $pending_phrase = sprintf( _n( '%s pending comment', '%s pending comments', $pending_comments ), esc_attr( $pending_comments_number ) );
 
         // No comments at all.
         if ( ! $approved_comments && ! $pending_comments ) {
             printf( '<span aria-hidden="true">Ñ</span><span class="screen-reader-text">%s</span>',
-                __( 'No comments' )
+                esc_html__( 'No comments' )
             );
             // Approved comments have different display depending on some conditions.
         } elseif ( $approved_comments ) {
             printf( '<a href="%s" class="post-com-count post-com-count-approved"><span class="comment-count-approved" aria-hidden="true">%s</span><span class="screen-reader-text">%s</span></a>',
                 esc_url( add_query_arg( array( 'p' => $post_id, 'comment_status' => 'approved' ), admin_url( 'edit-comments.php' ) ) ),
-                $approved_comments_number,
-                $pending_comments ? $approved_phrase : $approved_only_phrase
+                esc_attr( $approved_comments_number ),
+                $pending_comments ? esc_attr( $approved_phrase ) : esc_attr( $approved_only_phrase )
             );
         } else {
             printf( '<span class="post-com-count post-com-count-no-comments"><span class="comment-count comment-count-no-comments" aria-hidden="true">%s</span><span class="screen-reader-text">%s</span></span>',
-                $approved_comments_number,
-                $pending_comments ? __( 'No approved comments' ) : __( 'No comments' )
+                esc_attr( $approved_comments_number ),
+                $pending_comments ? esc_html__( 'No approved comments' ) : esc_html__( 'No comments' )
             );
         }
 
         if ( $pending_comments ) {
             printf( '<a href="%s" class="post-com-count post-com-count-pending"><span class="comment-count-pending" aria-hidden="true">%s</span><span class="screen-reader-text">%s</span></a>',
                 esc_url( add_query_arg( array( 'p' => $post_id, 'comment_status' => 'moderated' ), admin_url( 'edit-comments.php' ) ) ),
-                $pending_comments_number,
-                $pending_phrase
+                esc_attr( $pending_comments_number ),
+                esc_attr( $pending_phrase )
             );
         } else {
             printf( '<span class="post-com-count post-com-count-pending post-com-count-no-pending"><span class="comment-count comment-count-no-pending" aria-hidden="true">%s</span><span class="screen-reader-text">%s</span></span>',
-                $pending_comments_number,
-                $approved_comments ? __( 'No pending comments' ) : __( 'No comments' )
+                esc_attr( $pending_comments_number ),
+                $approved_comments ? esc_html__( 'No pending comments' ) : esc_html__( 'No comments' )
             );
         }
     }
@@ -695,7 +698,7 @@ class Twispay_Tw_List_Table {
      * @return int
      */
     public function get_pagenum() {
-        $pagenum = isset( $_REQUEST['paged'] ) ? absint( $_REQUEST['paged'] ) : 0;
+        $pagenum = isset( $_REQUEST['paged'] ) ? absint( sanitize_text_field( $_REQUEST['paged'] ) ) : 0;
 
         if ( isset( $this->_pagination_args['total_pages'] ) && $pagenum > $this->_pagination_args['total_pages'] )
             $pagenum = $this->_pagination_args['total_pages'];
@@ -758,7 +761,7 @@ class Twispay_Tw_List_Table {
             $this->screen->render_screen_reader_content( 'heading_pagination' );
         }
 
-        $output = '<span class="displaying-num">' . sprintf( _n( '%s item', '%s items', $total_items ), number_format_i18n( $total_items ) ) . '</span>';
+        $output = '<span class="displaying-num">' . sprintf( _n( '%s item', '%s items', esc_attr( $total_items ) ), number_format_i18n( $total_items ) ) . '</span>';
 
         $current = $this->get_pagenum();
         $removable_query_args = wp_removable_query_args();
@@ -794,7 +797,7 @@ class Twispay_Tw_List_Table {
         } else {
             $page_links[] = sprintf( "<a class='first-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                 esc_url( remove_query_arg( 'paged', $current_url ) ),
-                __( 'First page' ),
+                esc_html__( 'First page' ),
                 '&laquo;'
             );
         }
@@ -804,30 +807,30 @@ class Twispay_Tw_List_Table {
         } else {
             $page_links[] = sprintf( "<a class='prev-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                 esc_url( add_query_arg( 'paged', max( 1, $current-1 ), $current_url ) ),
-                __( 'Previous page' ),
+                esc_html__( 'Previous page' ),
                 '&lsaquo;'
             );
         }
 
         if ( 'bottom' === $which ) {
             $html_current_page  = $current;
-            $total_pages_before = '<span class="screen-reader-text">' . __( 'Current Page' ) . '</span><span id="table-paging" class="paging-input"><span class="tablenav-paging-text">';
+            $total_pages_before = '<span class="screen-reader-text">' . esc_html__( 'Current Page' ) . '</span><span id="table-paging" class="paging-input"><span class="tablenav-paging-text">';
         } else {
             $html_current_page = sprintf( "%s<input class='current-page' id='current-page-selector' type='text' name='paged' value='%s' size='%d' aria-describedby='table-paging' /><span class='tablenav-paging-text'>",
-                '<label for="current-page-selector" class="screen-reader-text">' . __( 'Current Page' ) . '</label>',
-                $current,
+                '<label for="current-page-selector" class="screen-reader-text">' . esc_html__( 'Current Page' ) . '</label>',
+                esc_attr( $current ),
                 strlen( $total_pages )
             );
         }
         $html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
-        $page_links[] = $total_pages_before . sprintf( _x( '%1$s of %2$s', 'paging' ), $html_current_page, $html_total_pages ) . $total_pages_after;
+        $page_links[] = esc_html( $total_pages_before ) . sprintf( _x( '%1$s of %2$s', 'paging' ), esc_attr( $html_current_page ), esc_attr( $html_total_pages ) ) . esc_html( $total_pages_after );
 
         if ( $disable_next ) {
             $page_links[] = '<span class="tablenav-pages-navspan" aria-hidden="true">&rsaquo;</span>';
         } else {
             $page_links[] = sprintf( "<a class='next-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                 esc_url( add_query_arg( 'paged', min( $total_pages, $current+1 ), $current_url ) ),
-                __( 'Next page' ),
+                esc_html__( 'Next page' ),
                 '&rsaquo;'
             );
         }
@@ -837,7 +840,7 @@ class Twispay_Tw_List_Table {
         } else {
             $page_links[] = sprintf( "<a class='last-page' href='%s'><span class='screen-reader-text'>%s</span><span aria-hidden='true'>%s</span></a>",
                 esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
-                __( 'Last page' ),
+                esc_html__( 'Last page' ),
                 '&raquo;'
             );
         }
@@ -853,7 +856,7 @@ class Twispay_Tw_List_Table {
         } else {
             $page_class = ' no-pages';
         }
-        $this->_pagination = "<div class='tablenav-pages{$page_class}'>$output</div>";
+        $this->_pagination = '<div class="tablenav-pages' . sanitize_html_class( $page_class ) .'">' . esc_html( $output ) . '</div>';
 
         echo $this->_pagination;
     }
@@ -1065,7 +1068,7 @@ class Twispay_Tw_List_Table {
 
         if ( ! empty( $columns['cb'] ) ) {
             static $cb_counter = 1;
-            $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . esc_attr( $cb_counter ) . '">' . __( 'Select All' ) . '</label>'
+            $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . esc_attr( $cb_counter ) . '">' . esc_html__( 'Select All' ) . '</label>'
                 . '<input id="cb-select-all-' . esc_attr( $cb_counter ) . '" type="checkbox" />';
             $cb_counter++;
         }
@@ -1315,7 +1318,7 @@ class Twispay_Tw_List_Table {
      * @return string The row actions HTML, or an empty string if the current column is the primary column.
      */
     protected function handle_row_actions( $item, $column_name, $primary ) {
-        return $column_name === $primary ? '<button type="button" class="toggle-row"><span class="screen-reader-text">' . __( 'Show more details' ) . '</span></button>' : '';
+        return $column_name === $primary ? '<button type="button" class="toggle-row"><span class="screen-reader-text">' . esc_html__( 'Show more details' ) . '</span></button>' : '';
     }
 
     /**

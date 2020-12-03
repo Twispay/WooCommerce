@@ -28,7 +28,7 @@ if ( ! class_exists( 'Twispay_TW_Default_Thankyou' ) ) :
        * @return void
        */
       public function __construct( $order ) {
-        wp_safe_redirect( $this->get_return_url( $order ) );
+        wp_safe_redirect( esc_url( $this->get_return_url( $order ) ) );
       }
     }
 endif; /* End if class_exists. */
