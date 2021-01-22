@@ -3,7 +3,7 @@
  * Plugin Name: Twispay Credit Card Payments
  * Plugin URI: https://wordpress.org/plugins/twispay/
  * Description: Plugin for Twispay payment gateway.
- * Version: 1.0.10
+ * Version: 1.0.11
  * Author: twispay
  * Author URI: https://www.twispay.com
  * License: GPLv2
@@ -615,15 +615,46 @@ final class Twispay {
 
 endif; // End if class_exists
 
+function twispay_missing_wc_notice() {
+  $lang = explode( '-', get_bloginfo( 'language' ) );
+  $lang = $lang[0];
+
+  if ( file_exists( plugin_dir_path( __FILE__ ) . 'lang/' . $lang . '/lang.php' ) ) {
+    require( plugin_dir_path( __FILE__ ) . 'lang/' . $lang . '/lang.php' );
+  } else {
+    require( plugin_dir_path( __FILE__ ) . 'lang/en/lang.php' );
+  }
+  ?>
+
+  <div class="error notice" style="margin-top: 20px;">
+    <p><?= esc_html( $tw_lang['no_woocommerce_f'] ); ?> <a target="_blank" href="https://wordpress.org/plugins/woocommerce/"><?= esc_html( $tw_lang['no_woocommerce_s'] ); ?></a>.</p>
+    <div class="clearfix"></div>
+  </div>
+
+  <?php
+}
+
 /**
  * The main instance of Twispay
  *
  * This function is used like a global variable, but without to
  * declare the global
  *
- * @return Twispay
+ * @return Twispay|false
  */
 function TW() {
-    return Twispay::instance();
+  /*
+  The way I check if WC is active is a little hacky, but at least it works.
+
+  I've tried to call this function using actions, but the payment method is missed both
+  in admin and checkout page in that case.
+  */
+  if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+    add_action('admin_notices', 'twispay_missing_wc_notice');
+    return false;
+  }
+
+  return Twispay::instance();
 }
+
 TW();
