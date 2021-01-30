@@ -80,7 +80,7 @@ final class Twispay {
             add_action('woocommerce_after_checkout_form', array( $this, 'twispay_subscription_processor' ) );
         }
         if( isset( $_GET['server_to_server'] ) && sanitize_text_field( $_GET['server_to_server'] ) === 'true' ) {
-            $this->server_to_server();
+            add_action('woocommerce_after_register_post_type', array( $this, 'server_to_server' ) );
         }
     }
 
@@ -591,7 +591,7 @@ final class Twispay {
 
         /* Extract the WooCommerce order. */
         $orderId = (int) explode('_', $decrypted['externalOrderId'])[0];
-        $order = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "posts WHERE ID='%d'", $orderId) );
+        $order = wc_get_order( $orderId );
 
 
         /* Check if the WooCommerce order extraction failed. */
