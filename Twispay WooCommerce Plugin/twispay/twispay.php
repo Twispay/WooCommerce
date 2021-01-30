@@ -590,8 +590,8 @@ final class Twispay {
 
 
         /* Extract the WooCommerce order. */
-        $orderId = explode('_', $decrypted['externalOrderId'])[0];
-        $order = wc_get_order($orderId);
+        $orderId = (int) explode('_', $decrypted['externalOrderId'])[0];
+        $order = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "posts WHERE ID='%d'", $orderId) );
 
 
         /* Check if the WooCommerce order extraction failed. */
