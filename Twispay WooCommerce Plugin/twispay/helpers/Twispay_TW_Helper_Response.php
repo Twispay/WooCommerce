@@ -161,7 +161,7 @@ if ( !class_exists( 'Twispay_TW_Helper_Response' ) ) :
                 $tw_errors[] = $tw_lang['log_error_empty_transaction'];
             }
 
-            if ( sizeof( $tw_errors ) ) {
+            if ( sizeof( $tw_errors ) > 0 ) {
                 foreach ( $tw_errors as $err ) {
                     Twispay_TW_Logger::twispay_tw_log( $err );
                 }
