@@ -325,9 +325,7 @@ if ( sanitize_text_field( $_GET['secure_key'] ) != $order->get_data()['cart_hash
     die();
 }
 
-/* Extract the transaction status. */
-$status = (empty($decrypted['status'])) ? ($decrypted['transactionStatus']) : ($decrypted['status']);
 /* Reconstruct the checkout URL to use it to allow client to try again in case of error. */
 $checkout_url = esc_url( wc_get_checkout_url() . 'order-pay/' . $orderId . '/?pay_for_order=true&key=' . $order->get_data()['order_key'] );
 
-Twispay_TW_Status_Updater::updateStatus_backUrl($orderId, $status, $checkout_url, $tw_lang, $configuration);
+Twispay_TW_Status_Updater::updateStatus_backUrl($orderId, $decrypted['transactionStatus'], $checkout_url, $tw_lang, $configuration);
