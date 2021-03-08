@@ -41,6 +41,19 @@ The easiest way of installing our module is by visiting the [official module pag
 
 == Changelog ==
 
+= 1.0.12 =
+* Updated backUrl and IPN to handle the new params.
+
+= 1.0.11 =
+* Check if WooCommerce plugin is active while loading.
+* Tested with WordPress 5.6.
+
+= 1.0.10 =
+* Fix security issues.
+* Fix issues with some custom WordPress installation cases.
+* Used native Request API instead of curl for internal requests.
+* Tested with WordPress 5.5.3.
+
 = 1.0.9 =
 * Increased security using best practices (escaping, sanitizing, SQL requests cleaning).
 * Tested up to Wordpress 5.5.1.

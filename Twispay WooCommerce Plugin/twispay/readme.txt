@@ -40,6 +40,9 @@ The easiest way of installing our module is by visiting the [official module pag
 
 == Changelog ==
 
+= 1.0.12 =
+* Updated backUrl and IPN to handle the new params.
+
 = 1.0.11 =
 * Check if WooCommerce plugin is active while loading.
 * Tested with WordPress 5.6.
