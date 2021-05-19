@@ -1,0 +1,35 @@
+# Main
+node_modules
+.idea
+TODO
+twispay-log.txt
+
+# Packages
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Mockups
+*.psd
+*.pdf
+*.sketch
+*.fig
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
