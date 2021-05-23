@@ -126,6 +126,28 @@ function twispay_tw_get_wp_pages( $tw_lang ) {
     }
 }
 
+function twispay_tw_get_unique_identifiers_markup() {
+    $configuration = Twispay_TW_DB_Tables::query_configuration();
+    $selected_identifier = $configuration->unique_identifier;
+    $fields = apply_filters('twispay_tw_unique_identifiers', [
+        'billing_email' => 'Billing email',
+        'billing_phone' => 'Billing phone',
+    ]);
+    ?>
+
+    <select name="unique_identifier" id="unique-identifier-field">
+        <?php foreach ($fields as $field_name => $field_label) {
+            ?>
+            <option value="<?php echo esc_html($field_name); ?>"
+                <?php echo selected($field_name === $selected_identifier); ?>>
+                <?php echo esc_html($field_label); ?>
+            </option>
+        <?php } ?>
+    </select>
+
+    <?php
+}
+
 /**
  * Retrieves Contact email on the current Shop
  *

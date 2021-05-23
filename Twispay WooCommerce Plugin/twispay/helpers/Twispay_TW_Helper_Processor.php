@@ -42,6 +42,8 @@ class Twispay_TW_Helper_Processor {
         $result['site_id'] = $configuration->staging_id;
         $result['secret_key'] = $configuration->staging_key;
 
+        $result['unique_identifier'] = $configuration->unique_identifier;
+
         return $result;
     }
 
@@ -51,5 +53,19 @@ class Twispay_TW_Helper_Processor {
         $sql = "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration";
 
         return $wpdb->get_row($sql);
+    }
+
+    public static function get_customer_id($user_identifier, $user_id = null) {
+        if (empty($user_identifier)) {
+            return false;
+        }
+
+        $customer = Twispay_TW_Customer::get_customer_id_by_identifier($user_identifier);
+
+        if (empty($customer)) {
+            $customer = Twispay_TW_Customer::create_new_customer($user_identifier, $user_id);
+        }
+
+        return $customer;
     }
 }

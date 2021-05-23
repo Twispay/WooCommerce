@@ -150,6 +150,7 @@ if (!class_exists('Twispay')) {
             require_once TWISPAY_PLUGIN_DIR . 'includes/processors/class-main-processor.php';
             require_once TWISPAY_PLUGIN_DIR . 'includes/processors/class-subscription-processor.php';
             require_once TWISPAY_PLUGIN_DIR . 'includes/class-tw-server-to-server.php';
+            require_once TWISPAY_PLUGIN_DIR . 'includes/class-tw-customer.php';
         }
 
         public function twispay_query_vars_filter($vars) {

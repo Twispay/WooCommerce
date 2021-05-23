@@ -88,10 +88,11 @@ class Twispay_TW_DB_Tables {
         $sql = "
         CREATE TABLE `{$this->customers_table}` (
             `ID` int(10) NOT NULL AUTO_INCREMENT,
-            `customer_identifier` varchar(100) NOT NULL,
             `user_id` bigint(20) DEFAULT NULL,
-            `disabled` tinyint(1) DEFAULT 0,
-            PRIMARY KEY (`ID`)
+            `customer_identifier` varchar(100) NOT NULL,
+            `identifier_type` varchar(50) DEFAULT NULL,
+            PRIMARY KEY (`ID`),
+            UNIQUE (`customer_identifier`, `user_id`)
         ) {$this->charset_collate};";
 
         dbDelta($sql);
@@ -103,5 +104,13 @@ class Twispay_TW_DB_Tables {
         foreach ($this->tables as $table) {
             $wpdb->query('DROP TABLE IF EXISTS ' . $table);
         }
+    }
+
+    public static function query_configuration() {
+        global $wpdb;
+
+        $sql = "SELECT * FROM " . $wpdb->prefix . 'twispay_tw_configuration';
+
+        return $wpdb->get_row($sql);
     }
 }

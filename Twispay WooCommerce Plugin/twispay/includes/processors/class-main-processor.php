@@ -1,6 +1,6 @@
 <?php
 
-class Twispay_TW_Main_Processor {
+class Twispay_Main_Processor {
     private $order_id;
     private $language;
 
@@ -103,11 +103,16 @@ class Twispay_TW_Main_Processor {
             throw new Exception(esc_html($tw_lang['twispay_processor_error_missing_configuration']));
         }
 
+        $unique_identifier = $configuration['unique_identifier'];
+        list($category, $field) = preg_split('/_/', $unique_identifier, 2);
         $data = $order->get_data();
         $items = [];
 
         $customer = [
-            'identifier' => $data['customer_id'] === 0 ? $this->order_id : $data['customer_id'],
+            'identifier' => Twispay_TW_Helper_Processor::get_customer_id(
+                $data[$category][$field],
+                $data['customer_id']
+            ),
             'firstName' => $data['billing']['first_name'] ?: '',
             'lastName' => $data['billing']['last_name'] ?: '',
             'country' => $data['billing']['country'] ?: '',
