@@ -1,6 +1,6 @@
 <?php
 
-class Twispay_Server_To_Server {
+class Twispay_TW_Server_To_Server {
     private $language;
 
     public function __construct() {

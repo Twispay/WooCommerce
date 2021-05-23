@@ -1,6 +1,6 @@
 <?php
 
-class Twispay_Subscription_Processor {
+class Twispay_TW_Subscription_Processor {
     private $order_id;
     private $language;
 
