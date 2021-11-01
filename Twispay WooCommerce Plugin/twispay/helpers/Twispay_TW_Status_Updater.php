@@ -141,7 +141,7 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                       $subscription = reset($subscription);
 
                       /* First payment on order, process payment & activate subscription. */
-                      if ( 0 == $subscription->get_completed_payment_count() ) {
+                      if ( 0 == $subscription->get_payment_count() ) {
                           $order->payment_complete();
 
                           if(class_exists('WC_Subscriptions') ){
@@ -258,7 +258,7 @@ if ( ! class_exists( 'Twispay_TW_Status_Updater' ) ) :
                       $subscription = reset($subscription);
 
                       /* First payment on order, process payment & activate subscription. */
-                      if ( 0 == $subscription->get_completed_payment_count() ) {
+                      if ( 0 == $subscription->get_payment_count() ) {
                           $order->payment_complete();
 
                           if(class_exists('WC_Subscriptions') ){
