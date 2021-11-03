@@ -7,7 +7,6 @@
  * @package  Twispay/Admin
  * @category Admin
  * @author   Twispay
- * @version  1.0.8
  */
 
 /**
