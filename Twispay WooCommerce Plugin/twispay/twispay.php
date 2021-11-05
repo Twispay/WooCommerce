@@ -149,7 +149,7 @@ if (!class_exists('Twispay')) {
 
         public function twispay_query_vars_filter($vars) {
             $vars[] .= 'order_id';
-            $vars[] .= 'server_to_server';
+            $vars[] .= 'twispay-ipn';
             return $vars;
         }
     }

@@ -12,8 +12,8 @@ class Twispay_Server_To_Server {
         $this->order_id = isset($_GET['order_id']) ? (int) sanitize_key($_GET['order_id']) : null;
         $this->language = Twispay_TW_Helper_Processor::get_current_language();
 
-        if (isset($_GET['server_to_server']) && $_GET['server_to_server'] === 'true') {
-            add_action('woocommerce_after_register_post_type', [ $this, 'handle' ]);
+        if (isset($_GET['twispay-ipn'])) {
+            add_action('init', [ $this, 'handle' ]);
         }
     }
 
@@ -25,9 +25,11 @@ class Twispay_Server_To_Server {
             require(TWISPAY_PLUGIN_DIR . 'lang/en/lang.php');
         }
 
+	    /** @var array $tw_lang */
+
         // Check if the POST is corrupted: doesn't contain the 'opensslResult' and the 'result' fields.
         if (isset($_POST['opensslResult']) === false && isset($_POST['result']) === false) {
-            Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_empty_response']);
+	        Twispay_TW_Logger::twispay_tw_log($tw_lang['log_error_empty_response']);
             die($tw_lang['log_error_empty_response']);
         }
 

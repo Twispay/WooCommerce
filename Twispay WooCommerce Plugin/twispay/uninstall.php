@@ -17,7 +17,10 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 delete_option( 'twispay_tw_installed' );
 
 // Delete All TW Twispay Pages
-wp_delete_post( get_page_by_title( 'Twispay confirmation' )->ID );
+$page = get_page_by_path('twispay-confirmation');
+if ($page) {
+	wp_delete_post( $page->ID );
+}
 
 // Remove All Tables
 global $wpdb;
