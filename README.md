@@ -41,6 +41,13 @@ The easiest way of installing our module is by visiting the [official module pag
 
 == Changelog ==
 
+= 1.1.2 =
+* Fix IPN status and change IPN url to a more intuitive one.
+* Remove timestamps from user and order ids.
+* Remove `p_wo_` and `r_wo_` prefixes from user ids.
+* Fix some deprecated issues.
+* Move processors and server-to-server handlers to separate classes
+
 = 1.0.12 =
 * Updated backUrl and IPN to handle the new params.
 
