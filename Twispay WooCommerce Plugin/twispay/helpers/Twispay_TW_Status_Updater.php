@@ -8,7 +8,6 @@
  * @package  Twispay/Front
  * @category Front
  * @author   Twispay
- * @version  1.0.8
  */
 
 /* Exit if the file is accessed directly. */

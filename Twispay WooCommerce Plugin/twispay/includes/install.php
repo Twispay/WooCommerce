@@ -7,7 +7,6 @@
  * @package  Twispay/Install
  * @category Core
  * @author   Twispay
- * @version  1.0.8
  */
 
 function twispay_wp_check_install() {

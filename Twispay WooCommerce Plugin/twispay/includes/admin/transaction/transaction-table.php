@@ -7,7 +7,6 @@
  * @package  Twispay/Admin
  * @category Admin
  * @author   Twispay
- * @version  1.0.8
  */
 
 // Add the copy of the WP_List_Table class. We made a copy because the class is private.

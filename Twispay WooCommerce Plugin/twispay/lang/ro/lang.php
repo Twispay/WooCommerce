@@ -7,7 +7,6 @@
  * @package  Twispay/Language
  * @category Admin/Front
  * @author   Twispay
- * @version  1.0.8
  */
 
 /* Configuration panel from Administrator */
@@ -114,7 +113,7 @@ $tw_lang['log_ok_status_refund'] = '[RESPONSE]: Status refund-ok pentru comanda 
 $tw_lang['log_ok_status_failed'] = '[RESPONSE]: Status failed pentru comanda cu ID-ul: ';
 $tw_lang['log_ok_status_hold'] = '[RESPONSE]: Status on-hold pentru comanda cu ID-ul: ';
 $tw_lang['log_ok_status_uncertain'] = '[RESPONSE]: Status uncertain pentru comanda cu ID-ul: ';
-$tw_lang['log_ok_validating_complete'] = '[RESPONSE]: Validare cu succes pentru comanda cu ID-ul: %s';
+$tw_lang['log_ok_validating_complete'] = '[RESPONSE]: Validare cu succes pentru comanda cu ID-ul: ';
 
 $tw_lang['log_error_validating_failed'] = '[RESPONSE-ERROR]: Validare esuată pentru comanda cu ID-ul: ';
 $tw_lang['log_error_decryption_error'] = '[RESPONSE-ERROR]: Decriptarea nu a funcționat.';

@@ -7,7 +7,6 @@
  * @package  Twispay/Admin
  * @category Admin
  * @author   Twispay
- * @version  1.0.8
  */
 
 // Exit if the file is accessed directly
@@ -66,34 +65,34 @@ function twispay_tw_configuration() {
                             <th scope="row"><label for="staging_site_id"><?= esc_html( $tw_lang['staging_id_label'] ); ?></span></label></th>
                             <td>
                                 <input name="staging_site_id" type="text" value="<?= esc_attr( twispay_tw_get_staging_site_id() ); ?>" style="max-width: 400px;" />
-                                <p class="description"><?= esc_html( $tw_lang['staging_id_desc'] ); ?> <a target="_blank" href="https://merchant-stage.twispay.com/login"><?= esc_html( $tw_lang['r_custom_thankyou_desc_s'] ); ?></a>.</p>
+                                <p class="description"><?= esc_html( $tw_lang['staging_id_desc'] ); ?> <a target="_blank" href="https://merchant-stage.twispay.com/"><?= esc_html( $tw_lang['r_custom_thankyou_desc_s'] ); ?></a>.</p>
                             </td>
                         </tr>
                         <tr class="form-field" id="staging_private_key">
                             <th scope="row"><label for="staging_private_key"><?= esc_html( $tw_lang['staging_key_label'] ); ?></span></label></th>
                             <td>
                                 <input name="staging_private_key" type="text" value="<?= esc_attr( twispay_tw_get_staging_private_key() ); ?>" style="max-width: 400px;" />
-                                <p class="description"><?= esc_html( $tw_lang['staging_key_desc'] ); ?> <a target="_blank" href="https://merchant-stage.twispay.com/login"><?= esc_html( $tw_lang['r_custom_thankyou_desc_s'] ); ?></a>.</p>
+                                <p class="description"><?= esc_html( $tw_lang['staging_key_desc'] ); ?> <a target="_blank" href="https://merchant-stage.twispay.com/"><?= esc_html( $tw_lang['r_custom_thankyou_desc_s'] ); ?></a>.</p>
                             </td>
                         </tr>
                         <tr class="form-field" id="live_site_id">
                             <th scope="row"><label for="live_site_id"><?= esc_html( $tw_lang['live_id_label'] ); ?></span></label></th>
                             <td>
                                 <input name="live_site_id" type="text" value="<?= esc_attr( twispay_tw_get_live_site_id() ); ?>" style="max-width: 400px;" />
-                                <p class="description"><?= esc_html( $tw_lang['live_id_desc'] ); ?> <a target="_blank" href="https://merchant.twispay.com/login"><?= esc_html( $tw_lang['r_custom_thankyou_desc_s'] ); ?></a>.</p>
+                                <p class="description"><?= esc_html( $tw_lang['live_id_desc'] ); ?> <a target="_blank" href="https://merchant.twispay.com/"><?= esc_html( $tw_lang['r_custom_thankyou_desc_s'] ); ?></a>.</p>
                             </td>
                         </tr>
                         <tr class="form-field" id="live_private_key">
                             <th scope="row"><label for="live_private_key"><?= esc_html( $tw_lang['live_key_label'] ); ?></span></label></th>
                             <td>
                                 <input name="live_private_key" type="text" value="<?= esc_attr( twispay_tw_get_live_private_key() ); ?>" style="max-width: 400px;" />
-                                <p class="description"><?= esc_html( $tw_lang['live_key_desc'] ); ?> <a target="_blank" href="https://merchant.twispay.com/login"><?= esc_html( $tw_lang['r_custom_thankyou_desc_s'] ); ?></a>.</p>
+                                <p class="description"><?= esc_html( $tw_lang['live_key_desc'] ); ?> <a target="_blank" href="https://merchant.twispay.com/"><?= esc_html( $tw_lang['r_custom_thankyou_desc_s'] ); ?></a>.</p>
                             </td>
                         </tr>
                         <tr class="form-field" id="s_t_s_notification">
                             <th scope="row"><label for="s_t_s_notification"><?= esc_html( $tw_lang['s_t_s_notification_label'] ); ?></span></label></th>
                             <td>
-                                <input name="s_t_s_notification" disabled="disabled" type="text" value="<?= home_url($path = '?server_to_server=true'); ?>" style="max-width: 400px;" />
+                                <input name="s_t_s_notification" disabled="disabled" type="text" value="<?= home_url($path = '?twispay-ipn'); ?>" style="max-width: 400px;" />
                                 <p class="description"><?= esc_html( $tw_lang['s_t_s_notification_desc'] ); ?></p>
                             </td>
                         </tr>
