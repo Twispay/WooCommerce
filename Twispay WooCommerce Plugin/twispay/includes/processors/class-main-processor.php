@@ -5,18 +5,27 @@ class Twispay_Main_Processor {
     private $language;
 
     public function __construct() {
-        require_once TWISPAY_PLUGIN_DIR . 'helpers/Twispay_TW_Helper_Notify.php';
-        require_once TWISPAY_PLUGIN_DIR . 'helpers/Twispay_TW_Helper_Processor.php';
 
-        $this->order_id = isset($_GET['order_id']) ? (int) sanitize_key($_GET['order_id']) : null;
-        $this->language = Twispay_TW_Helper_Processor::get_current_language();
-
-        if ($this->order_id !== null && strpos($this->order_id, '_sub') === false) {
-            add_action('woocommerce_after_checkout_form', [ $this, 'process' ]);
+        $this->order_id = !empty($_GET['order_id']) ? (int)sanitize_key($_GET['order_id']) : null;
+        if ($this->order_id && strpos($_GET['order_id'], '_sub') === false) {
+            add_action('woocommerce_after_checkout_form', [$this, 'process']);
         }
     }
 
     public function process() {
+        require_once TWISPAY_PLUGIN_DIR . 'helpers/Twispay_TW_Helper_Notify.php';
+        require_once TWISPAY_PLUGIN_DIR . 'helpers/Twispay_TW_Helper_Processor.php';
+        $this->language = Twispay_TW_Helper_Processor::get_current_language();
+
+        try {
+            $request_data = $this->prepare_request_data();
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            wc_add_notice($e->getMessage(), 'error');
+	        wp_safe_redirect( wc_get_cart_url() );
+	        return;
+        }
+
         ?>
         <style>
           body {
@@ -57,20 +66,7 @@ class Twispay_Main_Processor {
         <div class="wrapper-loader">
             <div class="loader"></div>
         </div>
-
-        <script>window.history.replaceState('twispay', 'Twispay', '../twispay.php');</script>
-
-        <?php
-        try {
-            $request_data = $this->prepare_request_data();
-        } catch (Exception $e) {
-            $message = $e->getMessage();
-
-            echo '<style>.loader {display: none;}</style>';
-            die($message);
-        }
-        ?>
-
+        
         <form action="<?php echo $request_data['host_name']; ?>"
               method="POST"
               accept-charset="UTF-8"
