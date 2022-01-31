@@ -40,6 +40,9 @@ The easiest way of installing our module is by visiting the [official module pag
 
 == Changelog ==
 
+= 1.1.3 =
+* Fix subscription processor. 
+
 = 1.1.2 =
 * Fix IPN status and change IPN url to a more intuitive one.
 * Remove timestamps from user and order ids.

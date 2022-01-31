@@ -369,11 +369,11 @@ function init_twispay_gateway_class() {
             /**
              * Twispay Process Payment function
              *
-             * @param order_id: The ID of the order witha. the refund.
-             * @param amount: The amount to be refunded.
-             * @param reason: The reason of the refund.
+             * @param  int        $order_id Order ID.
+             * @param  float|null $amount Refund amount.
+             * @param  string     $reason Refund reason.
              *
-             * @return boolean: True or false based on success
+             * @return boolean|WP_Error True or false based on success, or a WP_Error object.
              */
             function process_refund($order_id, $amount = NULL, $reason = '') {
                 global $wpdb;
@@ -384,29 +384,48 @@ function init_twispay_gateway_class() {
                         $order_id
                     )
                 );
+                if (!$transaction_id) {
+                    return new WP_Error( 'error', "Invalid transaction id");
+                }
 
                 /* Get configuration from database. */
                 $configuration = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "twispay_tw_configuration" );
-
-                if ( $configuration ) {
-                    if ( 1 == $configuration->live_mode ) {
-                        $apiKey = $configuration->live_key;
-                        $url = 'https://api.twispay.com/transaction/' . sanitize_key( $transaction_id );
-                    } else if ( 0 == $configuration->live_mode ) {
-                        $apiKey = $configuration->staging_key;
-                        $url = 'https://api-stage.twispay.com/transaction/' . sanitize_key( $transaction_id );
-                    }
+                if (!$configuration) {
+	                return new WP_Error( 'error', "Missing configuration");
+                }
+				
+                if ( 1 == $configuration->live_mode ) {
+                    $apiKey = $configuration->live_key;
+                    $url = 'https://api.twispay.com/transaction/' . sanitize_key( $transaction_id );
+                } else {
+                    $apiKey = $configuration->staging_key;
+                    $url = 'https://api-stage.twispay.com/transaction/' . sanitize_key( $transaction_id );
                 }
 
                 $args = array('method' => 'DELETE', 'headers' => ['accept' => 'application/json', 'Authorization' => $apiKey]);
-                $response = wp_remote_request( $url, $args );
-
-                if ( 'OK' == $response['response']['message'] ) {
-                    Twispay_TW_Logger::twispay_tw_updateTransactionStatus($order_id, Twispay_TW_Status_Updater::$RESULT_STATUSES['REFUND_OK']);
-                    return TRUE;
-                } else {
-                    return FALSE;
+                if (!is_null($amount)) {
+                    $amount = round($amount,2);
+                    if ($amount > 0) {
+                        $args['body']['amount'] = $amount;
+                    } else {
+                        return new WP_Error( 'error', "Invalid amount");
+                    }
                 }
+                
+                if ($reason) {
+                    $args['body']['message'] = $reason;
+                }
+                
+                $response = wp_remote_request( $url, $args );
+                $code = $response['response']['code'] ?? 0;
+                $msg = $response['response']['message'] ?? "Unknown reason";
+                
+                if ( 'OK' != $msg ) {
+	                return new WP_Error( 'error', "TWISPAY API error: $code - $msg" );
+                }
+				
+                Twispay_TW_Logger::twispay_tw_updateTransactionStatus($order_id, Twispay_TW_Status_Updater::$RESULT_STATUSES['REFUND_OK']);
+                return true;
             }
         }
     }
