@@ -125,30 +125,7 @@ class Twispay_TransactionTable extends Twispay_Tw_List_Table {
      * Custom modification on name column
      */
     function column_id_tw_transactions( $item ) {
-        $actions = array(
-            'refund' => sprintf( '<a href="?page=%s&action=%s&payment_ad=%s">%s</a>',
-                esc_attr( $_REQUEST['page'] ),
-                'refund_payment',
-                esc_attr( $item['transactionId'] ),
-                esc_html( $this->tw_lang['transaction_list_refund_title'] )
-            ),
-            'cancel_recurring'  => sprintf( '<a href="?page=%s&action=%s&order_ad=%s">%s</a>',
-                esc_attr( $_REQUEST['page'] ),
-                'recurring_payment',
-                esc_attr( $item['orderId'] ),
-                esc_html( $this->tw_lang['transaction_list_recurring_title'] )
-            )
-        );
-
-        if ( $item['status'] == 'complete-ok' ) {
-            return sprintf( '%1$s %2$s',
-                $item['id_tw_transactions'],
-                $this->row_actions( $actions )
-            );
-        }
-        else {
-            return esc_attr( $item['id_tw_transactions'] );
-        }
+        return esc_attr( $item['id_tw_transactions'] );
     }
 
     /**

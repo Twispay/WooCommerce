@@ -173,3 +173,5 @@ $tw_lang['JSON_ERROR_UNSUPPORTED_TYPE'] = 'A fost trimisa o valoare de un tip ce
 $tw_lang['JSON_ERROR_INVALID_PROPERTY_NAME'] = 'A fost trimis un nume de proprietate ce nu poate fi codificat.';
 $tw_lang['JSON_ERROR_UTF16'] = 'Caractere UTF-16 deformate, posibil sa nu fie codificate corect.';
 $tw_lang['JSON_ERROR_UNKNOWN'] = 'Eroare necunoscuta.';
+
+$tw_lang['default_description'] = 'Plateste cu Twispay';
