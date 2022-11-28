@@ -2,7 +2,7 @@
 Contributors: twispay
 Tags: payment, gateway, module
 Requires at least: 4.6
-Tested up to: 5.8
+Tested up to: 6.1
 
 Twispay enables new and existing store owners to quickly and effortlessly accept online credit card payments over their WooCommerce shop
 
@@ -39,6 +39,12 @@ The easiest way of installing our module is by visiting the [official module pag
 3. Fully customizable checkout experience
 
 == Changelog ==
+
+= 1.2.0 =
+* Replace url_esc with url_esc_raw for plain usage
+* Add default title and description for payment choice
+* Remove refund button and cancel subscription from twispay transactions list
+* Fix refund reason
 
 = 1.1.3 =
 * Fix subscription processor. 
