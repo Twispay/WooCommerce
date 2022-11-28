@@ -333,7 +333,7 @@ function init_twispay_gateway_class() {
 
                     return array(
                       'result' => 'success',
-                      'redirect' => esc_url(
+                      'redirect' => esc_url_raw(
                         add_query_arg(
                           $args,
                           $actual_link
@@ -356,7 +356,7 @@ function init_twispay_gateway_class() {
 
                     return array(
                       'result' => 'success',
-                      'redirect' => esc_url(
+                      'redirect' => esc_url_raw(
                         add_query_arg(
                           $args,
                           $actual_link
