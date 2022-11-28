@@ -41,7 +41,7 @@ The easiest way of installing our module is by visiting the [official module pag
 
 == Changelog ==
 
-= 2.0.0 =
+= 1.2.0 =
 * Replace url_esc with url_esc_raw for plain usage
 * Add default title and description for payment choice
 * Remove refund button and cancel subscription from twispay transactions list
