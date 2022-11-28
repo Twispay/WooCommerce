@@ -413,6 +413,7 @@ function init_twispay_gateway_class() {
                 }
                 
                 if ($reason) {
+                    $args['body']['reason'] = 'customer-demand';
                     $args['body']['message'] = $reason;
                 }
                 
