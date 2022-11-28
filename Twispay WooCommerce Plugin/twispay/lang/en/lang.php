@@ -173,3 +173,5 @@ $tw_lang['JSON_ERROR_UNSUPPORTED_TYPE'] = 'A value of a type that cannot be enco
 $tw_lang['JSON_ERROR_INVALID_PROPERTY_NAME'] = 'A property name that cannot be encoded was given.';
 $tw_lang['JSON_ERROR_UTF16'] = 'Malformed UTF-16 characters, possibly incorrectly encoded.';
 $tw_lang['JSON_ERROR_UNKNOWN'] = 'Unknown error.';
+
+$tw_lang['default_description'] = 'Pay with twispay';

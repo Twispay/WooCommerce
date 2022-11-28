@@ -150,8 +150,8 @@ function init_twispay_gateway_class() {
                 $this->init_form_fields();
                 $this->init_settings();
 
-                $this->title = $this->get_option( 'title' );
-                $this->description = $this->get_option( 'description' );
+                $this->title = empty( $this->get_option( 'title' ) ) ? 'Twispay' : $this->get_option( 'title' );
+                $this->description = empty( $this->get_option( 'description' ) ) ? $tw_lang['default_description'] : $this->get_option( 'description' );
                 $this->enable_for_methods = $this->get_option( 'enable_for_methods', array() );
                 $this->enable_for_virtual = $this->get_option( 'enable_for_virtual', 'yes' ) === 'yes' ? true : false;
 
