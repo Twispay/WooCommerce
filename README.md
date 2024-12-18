@@ -41,8 +41,11 @@ The easiest way of installing our module is by visiting the [official module pag
 
 == Changelog ==
 
-= 1.2.1=
-* Minor fixes for latest version
+= 2.1.2 =
+* Remove any twispay confirmation page duplicates
+
+= 2.1.1 =
+* Fix woocomerce emails
 
 = 1.2.0 =
 * Replace url_esc with url_esc_raw for plain usage
